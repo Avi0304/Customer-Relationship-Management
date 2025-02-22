@@ -27,14 +27,14 @@ const CustomerSegmentation = () => {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={100} // Reduced size
-              innerRadius={50} // Donut-style, reduced size
+              outerRadius={100} 
+              innerRadius={50} 
               label={({ name, value }) =>
                 `${name}: ${(value / totalCustomers * 100).toFixed(1)}%`
               }
             >
               {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} stroke="#fff" strokeWidth={2} />
+                <Cell key={index} fill={entry.color} stroke="#fff" strokeWidth={2} />
               ))}
             </Pie>
             <Tooltip />

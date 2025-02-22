@@ -16,8 +16,8 @@ export function TableRow({ children }) {
   );
 }
 
-export function TableHead({ children }) {
-  return <th className="px-4 py-3 text-left">{children}</th>;
+export function TableHead({ children, className = "" }) {
+  return <th className={`px-4 py-3 text-left ${className}`}>{children}</th>;
 }
 
 export function TableBody({ children }) {
