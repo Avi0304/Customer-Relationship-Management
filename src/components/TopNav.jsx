@@ -7,10 +7,10 @@ const TopNav = () => {
     
    
 return (
-    <div className='bg-white shadow-lg flex items-center justify-between p-6 h-16 transition-all duration-300'>
+    <div className='bg-white shadow-lg flex items-center justify-between p-6 h-16 transition-all duration-300 sticky top-0 z-50'>
         <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
 
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center  space-x-6">
             {/* Code for Notifications */}
                         <div className="relative">
                             <button className="relative hover:transform hover:scale-110 transition-all duration-200">

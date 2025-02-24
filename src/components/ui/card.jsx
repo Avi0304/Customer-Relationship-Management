@@ -14,7 +14,7 @@ export function CardHeader({ className, children }) {
 }
 
 export function CardTitle({ className, children }) {
-  return <h2 className={clsx("text-lg font-semibold", className)}>{children}</h2>;
+  return <h2 className={clsx("text-lg font-bold", className)}>{children}</h2>;
 }
 
 export function CardContent({ className, children }) {
