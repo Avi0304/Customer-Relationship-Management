@@ -1,19 +1,25 @@
-import React from 'react'
-import Sidebar from '../Sidebar/Sidebar'
-import TopNav from '../TopNav/TopNav'
-import { Outlet } from 'react-router-dom'
-const Layout = () => {
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import SideBar from "./components/SideBar"; // ✅ Corrected import path
+import TaskManagement from "./components/TaskManagement"; // ✅ Correct path
+import Dashboard from "./pages/DashBoard";
+
+function App() {
   return (
-    <div className='flex'>
-      <Sidebar/>
-      <div className="flex-1 flex flex-col">
-        <TopNav/>
-        <main className='p-6'>
-            <Outlet/>
-        </main>
+    <Router>
+      <div className="flex">
+        {/* Sidebar */}
+        <SideBar />
+
+        {/* Main Content */}
+        <div className="flex-1 p-4">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/task" element={<TaskManagement />} />
+          </Routes>
+        </div>
       </div>
-    </div>
-  )
+    </Router>
+  );
 }
 
-export default Layout
+export default App;
