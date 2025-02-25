@@ -195,7 +195,3 @@ const TaskManagement = () => {
 };
 
 export default TaskManagement;
-
-
-
-<Route path="/task" element={<TaskManagement />} />
