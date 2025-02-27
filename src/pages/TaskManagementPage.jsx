@@ -10,7 +10,7 @@ function TasksPage() {
         <Sidebar />
 
         <div className="flex-1">
-          <TopNav title={"Tasks"} />
+          <TopNav title={"Task Management"} />
 
           <main className="p-6 space-y-4">
             < TaskManagement/>
