@@ -1,14 +1,14 @@
 import React, {useState} from 'react'
 import {FiBell, FiUser} from "react-icons/fi"
 
-const TopNav = () => {
+const TopNav = ({title}) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [count, setCount] = useState(0) // Start with no notifications
+    const [count, setCount] = useState(0) 
     
    
 return (
     <div className='bg-white shadow-lg flex items-center justify-between p-6 h-16 transition-all duration-300 sticky top-0 z-50'>
-        <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800 tracking-tight">{title}</h1>
 
         <div className="flex items-center  space-x-6">
             {/* Code for Notifications */}
