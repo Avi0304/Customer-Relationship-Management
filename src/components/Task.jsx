@@ -69,7 +69,7 @@ const Task = () => {
 
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
-          <Link to='AddTask'>
+          <Link to='/task'>
             <Button
               variant="contained"
               color="primary"

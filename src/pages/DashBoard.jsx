@@ -25,7 +25,7 @@ const DashBoard = () => {
 
         {/* Main Content */}
         <div className="flex-1">
-          <TopNav />
+          <TopNav title={"DashBoard"}/>
 
           <main className="p-6 space-y-4">
             <div className="flex justify-end z-10">

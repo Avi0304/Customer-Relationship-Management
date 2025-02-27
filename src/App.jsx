@@ -3,6 +3,9 @@ import DashBoard from "./pages/DashBoard";
 import TaskManagementPage from './pages/TaskManagementPage'
 import CustomerDetails from "./components/CustomerDetails";
 import CustomerPage from "./pages/CustomerPage";
+import Login from './components/Login'
+import Signup from './components/SignUp'
+
 function App() {
   return (
     <>
@@ -12,6 +15,8 @@ function App() {
         <Route path="/task" element={<TaskManagementPage />} />
         <Route path="/customers" element={<CustomerPage />} />
         <Route path="/customer/view/:id" element={<CustomerDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
       </Routes>
     </Router>
     </>
