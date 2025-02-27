@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { FiBell, FiUser } from 'react-icons/fi';
 
 const TopNav = () => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [count, setCount] = useState(0) // Start with no notifications
-    
-   
-return (
-    <div className='bg-white shadow-lg flex items-center justify-between p-6 h-16 transition-all duration-300 sticky top-0 z-50'>
-        <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
+    const [isOpen, setIsOpen] = useState(false);
+    const [count, setCount] = useState(3); // Example notification count
 
+<<<<<<< Updated upstream
+=======
+    return (
+        <div className="bg-white shadow-lg flex items-center justify-between p-5 h-16 transition-all duration-300 sticky top-0 z-50">
+            <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Dashboard</h1>
+
+>>>>>>> Stashed changes
             <div className="flex items-center gap-6">
                 {/* Notifications */}
                 <div className="relative flex items-center">
