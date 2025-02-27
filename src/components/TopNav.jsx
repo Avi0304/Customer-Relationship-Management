@@ -22,29 +22,34 @@ const TopNav = () => {
                     </button>
                 </div>
 
-                {/* Profile Dropdown */}
-                <div className="relative flex items-center">
-                    <button
-                        className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-200"
-                        onClick={() => setIsOpen(!isOpen)}
-                    >
-                        <div className="p-2 bg-gray-100 rounded-full">
-                            <FiUser size={24} className="text-gray-700" />
-                        </div>
-                        <span className="text-gray-700 font-medium hidden md:block">Admin</span>
+                <div className="relative">
+                    <button className='flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200' 
+                                    onClick={()=>setIsOpen(!isOpen)}>
+                            <div className='p-2 bg-gray-100 rounded-full'>
+                                    <FiUser size={24} className='text-gray-700'/>
+                            </div>
+                            <span className='text-gray-700 font-medium hidden md:block'>Admin</span>
                     </button>
-
                     {isOpen && (
-                        <div className="absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl p-3 border border-gray-100 z-50">
-                            <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors duration-200">
-                                Profile
-                            </button>
-                            <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors duration-200">
-                                Settings
-                            </button>
-                        </div>
+                            <div className="absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl p-3 
+                                    transform transition-all duration-300 border border-gray-100 z-50">
+                                    <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 
+                                            hover:text-blue-600 rounded-md transition-colors duration-200"> 
+                                            Profile
+                                    </button>
+                                    
+                                    <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 
+                                            hover:text-blue-600 rounded-md transition-colors duration-200"> 
+                                            Settings
+                                    </button>
+                                    
+                                    {/* <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-blue-50 
+                                            hover:text-blue-600 rounded-md transition-colors duration-200"> 
+                                            Logout
+                                    </button> */}
+                            </div>
                     )}
-                </div>
+            </div>
             </div>
         </div>
     );
