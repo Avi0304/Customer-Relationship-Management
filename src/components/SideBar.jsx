@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiHome, FiUsers, FiLogOut } from "react-icons/fi";
-import { FaUserPlus } from "react-icons/fa";
+import { FaUserPlus,FaTasks } from "react-icons/fa";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
   return (
@@ -66,6 +66,19 @@ const Sidebar = () => {
           </div>
           <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
             Customers
+          </span>
+        </Link>
+
+        <Link
+          to="/task"
+          className={`flex items-center p-2 rounded-lg transition-all duration-200 
+            ${location.pathname === '/task' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-green-400"}`}
+        >
+          <div className="flex items-center justify-center w-10">
+            <FaTasks size={24} />
+          </div>
+          <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+            Task Management
           </span>
         </Link>
 
