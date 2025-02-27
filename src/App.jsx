@@ -14,7 +14,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<DashBoard />} />
-        <Route path="/task" element={<TaskManagement />} />
         <Route path="/task" element={<TaskManagementPage />} />
         <Route path="/customers" element={<CustomerPage />} />
         <Route path="/customer/view/:id" element={<CustomerDetails />} />
