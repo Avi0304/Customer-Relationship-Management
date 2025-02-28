@@ -198,43 +198,6 @@ const TaskManagement = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Task Input Section */}
-      {/* <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Add New Task</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input
-            type="text"
-            name="title"
-            value={newTask.title}
-            onChange={handleChange}
-            placeholder="Task Title"
-            className="p-3 border rounded-md"
-          />
-          <input
-            type="date"
-            name="dueDate"
-            value={newTask.dueDate}
-            onChange={handleChange}
-            className="p-3 border rounded-md"
-          />
-          <select
-            name="priority"
-            value={newTask.priority}
-            onChange={handleChange}
-            className="p-3 border rounded-md"
-          >
-            <option value="Low">Low Priority</option>
-            <option value="Medium">Medium Priority</option>
-            <option value="High">High Priority</option>
-          </select>
-        </div>
-        <button
-          onClick={addTask}
-          className="mt-4 w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700"
-        >
-          Add Task
-        </button>
-      </div> */}
 
       {/* Filters */}
       <div className="mt-4 flex justify-center gap-4">

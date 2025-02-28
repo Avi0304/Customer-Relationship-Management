@@ -11,7 +11,7 @@ const CustomerPage = () => {
   const navigate = useNavigate(),
     location = useLocation();
   const [customers, setCustomers] = useState([]);
-  const [search, setSearch] = useState(""); // Added search state
+  const [search, setSearch] = useState(""); 
 
   useEffect(() => {
     fetchCustomers();
