@@ -30,7 +30,7 @@ const CustomerSegmentation = () => {
               outerRadius={100} 
               innerRadius={50} 
               label={({ name, value }) =>
-                `${name}: ${(value / totalCustomers * 100).toFixed(1)}%`
+                `${name}: ${(value / totalCustomers * 100).toFixed(1)} %`
               }
             >
               {data.map((entry, index) => (

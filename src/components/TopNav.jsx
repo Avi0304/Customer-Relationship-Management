@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {FiBell, FiUser} from "react-icons/fi"
 
 const TopNav = ({title}) => {
+<<<<<<< Updated upstream
     const [isOpen, setIsOpen] = useState(false)
     const [count, setCount] = useState(0) 
     
@@ -25,6 +26,29 @@ return (
                         </div>
             {/* Code for Profile DropDown */}
             <div className="relative">
+=======
+    const [isOpen, setIsOpen] = useState(false);
+    const [count, setCount] = useState(3); // Example: Start with 3 notifications
+
+    return (
+        <div className="bg-white shadow-lg flex items-center justify-between p-6 h-16 transition-all duration-300 sticky top-0 z-50">
+            <h1 className="text-2xl font-bold text-gray-800 tracking-tight">{title}</h1>
+
+            <div className="flex items-center gap-6">
+                {/* Notifications */}
+                <div className="relative flex items-center">
+                    <button className="relative hover:scale-110 transition-all duration-200">
+                        <FiBell size={26} className="text-gray-700 hover:text-blue-600" />
+                        {count > 0 && (
+                            <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold transition-all duration-300 transform animate-pulse">
+                                {count}
+                            </span>
+                        )}
+                    </button>
+                </div>
+
+                <div className="relative">
+>>>>>>> Stashed changes
                     <button className='flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200' 
                                     onClick={()=>setIsOpen(!isOpen)}>
                             <div className='p-2 bg-gray-100 rounded-full'>

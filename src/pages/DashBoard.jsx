@@ -33,7 +33,7 @@ const DashBoard = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  className="flex items-center gap-2 bg-gray-100 text-black hover:bg-gray-200 px-4 py-2 rounded-md"
+                  className="flex items-center gap-2  px-4 py-2 rounded-md"
                 >
                   <FaUserPlus size={20} /> New Lead
                 </Button>
@@ -67,7 +67,6 @@ const DashBoard = () => {
               />
             </div>
 
-            {/* Recent Activity & Tasks Section */}
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-7">
               <div className="lg:col-span-4">
                 <RecentActivityTable />
