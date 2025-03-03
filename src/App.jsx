@@ -6,6 +6,7 @@ import CustomerDetails from "./components/CustomerDetails";
 import CustomerPage from "./pages/CustomerPage";
 import Login from './components/Login'
 import Signup from './components/SignUp'
+import LeadPage from "./pages/LeadPage";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<DashBoard />} />
+        <Route path="/leads" element={<LeadPage />} />
         <Route path="/task" element={<TaskManagementPage />} />
         <Route path="/customers" element={<CustomerPage />} />
         <Route path="/customer/view/:id" element={<CustomerDetails />} />
