@@ -67,7 +67,7 @@ const CustomerPage = () => {
         <div className="flex-1">
           <TopNav title={"Customers"} />
 
-          <main className="p-6 space-y-4">
+          <main className="p-5 space-y-4">
             <div className="min-h-screen">
               <div className="container mx-auto max-w-7xl">
                 {/* Search and Add Button Container */}
