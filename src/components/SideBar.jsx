@@ -13,7 +13,7 @@ const Sidebar = () => {
                   ${isOpen ? "w-64" : "w-16"} `}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700 relative sticky top-0">
+      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700 sticky top-0">
         <h1
           className={`text-2xl font-bold bg-gradient-to-r from-teal-400 to-cyan-500 bg-clip-text text-transparent
                       transition-all duration-300 ${isOpen ? "block" : "hidden"}`}
