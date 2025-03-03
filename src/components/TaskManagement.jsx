@@ -125,7 +125,7 @@ const TaskManagement = () => {
           size="medium"
           onClick={() => setOpen(true)}
         >
-          <BiPlus size={24} /> Add Task
+          <BiPlus size={20} /> Add Task
         </Button>
       </div>
 
