@@ -32,7 +32,7 @@ const DashBoard = () => {
                 <Button
                   variant="contained"
                   color="primary"
-                  className="flex items-center gap-2  px-4 py-2 rounded-md"
+                  className="flex items-center gap-2 px-4 py-2 rounded-md"
                 >
                   <FaUserPlus size={20} /> New Lead
                 </Button>

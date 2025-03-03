@@ -98,6 +98,7 @@ const CustomerDetails = () => {
                 <Button
                   variant="contained"
                   color="success"
+                  size="medium"
                   onClick={() => navigate("/customers")}
                   sx={{
                     mb: 4,

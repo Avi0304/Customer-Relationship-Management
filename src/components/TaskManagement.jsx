@@ -14,7 +14,6 @@ import { Card } from "./ui/card";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { IoCheckmarkCircleSharp, IoArrowUndoCircle } from "react-icons/io5";
-import { GrOrganization } from "react-icons/gr";
 
 const TaskManagement = () => {
   const [tasks, setTasks] = useState([
@@ -73,7 +72,7 @@ const TaskManagement = () => {
 
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setTasks(savedTasks);
+    if (savedTasks.length > 0) setTasks(savedTasks);
   }, []);
 
   useEffect(() => {
@@ -81,19 +80,18 @@ const TaskManagement = () => {
   }, [tasks]);
 
   const handleChange = (e) => {
-    setNewTask({ ...newTask, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setNewTask((prev) => ({ ...prev, [name]: value }));
   };
 
   const addTask = () => {
     if (newTask.title.trim() === "") return;
     setTasks([...tasks, { ...newTask, id: Date.now(), completed: false }]);
     setNewTask({ title: "", dueDate: "", company: "", priority: "Low" });
-    setOpen(false); // Close modal after adding task
+    setOpen(false);
   };
 
-  const startEditing = (task) => {
-    setEditingTask({ ...task });
-  };
+  const startEditing = (task) => setEditingTask({ ...task });
 
   const saveEdit = () => {
     setTasks(
@@ -110,43 +108,31 @@ const TaskManagement = () => {
     );
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
-  };
+  const deleteTask = (id) => setTasks(tasks.filter((task) => task.id !== id));
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "All") return true;
-    if (filter === "Completed") return task.completed;
-    if (filter === "Pending") return !task.completed;
-    return false;
+    return filter === "Completed" ? task.completed : !task.completed;
   });
 
   return (
-    <div className="flex flex-col justify-center item-center ">
+    <div className="flex flex-col justify-center items-center">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-bold text-gray-600 mb-1">
-            Manage and Track Tasks
-          </h1>
-        </div>
-
+      <div className="flex justify-end w-full">
         <Button
           variant="contained"
           color="primary"
-          className="flex items-center gap-2 bg-gray-100 text-black hover:bg-gray-200 px-4 py-2 rounded-md"
+          size="medium"
           onClick={() => setOpen(true)}
         >
-          <BiPlus size={20} /> Add Task
+          <BiPlus size={24} /> Add Task
         </Button>
       </div>
 
+      {/* Add Task Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>
-          <h1 className="font-bold">Add New Tasks</h1>
-          <p className="text-sm font-semibold text-gray-700">
-            Create a new task with details.
-          </p>
+          <h1 className="font-bold">Add New Task</h1>
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -155,7 +141,7 @@ const TaskManagement = () => {
             value={newTask.title}
             onChange={handleChange}
             fullWidth
-            margin="normal"
+            margin="dense"
           />
           <TextField
             label="Due Date"
@@ -164,7 +150,7 @@ const TaskManagement = () => {
             value={newTask.dueDate}
             onChange={handleChange}
             fullWidth
-            margin="normal"
+            margin="dense"
             InputLabelProps={{ shrink: true }}
           />
           <TextField
@@ -173,15 +159,13 @@ const TaskManagement = () => {
             value={newTask.company}
             onChange={handleChange}
             fullWidth
-            margin="normal"
+            margin="dense"
           />
           <Select
-            label="Priority"
             name="priority"
             value={newTask.priority}
             onChange={handleChange}
             fullWidth
-            margin="normal"
           >
             <MenuItem value="Low">Low</MenuItem>
             <MenuItem value="Medium">Medium</MenuItem>
@@ -189,61 +173,43 @@ const TaskManagement = () => {
           </Select>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="secondary">
+          <Button onClick={() => setOpen(false)} color="secondary" size="large">
             Cancel
           </Button>
-          <Button onClick={addTask} color="primary">
+          <Button onClick={addTask} color="primary" size="large">
             Add Task
           </Button>
         </DialogActions>
       </Dialog>
 
-
       {/* Filters */}
       <div className="mt-4 flex justify-center gap-4">
-        <button
-          onClick={() => setFilter("All")}
-          className={`px-4 py-2 rounded text-white transition ${
-            filter === "All"
-              ? "bg-blue-500 hover:bg-blue-700"
-              : "bg-gray-400 hover:bg-gray-500"
-          }`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilter("Pending")}
-          className={`px-4 py-2 rounded text-white transition ${
-            filter === "Pending"
-              ? "bg-yellow-400 hover:bg-yellow-600"
-              : "bg-gray-400 hover:bg-gray-500"
-          }`}
-        >
-          Pending
-        </button>
-        <button
-          onClick={() => setFilter("Completed")}
-          className={`px-4 py-2 rounded text-white transition ${
-            filter === "Completed"
-              ? "bg-green-400 hover:bg-green-600"
-              : "bg-gray-400 hover:bg-gray-500"
-          }`}
-        >
-          Completed
-        </button>
+        {["All", "Pending", "Completed"].map((status) => (
+          <button
+            key={status}
+            onClick={() => setFilter(status)}
+            className={`px-5 py-2 rounded text-white text-lg transition ${
+              filter === status ? "bg-blue-500" : "bg-gray-400"
+            }`}
+          >
+            {status}
+          </button>
+        ))}
       </div>
 
       {/* Task List */}
-      <div className="w-full  mt-6">
+      <div className="w-full mt-6">
         <h2 className="text-xl font-semibold mb-3">Task List</h2>
         {filteredTasks.length === 0 ? (
-          <p className="text-gray-600 text-center">No tasks available.</p>
+          <p className="text-gray-600 text-center text-lg">
+            No tasks available.
+          </p>
         ) : (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <Card
                 key={task.id}
-                className={`p-4 shadow-md bg-white border-l-8 flex justify-between items-center ${
+                className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${
                   task.priority === "High"
                     ? "border-red-400"
                     : task.priority === "Medium"
@@ -252,10 +218,9 @@ const TaskManagement = () => {
                 }`}
               >
                 {editingTask && editingTask.id === task.id ? (
-                  // Edit Form
                   <div className="w-full">
-                    <input
-                      type="text"
+                    <TextField
+                      label="Title"
                       name="title"
                       value={editingTask.title}
                       onChange={(e) =>
@@ -264,9 +229,11 @@ const TaskManagement = () => {
                           title: e.target.value,
                         })
                       }
-                      className="w-full p-2 border rounded-md mb-2"
+                      fullWidth
+                      margin="dense"
                     />
-                    <input
+                    <TextField
+                      label="Due Date"
                       type="date"
                       name="dueDate"
                       value={editingTask.dueDate}
@@ -276,10 +243,12 @@ const TaskManagement = () => {
                           dueDate: e.target.value,
                         })
                       }
-                      className="w-full p-2 border rounded-md mb-2"
+                      fullWidth
+                      margin="dense"
+                      InputLabelProps={{ shrink: true }}
                     />
-                     <input
-                      type="text"
+                    <TextField
+                      label="Company"
                       name="company"
                       value={editingTask.company}
                       onChange={(e) =>
@@ -288,9 +257,10 @@ const TaskManagement = () => {
                           company: e.target.value,
                         })
                       }
-                      className="w-full p-2 border rounded-md mb-2"
+                      fullWidth
+                      margin="dense"
                     />
-                    <select
+                    <Select
                       name="priority"
                       value={editingTask.priority}
                       onChange={(e) =>
@@ -299,67 +269,52 @@ const TaskManagement = () => {
                           priority: e.target.value,
                         })
                       }
-                      className="w-full p-2 border rounded-md"
+                      fullWidth
                     >
-                      <option value="Low">Low</option>
-                      <option value="Medium">Medium</option>
-                      <option value="High">High</option>
-                    </select>
-                    <button
+                      <MenuItem value="Low">Low</MenuItem>
+                      <MenuItem value="Medium">Medium</MenuItem>
+                      <MenuItem value="High">High</MenuItem>
+                    </Select>
+                    <Button
                       onClick={saveEdit}
-                      className="mt-2 w-full bg-green-500 text-white p-2 rounded-md"
+                      variant="contained"
+                      color="success"
+                      size="large"
+                      fullWidth
+                      className="mt-2"
                     >
                       Save
-                    </button>
+                    </Button>
                   </div>
                 ) : (
-                  // Task View
                   <>
-                    <div className="flex justify-between items-center w-full">
-                      <div>
-                        <h4 className="font-semibold text-lg">{task.title}</h4>
-                        <p className="text-sm text-gray-600 flex items-center">
-                          <BiCalendar className="mr-1" size={18} />:{" "}
-                          {task.dueDate}
-                        </p>
-                        <p className="text-sm text-gray-600 flex items-center">
-                          <GrOrganization className="mr-1" size={16} />:{" "}
-                          {task.company}
-                        </p>
-                        <span className="text-sm font-semibold text-gray-700">
-                          {task.priority} Priority
-                        </span>
-                      </div>
-                      <div className="flex space-x-4 min-[w]-120 justify-end">
-                        <button
-                          onClick={() => startEditing(task)}
-                          className="px-3 py-2 rounded-md"
-                        >
-                          <FaEdit className="text-yellow-500" size={25} />
-                        </button>
-                        <button
-                          onClick={() => toggleComplete(task.id)}
-                          className="px-3 py-2 rounded-md"
-                        >
-                          {task.completed ? (
-                            <IoArrowUndoCircle
-                              size={25}
-                              className="text-blue-500"
-                            />
-                          ) : (
-                            <IoCheckmarkCircleSharp
-                              size={25}
-                              className="text-green-500"
-                            />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => deleteTask(task.id)}
-                          className="px-3 py-2 rounded-md"
-                        >
-                          <MdDelete size={25} className="text-red-500" />
-                        </button>
-                      </div>
+                    <div>
+                      <h4 className="font-semibold">{task.title}</h4>
+                      <p className="text-sm text-gray-600 flex items-center">
+                        <BiCalendar className="mr-1" size={18} /> {task.dueDate}
+                      </p>
+                    </div>
+                    <div className="flex space-x-3">
+                      <Button onClick={() => startEditing(task)} size="large">
+                        <FaEdit size={22} />
+                      </Button>
+                      <Button
+                        onClick={() => deleteTask(task.id)}
+                        color="error"
+                        size="large"
+                      >
+                        <MdDelete size={22} />
+                      </Button>
+                      <Button
+                        onClick={() => toggleComplete(task.id)}
+                        size="large"
+                      >
+                        {task.completed ? (
+                          <IoArrowUndoCircle size={22} />
+                        ) : (
+                          <IoCheckmarkCircleSharp size={22} />
+                        )}
+                      </Button>
                     </div>
                   </>
                 )}
