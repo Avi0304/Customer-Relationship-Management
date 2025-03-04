@@ -10,7 +10,7 @@ const LeadPage = () => {
         <Sidebar />
 
         <div className="flex-1">
-          <TopNav title={"Task Management"} />
+          <TopNav title={"Lead Management"} />
 
           <main className="p-6 space-y-4">
             <LeadManagement />
