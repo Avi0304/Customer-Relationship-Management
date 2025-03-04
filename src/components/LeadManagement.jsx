@@ -27,6 +27,7 @@ import {
 import { Search, AddCircle, Edit, Delete } from "@mui/icons-material"; // Added icons
 import { BiPlus } from "react-icons/bi";
 import * as XLSX from "xlsx"; // For exporting to Excel
+import Swal from "sweetalert2";
 
 const LeadManagement = () => {
   const [leads, setLeads] = useState([
@@ -93,17 +94,20 @@ const LeadManagement = () => {
   };
 
   const handleAddNewLead = () => {
+    if (!newLead.name || !newLead.contactInfo) {
+      Swal.fire("Error", "Please fill in all fields", "error");
+      return;
+    }
+
     if (newLead.id) {
-      // Update existing lead
       setLeads((prevLeads) =>
-        prevLeads.map((lead) =>
-          lead.id === newLead.id ? { ...lead, ...newLead } : lead
-        )
+        prevLeads.map((lead) => (lead.id === newLead.id ? { ...lead, ...newLead } : lead))
       );
+      Swal.fire("Updated!", "Lead details have been updated.", "success");
     } else {
-      // Add new lead
       const newLeadData = { ...newLead, id: leads.length + 1 };
       setLeads((prevLeads) => [...prevLeads, newLeadData]);
+      Swal.fire("Added!", "New lead has been added successfully.", "success");
     }
 
     setOpenAddDialog(false);
@@ -116,15 +120,43 @@ const LeadManagement = () => {
   };
 
   const handleDeleteLead = (id) => {
-    setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
+        Swal.fire("Deleted!", "The lead has been deleted.", "success");
+      }
+    });
   };
 
-  const handleExportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(leads);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Leads");
-    XLSX.writeFile(wb, "leads.xlsx");
-  };
+const handleExportToExcel = () => {
+  Swal.fire({
+    title: "Export Leads?",
+    text: "Do you want to export the leads to an Excel file?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Export!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const ws = XLSX.utils.json_to_sheet(leads);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Leads");
+      XLSX.writeFile(wb, "leads.xlsx");
+
+      Swal.fire("Exported!", "Your leads have been exported.", "success");
+    }
+  });
+};
+
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true);
@@ -138,61 +170,65 @@ const LeadManagement = () => {
     <div className="mt-0">
       {/* Search and Filter Section */}
       <div className="mb-5 flex flex-wrap items-center gap-4">
-  {/* Search Input */}
-  <div className="w-full sm:w-1/2 md:w-1/3">
-    <TextField
-      label="Search Leads"
-      variant="outlined"
-      value={filter}
-      onChange={handleFilterChange}
-      fullWidth
-      size="small"
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search />
-            </InputAdornment>
-          ),
-        },
-      }}
-    />
-  </div>
+        {/* Search Input */}
+        <div className="w-full sm:w-1/2 md:w-1/3">
+          <TextField
+            label="Search Leads"
+            variant="outlined"
+            value={filter}
+            onChange={handleFilterChange}
+            fullWidth
+            size="small"
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </div>
 
-  {/* Status Dropdown */}
-  <div className="w-full sm:w-1/3 md:w-1/4">
-    <FormControl fullWidth variant="outlined" size="small">
-      <InputLabel>Status</InputLabel>
-      <Select value={statusFilter} onChange={handleStatusFilterChange} label="Status">
-        <MenuItem value="All Status">All Status</MenuItem>
-        <MenuItem value="New">New</MenuItem>
-        <MenuItem value="Contacted">Contacted</MenuItem>
-        <MenuItem value="Converted">Converted</MenuItem>
-      </Select>
-    </FormControl>
-  </div>
+        {/* Status Dropdown */}
+        <div className="w-full sm:w-1/3 md:w-1/4">
+          <FormControl fullWidth variant="outlined" size="small">
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              label="Status"
+            >
+              <MenuItem value="All Status">All Status</MenuItem>
+              <MenuItem value="New">New</MenuItem>
+              <MenuItem value="Contacted">Contacted</MenuItem>
+              <MenuItem value="Converted">Converted</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
 
-  {/* Buttons */}
-  <div className="w-full sm:w-auto flex items-center gap-3 justify-end flex-1 mt-0 pt-0">
-    <Button
-      variant="contained"
-      color="primary"
-      startIcon={<BiPlus size={20} />}
-      onClick={handleAddLeadClick}
-    >
-      Add Lead
-    </Button>
+        {/* Buttons */}
+        <div className="w-full sm:w-auto flex items-center gap-3 justify-end flex-1 mt-0 pt-0">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<BiPlus size={20} />}
+            onClick={handleAddLeadClick}
+          >
+            Add Lead
+          </Button>
 
-    <Button
-      variant="contained"
-      color="secondary"
-      startIcon={<Search />}
-      onClick={handleExportToExcel}
-    >
-      Export to Excel
-    </Button>
-  </div>
-</div>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<Search />}
+            onClick={handleExportToExcel}
+          >
+            Export to Excel
+          </Button>
+        </div>
+      </div>
 
       {/* Lead Table */}
       <TableContainer component={Paper}>
@@ -242,7 +278,7 @@ const LeadManagement = () => {
       </TableContainer>
 
       {/* Add/Edit Lead Dialog */}
-      <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
+      <Dialog open={openAddDialog} onClose={handleCloseAddDialog} >
         <DialogTitle>{newLead.id ? "Edit Lead" : "Add New Lead"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -253,6 +289,7 @@ const LeadManagement = () => {
             onChange={handleNewLeadChange}
             fullWidth
             style={{ marginBottom: "16px" }}
+            margin="dense"
           />
           <TextField
             label="Contact Info"

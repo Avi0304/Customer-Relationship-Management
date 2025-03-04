@@ -173,7 +173,7 @@ const TaskManagement = () => {
           </Select>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="secondary" size="large">
+          <Button onClick={() => setOpen(false)} sx={{color: 'gray'}} size="large">
             Cancel
           </Button>
           <Button onClick={addTask} color="primary" size="large">
