@@ -18,6 +18,7 @@
     "axios": "^1.7.9",
     "chart.js": "^4.4.8",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "formik": "^2.4.6",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
