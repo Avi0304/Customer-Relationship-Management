@@ -28,8 +28,10 @@
     "react-router-dom": "^7.2.0",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1",
+    "sweetalert2": "^11.17.2",
     "tailwindcss": "^4.0.8",
     "toastify": "^2.0.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.6.1"
   },
   "devDependencies": {

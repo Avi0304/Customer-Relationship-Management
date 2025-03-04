@@ -27,6 +27,7 @@ import {
 import { Search, AddCircle, Edit, Delete } from "@mui/icons-material"; // Added icons
 import { BiPlus } from "react-icons/bi";
 import * as XLSX from "xlsx"; // For exporting to Excel
+import Swal from "sweetalert2";
 
 const LeadManagement = () => {
   const [leads, setLeads] = useState([
@@ -71,7 +72,7 @@ const LeadManagement = () => {
     (lead) =>
       (lead.name.toLowerCase().includes(filter.toLowerCase()) ||
         lead.contactInfo.toLowerCase().includes(filter.toLowerCase())) &&
-        (statusFilter === "All Status" || lead.status === statusFilter) 
+      (statusFilter === "All Status" || lead.status === statusFilter)
   );
 
   const handleAddLeadClick = () => {
@@ -86,48 +87,98 @@ const LeadManagement = () => {
     const { name, value } = event.target;
     setNewLead((prevState) => ({ ...prevState, [name]: value }));
   };
-  
+
   // For Select (dropdown), extract name manually
   const handleStatusChange = (event) => {
     setNewLead((prevState) => ({ ...prevState, status: event.target.value }));
   };
-  
 
   const handleAddNewLead = () => {
+    if (!newLead.name || !newLead.contactInfo) {
+      Swal.fire("Error", "Please fill in all fields", "error");
+      return;
+    }
+
     if (newLead.id) {
-      // Update existing lead
       setLeads((prevLeads) =>
-        prevLeads.map((lead) =>
-          lead.id === newLead.id ? { ...lead, ...newLead } : lead
-        )
+        prevLeads.map((lead) => (lead.id === newLead.id ? { ...lead, ...newLead } : lead))
       );
+      Swal.fire("Updated!", "Lead details have been updated.", "success");
     } else {
-      // Add new lead
       const newLeadData = { ...newLead, id: leads.length + 1 };
       setLeads((prevLeads) => [...prevLeads, newLeadData]);
+      Swal.fire({
+        title: "Added!",
+        text: "New lead has been added successfully.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false, 
+      });
+      
     }
-  
+
     setOpenAddDialog(false);
     setNewLead({ name: "", contactInfo: "", status: "New" });
   };
-  
 
   const handleEditLead = (lead) => {
-    setNewLead(lead); 
+    setNewLead(lead);
     setOpenAddDialog(true);
   };
-  
 
   const handleDeleteLead = (id) => {
-    setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "The lead has been deleted.",
+          icon: "success",
+          timer: 2000, 
+          timerProgressBar: true, 
+          showConfirmButton: false, 
+        });        
+      }
+    });
   };
 
-  const handleExportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(leads);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Leads");
-    XLSX.writeFile(wb, "leads.xlsx");
-  };
+const handleExportToExcel = () => {
+  Swal.fire({
+    title: "Export Leads?",
+    text: "Do you want to export the leads to an Excel file?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, Export!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const ws = XLSX.utils.json_to_sheet(leads);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Leads");
+      XLSX.writeFile(wb, "leads.xlsx");
+
+      Swal.fire({
+        title: "Exported!",
+        text: "Your leads have been exported.",
+        icon: "success",
+        timer: 3000, 
+        timerProgressBar: true, 
+        showConfirmButton: false, 
+      });
+      
+    }
+  });
+};
+
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true);
@@ -138,32 +189,33 @@ const LeadManagement = () => {
   };
 
   return (
-    <div className="mt-2">
+    <div className="mt-0">
       {/* Search and Filter Section */}
-      <Grid
-        container
-        spacing={3}
-        justifyContent="flex-start"
-        style={{ marginBottom: "20px" }}
-      >
-        <Grid item xs={12} sm={6} md={3}>
+      <div className="mb-5 flex flex-wrap items-center gap-4">
+        {/* Search Input */}
+        <div className="w-full sm:w-1/2 md:w-1/3">
           <TextField
             label="Search Leads"
             variant="outlined"
             value={filter}
             onChange={handleFilterChange}
             fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
+            size="small"
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
             }}
           />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth variant="outlined">
+        </div>
+
+        {/* Status Dropdown */}
+        <div className="w-full sm:w-1/3 md:w-1/4">
+          <FormControl fullWidth variant="outlined" size="small">
             <InputLabel>Status</InputLabel>
             <Select
               value={statusFilter}
@@ -176,34 +228,29 @@ const LeadManagement = () => {
               <MenuItem value="Converted">Converted</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
-      </Grid>
+        </div>
 
-      {/* Add Lead and Export to Excel Buttons */}
-      <Box textAlign="right" style={{ marginBottom: "20px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          className="flex items-center gap-2  px-4 py-2 rounded-md"
-          onClick={handleAddLeadClick}
-        >
-          <BiPlus size={20} /> Add Lead
-        </Button>
+        {/* Buttons */}
+        <div className="w-full sm:w-auto flex items-center gap-3 justify-end flex-1 mt-0 pt-0">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<BiPlus size={20} />}
+            onClick={handleAddLeadClick}
+          >
+            Add Lead
+          </Button>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<Search />}
-          onClick={handleExportToExcel}
-          style={{
-            borderRadius: "5px",
-            fontWeight: "bold",
-            marginLeft: "10px",
-          }}
-        >
-          Export to Excel
-        </Button>
-      </Box>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<Search />}
+            onClick={handleExportToExcel}
+          >
+            Export to Excel
+          </Button>
+        </div>
+      </div>
 
       {/* Lead Table */}
       <TableContainer component={Paper}>
@@ -253,7 +300,7 @@ const LeadManagement = () => {
       </TableContainer>
 
       {/* Add/Edit Lead Dialog */}
-      <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
+      <Dialog open={openAddDialog} onClose={handleCloseAddDialog} >
         <DialogTitle>{newLead.id ? "Edit Lead" : "Add New Lead"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -264,6 +311,7 @@ const LeadManagement = () => {
             onChange={handleNewLeadChange}
             fullWidth
             style={{ marginBottom: "16px" }}
+            margin="dense"
           />
           <TextField
             label="Contact Info"
@@ -295,7 +343,7 @@ const LeadManagement = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAddDialog} sx={{color: 'gray'}}>
+          <Button onClick={handleCloseAddDialog} sx={{ color: "gray" }}>
             Cancel
           </Button>
           <Button

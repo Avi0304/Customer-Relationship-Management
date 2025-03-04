@@ -6,12 +6,14 @@ import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
 import { BiPlus } from "react-icons/bi";
 import { Button } from "@mui/material";
+import { TextField, InputAdornment } from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 const CustomerPage = () => {
   const navigate = useNavigate(),
     location = useLocation();
   const [customers, setCustomers] = useState([]);
-  const [search, setSearch] = useState(""); 
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchCustomers();
@@ -67,21 +69,32 @@ const CustomerPage = () => {
         <div className="flex-1">
           <TopNav title={"Customers"} />
 
-          <main className="p-6 space-y-4">
+          <main className="p-5 space-y-4">
             <div className="min-h-screen">
               <div className="container mx-auto max-w-7xl">
                 {/* Search and Add Button Container */}
                 <div className="flex justify-between items-center mb-8">
                   {/* Search Input */}
-                  <div className="mt-1 flex items-center gap-2">
-                    <input
-                      type="text"
-                      placeholder="Search customers..."
+                  <div className="w-full sm:w-1/2 md:w-1/3 mt-1">
+                    <TextField
+                      label="Search customers"
+                      variant="outlined"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="px-4 py-2 border rounded w-64"
+                      fullWidth
+                      size="small"
+                      slotProps={{
+                        input: {
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Search />
+                            </InputAdornment>
+                          ),
+                        },
+                      }}
                     />
                   </div>
+
                   {/* Add Button */}
                   <Button
                     variant="contained"
