@@ -107,7 +107,14 @@ const LeadManagement = () => {
     } else {
       const newLeadData = { ...newLead, id: leads.length + 1 };
       setLeads((prevLeads) => [...prevLeads, newLeadData]);
-      Swal.fire("Added!", "New lead has been added successfully.", "success");
+      Swal.fire({
+        title: "Added!",
+        text: "New lead has been added successfully.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false, 
+      });
+      
     }
 
     setOpenAddDialog(false);
@@ -131,7 +138,14 @@ const LeadManagement = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
-        Swal.fire("Deleted!", "The lead has been deleted.", "success");
+        Swal.fire({
+          title: "Deleted!",
+          text: "The lead has been deleted.",
+          icon: "success",
+          timer: 2000, 
+          timerProgressBar: true, 
+          showConfirmButton: false, 
+        });        
       }
     });
   };
@@ -152,7 +166,15 @@ const handleExportToExcel = () => {
       XLSX.utils.book_append_sheet(wb, ws, "Leads");
       XLSX.writeFile(wb, "leads.xlsx");
 
-      Swal.fire("Exported!", "Your leads have been exported.", "success");
+      Swal.fire({
+        title: "Exported!",
+        text: "Your leads have been exported.",
+        icon: "success",
+        timer: 3000, 
+        timerProgressBar: true, 
+        showConfirmButton: false, 
+      });
+      
     }
   });
 };

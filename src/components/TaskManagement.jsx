@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { BiPlus, BiCalendar } from "react-icons/bi";
+import Swal from "sweetalert2";
 import { Card } from "./ui/card";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
@@ -89,6 +90,14 @@ const TaskManagement = () => {
     setTasks([...tasks, { ...newTask, id: Date.now(), completed: false }]);
     setNewTask({ title: "", dueDate: "", company: "", priority: "Low" });
     setOpen(false);
+
+    Swal.fire({
+      icon: "success",
+      title: "Task Added",
+      text: "Your new task has been successfully added!",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
 
   const startEditing = (task) => setEditingTask({ ...task });
@@ -98,6 +107,14 @@ const TaskManagement = () => {
       tasks.map((task) => (task.id === editingTask.id ? editingTask : task))
     );
     setEditingTask(null);
+
+    Swal.fire({
+      icon: "success",
+      title: "Task Updated",
+      text: "The task has been updated successfully!",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
 
   const toggleComplete = (id) => {
@@ -108,7 +125,28 @@ const TaskManagement = () => {
     );
   };
 
-  const deleteTask = (id) => setTasks(tasks.filter((task) => task.id !== id));
+  const deleteTask = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setTasks(tasks.filter((task) => task.id !== id));
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Your task has been deleted.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "All") return true;
@@ -281,7 +319,7 @@ const TaskManagement = () => {
                       color="success"
                       size="large"
                       fullWidth
-                      className="mt-2"
+                      sx={{mt: 2}}
                     >
                       Save
                     </Button>
