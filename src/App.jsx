@@ -7,6 +7,7 @@ import Login from './components/Login'
 import Signup from './components/SignUp'
 import LeadPage from "./pages/LeadPage";
 import AppointmentPage from "./pages/AppointmentPage";
+import SalesPage from "./pages/SalesPage";
 
 
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/customers" element={<CustomerPage />} />
         <Route path="/customer/view/:id" element={<CustomerDetails />} />
         <Route path="/appointment" element={<AppointmentPage />} />
+        <Route path="/sales" element={<SalesPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>
