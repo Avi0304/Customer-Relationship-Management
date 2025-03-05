@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import DashBoard from "./pages/DashBoard";
-import TaskManagement from "./components/TaskManagement";
 import TaskManagementPage from './pages/TaskManagementPage'
 import CustomerDetails from "./components/CustomerDetails";
 import CustomerPage from "./pages/CustomerPage";
 import Login from './components/Login'
 import Signup from './components/SignUp'
 import LeadPage from "./pages/LeadPage";
-import AppointmentPage from "./pages/AppointmentPAge";
+import AppointmentPage from "./pages/AppointmentPage";
+
 
 
 function App() {
