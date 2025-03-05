@@ -9,8 +9,6 @@ import LeadPage from "./pages/LeadPage";
 import AppointmentPage from "./pages/AppointmentPage";
 import SalesPage from "./pages/SalesPage";
 
-
-
 function App() {
   return (
     <>
