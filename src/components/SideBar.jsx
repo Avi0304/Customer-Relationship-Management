@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiHome, FiUsers, FiLogOut } from "react-icons/fi";
-import { FaUserPlus,FaTasks, FaCalendar } from "react-icons/fa";
+import { FaUserPlus, FaTasks, FaCalendar, FaStore , FaChartLine, FaShoppingCart} from "react-icons/fa";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -16,7 +16,9 @@ const Sidebar = () => {
       <div className="flex items-center justify-center h-16 px-4 border-b border-gray-700 sticky top-0">
         <h1
           className={`text-2xl font-bold bg-gradient-to-r from-teal-400 to-cyan-500 bg-clip-text text-transparent
-                      transition-all duration-300 ${isOpen ? "block" : "hidden"}`}
+                      transition-all duration-300 ${
+                        isOpen ? "block" : "hidden"
+                      }`}
         >
           CRM
         </h1>
@@ -33,7 +35,11 @@ const Sidebar = () => {
         <Link
           to="/"
           className={`flex items-center p-2 rounded-lg transition-all duration-200 
-            ${location.pathname === '/' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-blue-400"}`}
+            ${
+              location.pathname === "/"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-blue-400"
+            }`}
         >
           <div className="flex items-center justify-center w-10">
             <FiHome size={24} />
@@ -46,7 +52,11 @@ const Sidebar = () => {
         <Link
           to="/leads"
           className={`flex items-center p-2 rounded-lg transition-all duration-200 
-            ${location.pathname === '/leads' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-purple-400"}`}
+            ${
+              location.pathname === "/leads"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-purple-400"
+            }`}
         >
           <div className="flex items-center justify-center w-10">
             <FaUserPlus size={24} />
@@ -59,7 +69,11 @@ const Sidebar = () => {
         <Link
           to="/customers"
           className={`flex items-center p-2 rounded-lg transition-all duration-200 
-            ${location.pathname === '/customers' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-green-400"}`}
+            ${
+              location.pathname === "/customers"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-green-400"
+            }`}
         >
           <div className="flex items-center justify-center w-10">
             <FiUsers size={24} />
@@ -72,7 +86,11 @@ const Sidebar = () => {
         <Link
           to="/task"
           className={`flex items-center p-2 rounded-lg transition-all duration-200 
-            ${location.pathname === '/task' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-green-400"}`}
+            ${
+              location.pathname === "/task"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-green-400"
+            }`}
         >
           <div className="flex items-center justify-center w-10">
             <FaTasks size={24} />
@@ -83,9 +101,30 @@ const Sidebar = () => {
         </Link>
 
         <Link
+                  to="/sales"
+                  className={`flex items-center p-2 rounded-lg transition-all duration-200 
+            ${
+              location.pathname === "/sales"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-green-400"
+            }`}
+        >
+          <div className="flex items-center justify-center w-10">
+            <FaChartLine size={24} />
+          </div>
+          <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+            Sales
+          </span>
+        </Link>
+
+        <Link
           to="/appointment"
           className={`flex items-center p-2 rounded-lg transition-all duration-200 
-            ${location.pathname === '/appointment' ? "bg-blue-700 text-white" : "hover:bg-gray-700/50 hover:text-green-400"}`}
+            ${
+              location.pathname === "/appointment"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-green-400"
+            }`}
         >
           <div className="flex items-center justify-center w-10">
             <FaCalendar size={24} />
@@ -96,13 +135,15 @@ const Sidebar = () => {
         </Link>
 
         {/* Logout Button */}
-        <button
-          className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200"
-        >
+        <button className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200">
           <div className="flex items-center justify-center w-10">
             <FiLogOut size={24} className="text-red-400" />
           </div>
-          <span className={`${isOpen ? "block" : "hidden"} font-medium text-red-400`}>
+          <span
+            className={`${
+              isOpen ? "block" : "hidden"
+            } font-medium text-red-400`}
+          >
             Logout
           </span>
         </button>
