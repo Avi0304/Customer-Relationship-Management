@@ -13,10 +13,11 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   Box,
 } from "@mui/material";
-import { Edit, Delete, Visibility } from "@mui/icons-material";
+import { BiPlus } from "react-icons/bi";
+import { FaEdit, FaEye } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const CustomerDetails = () => {
   const [customers, setCustomers] = useState([
@@ -82,8 +83,8 @@ const CustomerDetails = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
-          + Add Customer
+        <Button variant="contained" color="primary" onClick={() => handleOpen()} startIcon={<BiPlus size={20} />}>
+          Add Customer
         </Button>
       </Box>
 
@@ -91,28 +92,28 @@ const CustomerDetails = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Customer</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Amount</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Customer</TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Status</TableCell>
               <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredCustomers.map(customer => (
               <TableRow key={customer.id}>
-                <TableCell>{customer.customer}</TableCell>
-                <TableCell>{customer.amount}</TableCell>
-                <TableCell>{customer.status}</TableCell>
+                <TableCell align="center">{customer.customer}</TableCell>
+                <TableCell align="center">{customer.amount}</TableCell>
+                <TableCell align="center">{customer.status}</TableCell>
                 <TableCell align="center">
-                  <IconButton color="info" onClick={() => handleOpen(customer)}>
-                    <Visibility />
-                  </IconButton>
-                  <IconButton color="primary" onClick={() => handleOpen(customer)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(customer.id)}>
-                    <Delete />
-                  </IconButton>
+                  <Button color="primary" onClick={() => handleOpen(customer)}>
+                  <FaEdit size={20}/>
+                  </Button>
+                  <Button color="info" onClick={() => handleOpen(customer)}>
+                  <FaEye size={20} color="black" />
+                  </Button>
+                  <Button color="error" onClick={() => handleDelete(customer.id)}>
+                  <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

@@ -15,6 +15,7 @@ import { Card } from "./ui/card";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { IoCheckmarkCircleSharp, IoArrowUndoCircle } from "react-icons/io5";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const TaskManagement = () => {
   const [tasks, setTasks] = useState([
@@ -382,7 +383,7 @@ const TaskManagement = () => {
                         color="error"
                         size="large"
                       >
-                        <MdDelete size={22} />
+                        <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                       </Button>
                       <Button
                         onClick={() => toggleComplete(task.id)}
