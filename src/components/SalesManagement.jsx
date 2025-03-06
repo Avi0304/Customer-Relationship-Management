@@ -16,7 +16,8 @@ import {
   DialogContent,
   DialogActions,
   InputAdornment,
-  Stack,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 
 import { BiPlus } from "react-icons/bi";
@@ -138,7 +139,7 @@ const SalesManagement = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             size="small"
-            sx={{ width: "325px"}}
+            sx={{ width: "325px" }}
             fullWidth
             InputProps={{
               startAdornment: (
@@ -171,11 +172,11 @@ const SalesManagement = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>ID</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Customer</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Amount</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Actions</TableCell>
+              <TableCell align="center">ID</TableCell>
+              <TableCell align="center">Customer</TableCell>
+              <TableCell align="center">Amount</TableCell>
+              <TableCell align="center">Status</TableCell>
+              <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -198,6 +199,76 @@ const SalesManagement = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Add Sale Dialog */}
+      <Dialog open={isAdding} onClose={() => setIsAdding(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Add Sale</DialogTitle>
+        <DialogContent dividers>
+          <TextField
+            label="Customer Name"
+            fullWidth
+            margin="dense"
+            value={newSale.customer}
+            onChange={(e) => setNewSale({ ...newSale, customer: e.target.value })}
+          />
+          <TextField
+            label="Amount"
+            fullWidth
+            margin="dense"
+            value={newSale.amount}
+            onChange={(e) => setNewSale({ ...newSale, amount: e.target.value })}
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={newSale.status}
+              onChange={(e) => setNewSale({ ...newSale, status: e.target.value })}
+            >
+              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsAdding(false)} color="secondary">Cancel</Button>
+          <Button onClick={handleSaveNewSale} color="primary" variant="contained">Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Sale Dialog */}
+      <Dialog open={isEditing} onClose={() => setIsEditing(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Edit Sale</DialogTitle>
+        <DialogContent dividers>
+          <TextField
+            label="Customer Name"
+            fullWidth
+            margin="dense"
+            value={selectedSale?.customer || ""}
+            onChange={(e) => setSelectedSale({ ...selectedSale, customer: e.target.value })}
+          />
+          <TextField
+            label="Amount"
+            fullWidth
+            margin="dense"
+            value={selectedSale?.amount || ""}
+            onChange={(e) => setSelectedSale({ ...selectedSale, amount: e.target.value })}
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={selectedSale?.status || ""}
+              onChange={(e) => setSelectedSale({ ...selectedSale, status: e.target.value })}
+            >
+              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsEditing(false)} color="secondary">Cancel</Button>
+          <Button onClick={handleSaveSale} color="primary" variant="contained">Save</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
