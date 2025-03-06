@@ -204,8 +204,9 @@ const TaskManagement = () => {
           color="primary"
           size="medium"
           onClick={() => setOpen(true)}
+          startIcon={<BiPlus size={20} />}
         >
-          <BiPlus size={20} /> Add Task
+        Add Task
         </Button>
       </div>
 
