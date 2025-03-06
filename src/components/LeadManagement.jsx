@@ -103,7 +103,14 @@ const LeadManagement = () => {
       setLeads((prevLeads) =>
         prevLeads.map((lead) => (lead.id === newLead.id ? { ...lead, ...newLead } : lead))
       );
-      Swal.fire("Updated!", "Lead details have been updated.", "success");
+      Swal.fire(({
+        title: "Update!",
+        text: "Lead has been updated successfully.",
+        icon: "success",
+        timer: 4000,
+        timerProgressBar: true, 
+        showConfirmButton: false, 
+      }));
     } else {
       const newLeadData = { ...newLead, id: leads.length + 1 };
       setLeads((prevLeads) => [...prevLeads, newLeadData]);
@@ -111,7 +118,8 @@ const LeadManagement = () => {
         title: "Added!",
         text: "New lead has been added successfully.",
         icon: "success",
-        timer: 2000,
+        timer: 4000,
+        timerProgressBar: true, 
         showConfirmButton: false, 
       });
       
@@ -142,7 +150,7 @@ const LeadManagement = () => {
           title: "Deleted!",
           text: "The lead has been deleted.",
           icon: "success",
-          timer: 2000, 
+          timer: 4000, 
           timerProgressBar: true, 
           showConfirmButton: false, 
         });        
