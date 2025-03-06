@@ -29,6 +29,7 @@ import { PiVideoCameraBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useMediaQuery } from "@mui/material";
 import { gapi } from "gapi-script";
+import Swal from "sweetalert2";
 
 const AppointmentSchedule = () => {
   const [appointments, setAppointments] = useState([
@@ -142,6 +143,14 @@ const AppointmentSchedule = () => {
       status: "Pending",
       type: "",
     });
+    Swal.fire({
+      title: "Added!",
+      titleText: "New Appointment has been added successfully.",
+      icon: "success",
+      timer: 4000,
+      timerProgressBar: true, 
+      showConfirmButton: false, 
+    });
   };
 
   const handleEditClick = (appointment) => {
@@ -160,12 +169,40 @@ const AppointmentSchedule = () => {
       )
     );
     setOpenEditModal(false);
+    Swal.fire(({
+            title: "Update!",
+            text: "Appointment has been updated successfully.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true, 
+            showConfirmButton: false, 
+          }));
   };
 
   const handleDeleteAppointment = (id) => {
-    setAppointments(
-      appointments.filter((appointment) => appointment.id !== id)
-    );
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setAppointments(
+          appointments.filter((appointment) => appointment.id !== id)
+        );
+        Swal.fire({
+          title: "Deleted!",
+          text: "The Appointment has been deleted.",
+          icon: "success",
+          timer: 4000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   const handleFilterChange = (event) => {
@@ -174,7 +211,7 @@ const AppointmentSchedule = () => {
 
   // Get today's date for comparison
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Normalize today's date to midnight
+  today.setHours(0, 0, 0, 0); 
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
@@ -182,8 +219,6 @@ const AppointmentSchedule = () => {
         appointment.contact.toLowerCase().includes(filter.toLowerCase())) &&
       (statusFilter === "All Status" || appointment.status === statusFilter)
   );
-
-  
 
   const upcomingAppointments = filteredAppointments.filter(
     (appointment) => new Date(appointment.date) >= today
@@ -225,14 +260,12 @@ const AppointmentSchedule = () => {
   const scheduleGoogleMeet = async (appointment) => {
     try {
       if (!gapi.client || !gapi.client.calendar) {
-        alert(
-          "Google Calendar API is not loaded yet. Please wait and try again."
-        );
+        Swal.fire("Error", "Google Calendar API is not loaded yet. Please wait and try again.", "error");
         return;
       }
 
       if (!gapi.auth2 || !gapi.auth2.getAuthInstance()) {
-        alert("Google API authentication is not initialized.");
+        Swal.fire("Error", "Google API authentication is not initialized.", "error");
         return;
       }
 
@@ -240,7 +273,7 @@ const AppointmentSchedule = () => {
       const user = await authInstance.signIn();
 
       if (!user) {
-        alert("Sign-in failed. Please try again.");
+        Swal.fire("Error", "Sign-in failed. Please try again.", "error");
         return;
       }
 
@@ -253,9 +286,6 @@ const AppointmentSchedule = () => {
         appointment.time,
         appointment.duration
       );
-
-      console.log("Start Time:", startDateTime);
-      console.log("End Time:", endDateTime);
 
       // Insert event into Google Calendar
       const response = await gapi.client.calendar.events.insert({
@@ -285,15 +315,24 @@ const AppointmentSchedule = () => {
       // Extract and open the Google Meet link
       const meetLink = response.result?.hangoutLink;
       if (meetLink) {
-        alert(`Google Meet Scheduled: ${meetLink}`);
-        console.log("Meeting Link:", meetLink);
-        window.open(meetLink, "_blank", "noopener,noreferrer");
+        Swal.fire({
+          title: "Google Meet Scheduled!",
+          text: `Meeting link: ${meetLink}`,
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonText: "Open Meeting",
+          cancelButtonText: "Close",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.open(meetLink, "_blank", "noopener,noreferrer");
+          }
+        });
       } else {
         throw new Error("Failed to generate Meet link.");
       }
     } catch (error) {
       console.error("Error scheduling meeting:", error);
-      alert("Failed to schedule meeting. Check console for details.");
+      Swal.fire("Error", "Failed to schedule meeting. Check console for details.", "error");
     }
   };
 
