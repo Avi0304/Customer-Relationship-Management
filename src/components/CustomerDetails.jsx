@@ -15,8 +15,11 @@ import {
   Paper,
   IconButton,
   Box,
+  InputAdornment,
 } from "@mui/material";
 import { Edit, Delete, Visibility } from "@mui/icons-material";
+import Swal from "sweetalert2";
+import { Search } from "@mui/icons-material";
 
 const CustomerDetails = () => {
   const [customers, setCustomers] = useState([
@@ -26,18 +29,22 @@ const CustomerDetails = () => {
     { id: 4, customer: "Aditi Nair", amount: "₹850", status: "Pending" },
     { id: 5, customer: "Suresh Menon", amount: "₹700", status: "Completed" },
     { id: 6, customer: "Pallavi Desai", amount: "₹450", status: "Pending" },
-    { "id": 7, "customer": "Vivek Chauhan", "amount": "₹1600", "status": "Completed" },
-    { "id": 8, "customer": "Sneha Reddy", "amount": "₹720", "status": "Pending" },
-    { "id": 9, "customer": "Anupam Verma", "amount": "₹1350", "status": "Completed" },
-    { "id": 10, "customer": "Divya Bhatt", "amount": "₹500", "status": "Pending" },
-    { "id": 11, "customer": "Rohan Kapoor", "amount": "₹950", "status": "Completed" },
-    { "id": 12, "customer": "Neha Malhotra", "amount": "₹1120", "status": "Pending" },
+    { id: 7, customer: "Vivek Chauhan", amount: "₹1600", status: "Completed" },
+    { id: 8, customer: "Sneha Reddy", amount: "₹720", status: "Pending" },
+    { id: 9, customer: "Anupam Verma", amount: "₹1350", status: "Completed" },
+    { id: 10, customer: "Divya Bhatt", amount: "₹500", status: "Pending" },
+    { id: 11, customer: "Rohan Kapoor", amount: "₹950", status: "Completed" },
+    { id: 12, customer: "Neha Malhotra", amount: "₹1120", status: "Pending" },
   ]);
 
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [formData, setFormData] = useState({ customer: "", amount: "", status: "" });
+  const [formData, setFormData] = useState({
+    customer: "",
+    amount: "",
+    status: "",
+  });
 
   const handleOpen = (customer = null) => {
     setSelectedCustomer(customer);
@@ -55,34 +62,106 @@ const CustomerDetails = () => {
   };
 
   const handleSave = () => {
+    if (!formData.customer || !formData.amount || !formData.status) {
+      Swal.fire("Oops!", "All fields are required.", "error");
+      return;
+    }
+
     if (selectedCustomer) {
-      setCustomers(customers.map(c => (c.id === selectedCustomer.id ? formData : c)));
+      setCustomers(
+        customers.map((c) => (c.id === selectedCustomer.id ? formData : c))
+      );
+      Swal.fire({
+        title: "Updated!",
+        text: "Customer details have been updated successfully.",
+        icon: "success",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
     } else {
       setCustomers([...customers, { ...formData, id: Date.now() }]);
+      Swal.fire({
+        title: "Added!",
+        text: "New customer has been added successfully.",
+        icon: "success",
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
     }
     handleClose();
   };
 
   const handleDelete = (id) => {
-    setCustomers(customers.filter(c => c.id !== id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This customer record will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCustomers(customers.filter((c) => c.id !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "The Sales has been deleted.",
+          icon: "success",
+          timer: 4000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   // **Fixed filtering function**
-  const filteredCustomers = customers.filter(c =>
+  const filteredCustomers = customers.filter((c) =>
     c.customer.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <TextField
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        {/* <TextField
           label="Search Customers"
           variant="outlined"
           size="small"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+        /> */}
+
+        <div className="w-full sm:w-1/2 md:w-1/3">
+          <TextField
+            label="Search Customers"
+            variant="outlined"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            fullWidth
+            size="small"
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpen()}
+        >
           + Add Customer
         </Button>
       </Box>
@@ -91,14 +170,25 @@ const CustomerDetails = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Customer</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Amount</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                Customer
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                Amount
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                Status
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCustomers.map(customer => (
+            {filteredCustomers.map((customer) => (
               <TableRow key={customer.id}>
                 <TableCell>{customer.customer}</TableCell>
                 <TableCell>{customer.amount}</TableCell>
@@ -107,10 +197,16 @@ const CustomerDetails = () => {
                   <IconButton color="info" onClick={() => handleOpen(customer)}>
                     <Visibility />
                   </IconButton>
-                  <IconButton color="primary" onClick={() => handleOpen(customer)}>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleOpen(customer)}
+                  >
                     <Edit />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(customer.id)}>
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDelete(customer.id)}
+                  >
                     <Delete />
                   </IconButton>
                 </TableCell>
@@ -121,15 +217,40 @@ const CustomerDetails = () => {
       </TableContainer>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{selectedCustomer ? "Edit Customer" : "Add Customer"}</DialogTitle>
+        <DialogTitle>
+          {selectedCustomer ? "Edit Customer" : "Add Customer"}
+        </DialogTitle>
         <DialogContent>
-          <TextField fullWidth margin="dense" label="Customer" name="customer" value={formData.customer} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Amount" name="amount" value={formData.amount} onChange={handleChange} />
-          <TextField fullWidth margin="dense" label="Status" name="status" value={formData.status} onChange={handleChange} />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Customer"
+            name="customer"
+            value={formData.customer}
+            onChange={handleChange}
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Amount"
+            name="amount"
+            value={formData.amount}
+            onChange={handleChange}
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Status"
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave} color="primary">{selectedCustomer ? "Update" : "Add"}</Button>
+          <Button onClick={handleSave} color="primary">
+            {selectedCustomer ? "Update" : "Add"}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

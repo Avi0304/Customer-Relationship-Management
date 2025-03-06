@@ -554,8 +554,8 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
+                    <TableCell className="whitespace-nowrap">
+                    <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           variant="outlined"
                           size="small"
@@ -677,8 +677,8 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
+                    <TableCell className="whitespace-nowrap">
+                    <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           variant="outlined"
                           size="small"
