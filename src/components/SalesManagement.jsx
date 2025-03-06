@@ -17,21 +17,23 @@ import {
   DialogActions,
   Stack,
 } from "@mui/material";
+import { BiPlus } from "react-icons/bi";
+import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const SalesManagement = () => {
   const [sales, setSales] = useState([
-    { "id": 1, "customer": "Rajat Sharma", "amount": "₹1300", "status": "Completed" },
-    { "id": 2, "customer": "Megha Joshi", "amount": "₹900", "status": "Pending" },
-    { "id": 3, "customer": "Nitin Saxena", "amount": "₹2000", "status": "Completed" },
-    { "id": 4, "customer": "Aditi Nair", "amount": "₹850", "status": "Pending" },
-    { "id": 5, "customer": "Suresh Menon", "amount": "₹700", "status": "Completed" },
-    { "id": 6, "customer": "Pallavi Desai", "amount": "₹450", "status": "Pending" },
-    { "id": 7, "customer": "Vivek Chauhan", "amount": "₹1600", "status": "Completed" },
-    { "id": 8, "customer": "Sneha Reddy", "amount": "₹720", "status": "Pending" },
-    { "id": 9, "customer": "Anupam Verma", "amount": "₹1350", "status": "Completed" },
-    { "id": 10, "customer": "Divya Bhatt", "amount": "₹500", "status": "Pending" }
-  ]
-  );
+    { id: 1, customer: "Rajat Sharma", amount: "₹1300", status: "Completed" },
+    { id: 2, customer: "Megha Joshi", amount: "₹900", status: "Pending" },
+    { id: 3, customer: "Nitin Saxena", amount: "₹2000", status: "Completed" },
+    { id: 4, customer: "Aditi Nair", amount: "₹850", status: "Pending" },
+    { id: 5, customer: "Suresh Menon", amount: "₹700", status: "Completed" },
+    { id: 6, customer: "Pallavi Desai", amount: "₹450", status: "Pending" },
+    { id: 7, customer: "Vivek Chauhan", amount: "₹1600", status: "Completed" },
+    { id: 8, customer: "Sneha Reddy", amount: "₹720", status: "Pending" },
+    { id: 9, customer: "Anupam Verma", amount: "₹1350", status: "Completed" },
+    { id: 10, customer: "Divya Bhatt", amount: "₹500", status: "Pending" },
+  ]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
 
@@ -58,8 +60,11 @@ const SalesManagement = () => {
     const formattedAmount = newSale.amount.startsWith("₹")
       ? newSale.amount
       : `₹${newSale.amount}`;
-  
-    setSales([...sales, { id: sales.length + 1, ...newSale, amount: formattedAmount }]);
+
+    setSales([
+      ...sales,
+      { id: sales.length + 1, ...newSale, amount: formattedAmount },
+    ]);
     setIsAdding(false);
   };
 
@@ -74,9 +79,7 @@ const SalesManagement = () => {
 
   const handleSaveSale = () => {
     setSales(
-      sales.map((sale) =>
-        sale.id === selectedSale.id ? selectedSale : sale
-      )
+      sales.map((sale) => (sale.id === selectedSale.id ? selectedSale : sale))
     );
     setIsEditing(false);
   };
@@ -106,7 +109,11 @@ const SalesManagement = () => {
             sx={{
               width: "120px",
               height: "35px",
-              "& .MuiSelect-select": { display: "flex", alignItems: "center", height: "100%" },
+              "& .MuiSelect-select": {
+                display: "flex",
+                alignItems: "center",
+                height: "100%",
+              },
             }}
           >
             <MenuItem value="All">All</MenuItem>
@@ -114,7 +121,12 @@ const SalesManagement = () => {
             <MenuItem value="Pending">Pending</MenuItem>
           </Select>
         </div>
-        <Button variant="contained" color="primary" onClick={handleAddSale}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddSale}
+          startIcon={<BiPlus size={20} />}
+        >
           Add Sale
         </Button>
       </div>
@@ -123,13 +135,13 @@ const SalesManagement = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell align="center"><b>ID</b></TableCell>
-              <TableCell align="center"><b>Customer</b></TableCell>
-              <TableCell align="center"><b>Amount</b></TableCell>
-              <TableCell align="center"><b>Status</b></TableCell>
-              <TableCell align="center"><b>Actions</b></TableCell>
-            </TableRow>
+            <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
+                          <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">ID</TableCell>
+                          <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Customer</TableCell>
+                          <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
+                          <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
+                          <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
+                        </TableRow>
           </TableHead>
           <TableBody>
             {filteredSales.map((sale) => (
@@ -140,19 +152,15 @@ const SalesManagement = () => {
                 <TableCell align="center">{sale.status}</TableCell>
                 <TableCell align="center">
                   <Button
-                    variant="contained"
-                    color="info"
                     onClick={() => handleEditSale(sale)}
                     sx={{ marginRight: 1 }}
                   >
-                    Edit
+                    <FaEdit size={20}/>
                   </Button>
                   <Button
-                    variant="contained"
-                    color="secondary"
                     onClick={() => handleDeleteSale(sale.id)}
                   >
-                    Delete
+                    <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -162,7 +170,12 @@ const SalesManagement = () => {
       </TableContainer>
 
       {/* Add Sale Dialog */}
-      <Dialog open={isAdding} onClose={() => setIsAdding(false)} fullWidth maxWidth="sm">
+      <Dialog
+        open={isAdding}
+        onClose={() => setIsAdding(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
           Add New Sale
         </DialogTitle>
@@ -199,18 +212,38 @@ const SalesManagement = () => {
             </Select>
           </Stack>
         </DialogContent>
-        <DialogActions sx={{ display: "flex", justifyContent: "space-between", px: 3, pb: 3 }}>
-          <Button onClick={() => setIsAdding(false)} variant="outlined" color="secondary">
+        <DialogActions
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            px: 3,
+            pb: 3,
+          }}
+        >
+          <Button
+            onClick={() => setIsAdding(false)}
+            variant="outlined"
+            color="secondary"
+          >
             Cancel
           </Button>
-          <Button onClick={handleSaveNewSale} variant="contained" color="primary">
+          <Button
+            onClick={handleSaveNewSale}
+            variant="contained"
+            color="primary"
+          >
             Add Sale
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Edit Sale Dialog (Same as before) */}
-      <Dialog open={isEditing} onClose={() => setIsEditing(false)} fullWidth maxWidth="sm">
+      <Dialog
+        open={isEditing}
+        onClose={() => setIsEditing(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
           Edit Sale Details
         </DialogTitle>

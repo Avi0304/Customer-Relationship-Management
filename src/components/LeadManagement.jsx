@@ -28,71 +28,72 @@ import { Search, AddCircle, Edit, Delete } from "@mui/icons-material"; // Added 
 import { BiPlus } from "react-icons/bi";
 import * as XLSX from "xlsx"; // For exporting to Excel
 import Swal from "sweetalert2";
+import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const LeadManagement = () => {
   const [leads, setLeads] = useState([
     {
-      "id": 1,
-      "name": "Rajesh Kumar",
-      "contactInfo": "rajesh.kumar@gmail.com",
-      "status": "New"
+      id: 1,
+      name: "Rajesh Kumar",
+      contactInfo: "rajesh.kumar@gmail.com",
+      status: "New",
     },
     {
-      "id": 2,
-      "name": "Priya Sharma",
-      "contactInfo": "priya.sharma@gmail.com",
-      "status": "Contacted"
+      id: 2,
+      name: "Priya Sharma",
+      contactInfo: "priya.sharma@gmail.com",
+      status: "Contacted",
     },
     {
-      "id": 3,
-      "name": "Amit Verma",
-      "contactInfo": "amit.verma@gmail.com",
-      "status": "Converted"
+      id: 3,
+      name: "Amit Verma",
+      contactInfo: "amit.verma@gmail.com",
+      status: "Converted",
     },
     {
-      "id": 4,
-      "name": "Neha Gupta",
-      "contactInfo": "neha.gupta@gmail.com",
-      "status": "New"
+      id: 4,
+      name: "Neha Gupta",
+      contactInfo: "neha.gupta@gmail.com",
+      status: "New",
     },
     {
-      "id": 5,
-      "name": "Vikas Yadav",
-      "contactInfo": "vikas.yadav@gmail.com",
-      "status": "Contacted"
+      id: 5,
+      name: "Vikas Yadav",
+      contactInfo: "vikas.yadav@gmail.com",
+      status: "Contacted",
     },
     {
-      "id": 6,
-      "name": "Anjali Patel",
-      "contactInfo": "anjali.patel@gmail.com",
-      "status": "Converted"
+      id: 6,
+      name: "Anjali Patel",
+      contactInfo: "anjali.patel@gmail.com",
+      status: "Converted",
     },
     {
-      "id": 7,
-      "name": "Rohan Singh",
-      "contactInfo": "rohan.singh@gmail.com",
-      "status": "New"
+      id: 7,
+      name: "Rohan Singh",
+      contactInfo: "rohan.singh@gmail.com",
+      status: "New",
     },
     {
-      "id": 8,
-      "name": "Meera Nair",
-      "contactInfo": "meera.nair@gmail.com",
-      "status": "Contacted"
+      id: 8,
+      name: "Meera Nair",
+      contactInfo: "meera.nair@gmail.com",
+      status: "Contacted",
     },
     {
-      "id": 9,
-      "name": "Sandeep Joshi",
-      "contactInfo": "sandeep.joshi@gmail.com",
-      "status": "Converted"
+      id: 9,
+      name: "Sandeep Joshi",
+      contactInfo: "sandeep.joshi@gmail.com",
+      status: "Converted",
     },
     {
-      "id": 10,
-      "name": "Kavita Reddy",
-      "contactInfo": "kavita.reddy@gmail.com",
-      "status": "New"
-    }
-  ]
-  );
+      id: 10,
+      name: "Kavita Reddy",
+      contactInfo: "kavita.reddy@gmail.com",
+      status: "New",
+    },
+  ]);
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -144,16 +145,18 @@ const LeadManagement = () => {
 
     if (newLead.id) {
       setLeads((prevLeads) =>
-        prevLeads.map((lead) => (lead.id === newLead.id ? { ...lead, ...newLead } : lead))
+        prevLeads.map((lead) =>
+          lead.id === newLead.id ? { ...lead, ...newLead } : lead
+        )
       );
-      Swal.fire(({
+      Swal.fire({
         title: "Update!",
         text: "Lead has been updated successfully.",
         icon: "success",
         timer: 4000,
-        timerProgressBar: true, 
-        showConfirmButton: false, 
-      }));
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
     } else {
       const newLeadData = { ...newLead, id: leads.length + 1 };
       setLeads((prevLeads) => [...prevLeads, newLeadData]);
@@ -162,10 +165,9 @@ const LeadManagement = () => {
         text: "New lead has been added successfully.",
         icon: "success",
         timer: 4000,
-        timerProgressBar: true, 
-        showConfirmButton: false, 
+        timerProgressBar: true,
+        showConfirmButton: false,
       });
-      
     }
 
     setOpenAddDialog(false);
@@ -193,43 +195,41 @@ const LeadManagement = () => {
           title: "Deleted!",
           text: "The lead has been deleted.",
           icon: "success",
-          timer: 4000, 
-          timerProgressBar: true, 
-          showConfirmButton: false, 
-        });        
+          timer: 4000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
       }
     });
   };
 
-const handleExportToExcel = () => {
-  Swal.fire({
-    title: "Export Leads?",
-    text: "Do you want to export the leads to an Excel file?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, Export!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const ws = XLSX.utils.json_to_sheet(leads);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Leads");
-      XLSX.writeFile(wb, "leads.xlsx");
+  const handleExportToExcel = () => {
+    Swal.fire({
+      title: "Export Leads?",
+      text: "Do you want to export the leads to an Excel file?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Export!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const ws = XLSX.utils.json_to_sheet(leads);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Leads");
+        XLSX.writeFile(wb, "leads.xlsx");
 
-      Swal.fire({
-        title: "Exported!",
-        text: "Your leads have been exported.",
-        icon: "success",
-        timer: 3000, 
-        timerProgressBar: true, 
-        showConfirmButton: false, 
-      });
-      
-    }
-  });
-};
-
+        Swal.fire({
+          title: "Exported!",
+          text: "Your leads have been exported.",
+          icon: "success",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
 
   const handleOpenSnackbar = () => {
     setOpenSnackbar(true);
@@ -307,11 +307,20 @@ const handleExportToExcel = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Contact Info</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold", textAlign: "end", pr: 11 }}>
+            <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                Name
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                Contact Info
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                Status
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
                 Actions
               </TableCell>
             </TableRow>
@@ -319,29 +328,24 @@ const handleExportToExcel = () => {
           <TableBody>
             {filteredLeads.map((lead) => (
               <TableRow key={lead.id}>
-                <TableCell>{lead.name}</TableCell>
-                <TableCell>{lead.contactInfo}</TableCell>
-                <TableCell>{lead.status}</TableCell>
-                <TableCell sx={{ textAlign: "end" }}>
+                <TableCell align="center">{lead.name}</TableCell>
+                <TableCell align="center">{lead.contactInfo}</TableCell>
+                <TableCell align="center">{lead.status}</TableCell>
+                <TableCell sx={{ textAlign: "center" }}>
                   {/* Edit and Delete Buttons with Icons */}
+
                   <Button
-                    variant="outlined"
-                    color="primary"
                     size="small"
-                    startIcon={<Edit />}
                     onClick={() => handleEditLead(lead)}
                     style={{ marginRight: "5px" }}
                   >
-                    Edit
+                    <FaEdit size={20} />
                   </Button>
                   <Button
-                    variant="outlined"
-                    color="secondary"
                     size="small"
-                    startIcon={<Delete />}
                     onClick={() => handleDeleteLead(lead.id)}
                   >
-                    Delete
+                    <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -351,7 +355,7 @@ const handleExportToExcel = () => {
       </TableContainer>
 
       {/* Add/Edit Lead Dialog */}
-      <Dialog open={openAddDialog} onClose={handleCloseAddDialog} >
+      <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
         <DialogTitle>{newLead.id ? "Edit Lead" : "Add New Lead"}</DialogTitle>
         <DialogContent>
           <TextField

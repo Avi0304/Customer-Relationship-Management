@@ -483,33 +483,33 @@ const AppointmentSchedule = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Status
                   </TableCell>
                   <TableCell
@@ -527,21 +527,21 @@ const AppointmentSchedule = () => {
               <TableBody>
                 {upcomingAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
-                    <TableCell>{appointment.customer}</TableCell>
+                    <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell>{appointment.contact}</TableCell>
+                      <TableCell align="center">{appointment.contact}</TableCell>
                     )}
                     {!isSmallScreen && (
-                      <TableCell>{appointment.type}</TableCell>
+                      <TableCell align="center">{appointment.type}</TableCell>
                     )}
-                    <TableCell>{appointment.date}</TableCell>
+                    <TableCell align="center">{appointment.date}</TableCell>
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.duration}</TableCell>
+                      <TableCell align="center">{appointment.duration}</TableCell>
                     )}
-                    <TableCell>
+                    <TableCell align="center">
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
                           appointment.status === "Confirmed"
@@ -554,35 +554,32 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center">
                       <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => handleEditClick(appointment)}
                         >
-                          <FaEdit className="h-4 w-4 text-blue-600" />
+                          <FaEdit className="h-5 w-5" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => scheduleGoogleMeet(appointment)}
                         >
-                          <PiVideoCameraBold className="h-4 w-4 text-green-600" />
+                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
                             handleDeleteAppointment(appointment.id)
                           }
                         >
-                          <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                         </Button>
                       </div>
                     </TableCell>
@@ -606,33 +603,33 @@ const AppointmentSchedule = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Status
                   </TableCell>
                   <TableCell
@@ -650,21 +647,21 @@ const AppointmentSchedule = () => {
               <TableBody>
                 {pastAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
-                    <TableCell>{appointment.customer}</TableCell>
+                    <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell>{appointment.contact}</TableCell>
+                      <TableCell align="center">{appointment.contact}</TableCell>
                     )}
                     {!isSmallScreen && (
-                      <TableCell>{appointment.type}</TableCell>
+                      <TableCell align="center">{appointment.type}</TableCell>
                     )}
-                    <TableCell>{appointment.date}</TableCell>
+                    <TableCell align="center">{appointment.date}</TableCell>
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.duration}</TableCell>
+                      <TableCell align="center">{appointment.duration}</TableCell>
                     )}
-                    <TableCell>
+                    <TableCell align="center">
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
                           appointment.status === "Confirmed"
@@ -677,35 +674,32 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center">
                       <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => handleEditClick(appointment)}
                         >
-                          <FaEdit className="h-4 w-4 text-blue-600" />
+                          <FaEdit className="h-5 w-5" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => scheduleGoogleMeet(appointment)}
                         >
-                          <PiVideoCameraBold className="h-4 w-4 text-green-600" />
+                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
                             handleDeleteAppointment(appointment.id)
                           }
                         >
-                          <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                         </Button>
                       </div>
                     </TableCell>
@@ -729,33 +723,33 @@ const AppointmentSchedule = () => {
             <Table className="min-w-full">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
                     Status
                   </TableCell>
                   <TableCell
@@ -773,21 +767,21 @@ const AppointmentSchedule = () => {
               <TableBody>
                 {filteredAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
-                    <TableCell>{appointment.customer}</TableCell>
+                    <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell>{appointment.contact}</TableCell>
+                      <TableCell align="center">{appointment.contact}</TableCell>
                     )}
                     {!isSmallScreen && (
-                      <TableCell>{appointment.type}</TableCell>
+                      <TableCell align="center">{appointment.type}</TableCell>
                     )}
-                    <TableCell>{appointment.date}</TableCell>
+                    <TableCell align="center">{appointment.date}</TableCell>
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.time}</TableCell>
+                      <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell>{appointment.duration}</TableCell>
+                      <TableCell align="center">{appointment.duration}</TableCell>
                     )}
-                    <TableCell>
+                    <TableCell align="center">
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
                           appointment.status === "Confirmed"
@@ -800,35 +794,32 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="whitespace-nowrap" align="center">
                       <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => handleEditClick(appointment)}
                         >
-                          <FaEdit className="h-4 w-4 text-blue-600" />
+                          <FaEdit className="h-5 w-5" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() => scheduleGoogleMeet(appointment)}
                         >
-                          <PiVideoCameraBold className="h-4 w-4 text-green-600" />
+                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
                         </Button>
 
                         <Button
-                          variant="outlined"
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
                             handleDeleteAppointment(appointment.id)
                           }
                         >
-                          <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                         </Button>
                       </div>
                     </TableCell>
