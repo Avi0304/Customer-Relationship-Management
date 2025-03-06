@@ -19,46 +19,87 @@ import { IoCheckmarkCircleSharp, IoArrowUndoCircle } from "react-icons/io5";
 const TaskManagement = () => {
   const [tasks, setTasks] = useState([
     {
-      id: 1,
-      title: "Fix login issue in CRM app",
-      dueDate: "2024-07-25",
-      priority: "High",
-      company: "Acme Inc.",
-      completed: true,
+      "id": 1,
+      "title": "Fix login issue in CRM app",
+      "dueDate": "2024-07-25",
+      "priority": "High",
+      "company": "Tata Consultancy Services",
+      "completed": true
     },
     {
-      id: 2,
-      title: "Review PR for frontend bug fixes",
-      dueDate: "2024-07-26",
-      priority: "Medium",
-      company: "Widget Corp",
-      completed: true,
+      "id": 2,
+      "title": "Review PR for frontend bug fixes",
+      "dueDate": "2024-07-26",
+      "priority": "Medium",
+      "company": "Infosys Ltd.",
+      "completed": true
     },
     {
-      id: 3,
-      title: "Update API documentation",
-      dueDate: "2024-07-28",
-      company: "Tech Solutions",
-      priority: "Low",
-      completed: false,
+      "id": 3,
+      "title": "Update API documentation",
+      "dueDate": "2024-07-28",
+      "priority": "Low",
+      "company": "Tech Mahindra",
+      "completed": false
     },
     {
-      id: 4,
-      title: "Implement authentication in React project",
-      dueDate: "2024-07-30",
-      company: "Axe IT Solutions",
-      priority: "High",
-      completed: true,
+      "id": 4,
+      "title": "Implement authentication in React project",
+      "dueDate": "2024-07-30",
+      "priority": "High",
+      "company": "HCL Technologies",
+      "completed": true
     },
     {
-      id: 5,
-      title: "Deploy backend services to AWS",
-      dueDate: "2024-08-01",
-      priority: "Medium",
-      company: "Cloud Services Ltd.",
-      completed: false,
+      "id": 5,
+      "title": "Deploy backend services to AWS",
+      "dueDate": "2024-08-01",
+      "priority": "Medium",
+      "company": "Wipro Technologies",
+      "completed": false
     },
-  ]);
+    {
+      "id": 6,
+      "title": "Optimize database queries",
+      "dueDate": "2024-08-05",
+      "priority": "High",
+      "company": "L&T Infotech",
+      "completed": false
+    },
+    {
+      "id": 7,
+      "title": "Integrate payment gateway",
+      "dueDate": "2024-08-08",
+      "priority": "High",
+      "company": "Paytm Services",
+      "completed": true
+    },
+    {
+      "id": 8,
+      "title": "Enhance security protocols",
+      "dueDate": "2024-08-12",
+      "priority": "Medium",
+      "company": "HDFC Bank IT",
+      "completed": false
+    },
+    {
+      "id": 9,
+      "title": "Refactor frontend components",
+      "dueDate": "2024-08-15",
+      "priority": "Low",
+      "company": "Flipkart Technologies",
+      "completed": true
+    },
+    {
+      "id": 10,
+      "title": "Set up CI/CD pipeline",
+      "dueDate": "2024-08-18",
+      "priority": "High",
+      "company": "Reliance Digital",
+      "completed": false
+    }
+  ]
+  );
 
   const [newTask, setNewTask] = useState({
     title: "",
