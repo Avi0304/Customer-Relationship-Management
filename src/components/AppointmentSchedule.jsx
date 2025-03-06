@@ -27,7 +27,7 @@ import { BiPlus } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
 import { PiVideoCameraBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import dayjs from "dayjs";
+import { useMediaQuery } from "@mui/material";
 import { gapi } from "gapi-script";
 
 const AppointmentSchedule = () => {
@@ -120,6 +120,8 @@ const AppointmentSchedule = () => {
   const [editAppointment, setEditAppointment] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const isSmallScreen = useMediaQuery("(max-width: 820px)");
+  const isMediumScreen = useMediaQuery("(max-width: 1024px)");
 
   const handleInputChange = (e) => {
     setNewAppointment({ ...newAppointment, [e.target.name]: e.target.value });
@@ -170,14 +172,10 @@ const AppointmentSchedule = () => {
     setFilter(event.target.value);
   };
 
-  const handleStatusFilterChange = (event) => {
-    setStatusFilter(event.target.value);
-  };
-
   // Get today's date for comparison
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Normalize today's date to midnight
 
-  // Filtered appointments based on customer, contact, and type
   const filteredAppointments = appointments.filter(
     (appointment) =>
       (appointment.customer.toLowerCase().includes(filter.toLowerCase()) ||
@@ -185,12 +183,14 @@ const AppointmentSchedule = () => {
       (statusFilter === "All Status" || appointment.status === statusFilter)
   );
 
+  
+
   const upcomingAppointments = filteredAppointments.filter(
-    (appointment) => appointment.date >= today
+    (appointment) => new Date(appointment.date) >= today
   );
-  // Filter for past appointments (date < today)
+
   const pastAppointments = filteredAppointments.filter(
-    (appointment) => appointment.date < today
+    (appointment) => new Date(appointment.date) < today
   );
 
   const CLIENT_ID =
@@ -383,23 +383,32 @@ const AppointmentSchedule = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  {" "}
-                  {/* Light gray background */}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Customer
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Contact
-                  </TableCell>
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Contact
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Type
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Date
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Time
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Duration
-                  </TableCell>
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Time
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Duration
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Status
                   </TableCell>
@@ -419,10 +428,19 @@ const AppointmentSchedule = () => {
                 {upcomingAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell>{appointment.customer}</TableCell>
-                    <TableCell>{appointment.contact}</TableCell>
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.contact}</TableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.type}</TableCell>
+                    )}
                     <TableCell>{appointment.date}</TableCell>
-                    <TableCell>{appointment.time}</TableCell>
-                    <TableCell>{appointment.duration}</TableCell>
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.time}</TableCell>
+                    )}
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.duration}</TableCell>
+                    )}
                     <TableCell>
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -437,7 +455,7 @@ const AppointmentSchedule = () => {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-3 justify-start sm:flex-row">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
                         <Button
                           variant="outlined"
                           size="small"
@@ -491,34 +509,61 @@ const AppointmentSchedule = () => {
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Customer
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Contact
-                  </TableCell>
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Contact
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Type
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Date
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Time
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Duration
-                  </TableCell>
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Time
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Duration
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Status
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem", textAlign: 'center' }}>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
                     Action
                   </TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {pastAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell>{appointment.customer}</TableCell>
-                    <TableCell>{appointment.contact}</TableCell>
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.contact}</TableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.type}</TableCell>
+                    )}
                     <TableCell>{appointment.date}</TableCell>
-                    <TableCell>{appointment.time}</TableCell>
-                    <TableCell>{appointment.duration}</TableCell>
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.time}</TableCell>
+                    )}
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.duration}</TableCell>
+                    )}
                     <TableCell>
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -533,7 +578,7 @@ const AppointmentSchedule = () => {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-3 justify-start sm:flex-row">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
                         <Button
                           variant="outlined"
                           size="small"
@@ -573,7 +618,7 @@ const AppointmentSchedule = () => {
       )}
 
       {tabValue === 2 && (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className="overflow-x-auto">
           {filteredAppointments.length === 0 ? (
             <Box p={3} display="flex" justifyContent="center">
               <Typography variant="h6" color="textSecondary">
@@ -581,40 +626,67 @@ const AppointmentSchedule = () => {
               </Typography>
             </Box>
           ) : (
-            <Table>
+            <Table className="min-w-full">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Customer
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Contact
-                  </TableCell>
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Contact
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Type
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
                     Date
                   </TableCell>
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Time
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
+                      Duration
+                    </TableCell>
+                  )}
                   <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Time
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                    Duration
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem", }}>
                     Status
                   </TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem", textAlign: 'center' }}>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
                     Action
                   </TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {filteredAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell>{appointment.customer}</TableCell>
-                    <TableCell>{appointment.contact}</TableCell>
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.contact}</TableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <TableCell>{appointment.type}</TableCell>
+                    )}
                     <TableCell>{appointment.date}</TableCell>
-                    <TableCell>{appointment.time}</TableCell>
-                    <TableCell>{appointment.duration}</TableCell>
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.time}</TableCell>
+                    )}
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell>{appointment.duration}</TableCell>
+                    )}
                     <TableCell>
                       <span
                         className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
@@ -628,8 +700,8 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-3 justify-start sm:flex-row">
+                    <TableCell className="whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           variant="outlined"
                           size="small"
