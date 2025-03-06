@@ -15,11 +15,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  InputAdornment,
   Stack,
 } from "@mui/material";
+
 import { BiPlus } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import Swal from "sweetalert2";
+import { Search } from "@mui/icons-material";
+
 
 const SalesManagement = () => {
   const [sales, setSales] = useState([
@@ -54,7 +59,11 @@ const SalesManagement = () => {
 
   const handleSaveNewSale = () => {
     if (!newSale.customer || !newSale.amount) {
-      alert("Please fill in all fields before adding the sale.");
+      Swal.fire(
+        "Oops!",
+        "Please fill in all fields before adding the sale.",
+        "error"
+      );
       return;
     }
     const formattedAmount = newSale.amount.startsWith("₹")
@@ -66,10 +75,39 @@ const SalesManagement = () => {
       { id: sales.length + 1, ...newSale, amount: formattedAmount },
     ]);
     setIsAdding(false);
+
+    Swal.fire({
+      title: "Added!",
+      titleText: "New Sales has been added successfully.",
+      icon: "success",
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
   };
 
   const handleDeleteSale = (id) => {
-    setSales(sales.filter((sale) => sale.id !== id));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setSales(sales.filter((sale) => sale.id !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "The Sales has been deleted.",
+          icon: "success",
+          timer: 4000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   const handleEditSale = (sale) => {
@@ -82,6 +120,15 @@ const SalesManagement = () => {
       sales.map((sale) => (sale.id === selectedSale.id ? selectedSale : sale))
     );
     setIsEditing(false);
+
+    Swal.fire({
+      title: "Update!",
+      text: "Sales has been updated successfully.",
+      icon: "success",
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
   };
 
   const filteredSales = sales.filter(
@@ -95,13 +142,26 @@ const SalesManagement = () => {
       {/* Search & Filter Section */}
       <div className="mb-5 flex items-center justify-between">
         <div className="flex gap-4">
-          <TextField
-            placeholder="Search customer..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            size="small"
-            sx={{ width: "200px", "& .MuiInputBase-root": { height: "35px" } }}
-          />
+          <div className="w-full sm:w-full md:w-5/6 lg:w-3/4">
+            <TextField
+              label="Search Leads"
+              variant="outlined"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              size="small"
+              fullWidth
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          </div>
+
           <Select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -121,12 +181,10 @@ const SalesManagement = () => {
             <MenuItem value="Pending">Pending</MenuItem>
           </Select>
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddSale}
-          startIcon={<BiPlus size={20} />}
-        >
+
+
+        <Button variant="contained" color="primary" onClick={handleAddSale}>
+
           Add Sale
         </Button>
       </div>
@@ -135,6 +193,7 @@ const SalesManagement = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
+
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
                           <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">ID</TableCell>
                           <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Customer</TableCell>
@@ -142,6 +201,25 @@ const SalesManagement = () => {
                           <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
                           <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
                         </TableRow>
+
+            <TableRow>
+              <TableCell align="center">
+                <b>ID</b>
+              </TableCell>
+              <TableCell align="center">
+                <b>Customer</b>
+              </TableCell>
+              <TableCell align="center">
+                <b>Amount</b>
+              </TableCell>
+              <TableCell align="center">
+                <b>Status</b>
+              </TableCell>
+              <TableCell align="center">
+                <b>Actions</b>
+              </TableCell>
+            </TableRow>
+
           </TableHead>
           <TableBody>
             {filteredSales.map((sale) => (
