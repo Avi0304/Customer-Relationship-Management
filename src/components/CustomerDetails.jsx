@@ -167,8 +167,9 @@ const CustomerDetails = () => {
           variant="contained"
           color="primary"
           onClick={() => handleOpen()}
+          startIcon={<BiPlus size={20} />}
         >
-          + Add Customer
+          Add Customer
         </Button>
       </Box>
 
@@ -180,21 +181,6 @@ const CustomerDetails = () => {
               <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
               <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Status</TableCell>
               <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Customer
-              </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Amount
-              </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}>
-                Status
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                align="center"
-              >
-                Actions
-              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -214,21 +200,6 @@ const CustomerDetails = () => {
                   <Button color="error" onClick={() => handleDelete(customer.id)}>
                   <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
                   </Button>
-                  <IconButton color="info" onClick={() => handleOpen(customer)}>
-                    <Visibility />
-                  </IconButton>
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleOpen(customer)}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDelete(customer.id)}
-                  >
-                    <Delete />
-                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}

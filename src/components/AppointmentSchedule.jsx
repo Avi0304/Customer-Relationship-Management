@@ -463,7 +463,7 @@ const AppointmentSchedule = () => {
       <Tabs
         value={tabValue}
         onChange={(e, newValue) => setTabValue(newValue)}
-        sx={{ mb: 2 }}
+        sx={{ mb: 2, display: "flex", justifyContent: "center" }}
       >
         <Tab label="Upcoming" />
         <Tab label="Past" />
