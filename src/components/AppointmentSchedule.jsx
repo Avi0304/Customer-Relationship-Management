@@ -34,138 +34,137 @@ import Swal from "sweetalert2";
 const AppointmentSchedule = () => {
   const [appointments, setAppointments] = useState([
     {
-      "id": 1,
-      "customer": "Tata Technologies",
-      "contact": "Ravi Sharma",
-      "date": "2025-03-10",
-      "time": "10:00 AM",
-      "duration": "30 min",
-      "status": "Confirmed",
-      "type": "Sales Demo"
+      id: 1,
+      customer: "Tata Technologies",
+      contact: "Ravi Sharma",
+      date: "2025-03-10",
+      time: "10:00 AM",
+      duration: "30 min",
+      status: "Confirmed",
+      type: "Sales Demo",
     },
     {
-      "id": 2,
-      "customer": "Infosys Ltd.",
-      "contact": "Neha Verma",
-      "date": "2025-03-12",
-      "time": "2:00 PM",
-      "duration": "45 min",
-      "status": "Pending",
-      "type": "Follow-up"
+      id: 2,
+      customer: "Infosys Ltd.",
+      contact: "Neha Verma",
+      date: "2025-03-12",
+      time: "2:00 PM",
+      duration: "45 min",
+      status: "Pending",
+      type: "Follow-up",
     },
     {
-      "id": 3,
-      "customer": "Reliance Digital",
-      "contact": "Amit Joshi",
-      "date": "2025-03-15",
-      "time": "11:30 AM",
-      "duration": "60 min",
-      "status": "Confirmed",
-      "type": "Consultation"
+      id: 3,
+      customer: "Reliance Digital",
+      contact: "Amit Joshi",
+      date: "2025-03-15",
+      time: "11:30 AM",
+      duration: "60 min",
+      status: "Confirmed",
+      type: "Consultation",
     },
     {
-      "id": 4,
-      "customer": "HCL Solutions",
-      "contact": "Pooja Nair",
-      "date": "2025-03-18",
-      "time": "3:15 PM",
-      "duration": "30 min",
-      "status": "Cancelled",
-      "type": "Support"
+      id: 4,
+      customer: "HCL Solutions",
+      contact: "Pooja Nair",
+      date: "2025-03-18",
+      time: "3:15 PM",
+      duration: "30 min",
+      status: "Cancelled",
+      type: "Support",
     },
     {
-      "id": 5,
-      "customer": "Wipro Tech",
-      "contact": "Sandeep Menon",
-      "date": "2025-02-28",
-      "time": "9:00 AM",
-      "duration": "60 min",
-      "status": "Confirmed",
-      "type": "Business Meeting"
+      id: 5,
+      customer: "Wipro Tech",
+      contact: "Sandeep Menon",
+      date: "2025-02-28",
+      time: "9:00 AM",
+      duration: "60 min",
+      status: "Confirmed",
+      type: "Business Meeting",
     },
     {
-      "id": 6,
-      "customer": "Mahindra IT Services",
-      "contact": "Anjali Desai",
-      "date": "2025-02-25",
-      "time": "1:30 PM",
-      "duration": "45 min",
-      "status": "Confirmed",
-      "type": "Technical Review"
+      id: 6,
+      customer: "Mahindra IT Services",
+      contact: "Anjali Desai",
+      date: "2025-02-25",
+      time: "1:30 PM",
+      duration: "45 min",
+      status: "Confirmed",
+      type: "Technical Review",
     },
     {
-      "id": 7,
-      "customer": "L&T Infotech",
-      "contact": "Rahul Kapoor",
-      "date": "2025-02-20",
-      "time": "4:00 PM",
-      "duration": "30 min",
-      "status": "Confirmed",
-      "type": "Strategy Session"
+      id: 7,
+      customer: "L&T Infotech",
+      contact: "Rahul Kapoor",
+      date: "2025-02-20",
+      time: "4:00 PM",
+      duration: "30 min",
+      status: "Confirmed",
+      type: "Strategy Session",
     },
     {
-      "id": 8,
-      "customer": "TCS Consulting",
-      "contact": "Meera Reddy",
-      "date": "2025-03-22",
-      "time": "10:45 AM",
-      "duration": "45 min",
-      "status": "Pending",
-      "type": "Client Onboarding"
+      id: 8,
+      customer: "TCS Consulting",
+      contact: "Meera Reddy",
+      date: "2025-03-22",
+      time: "10:45 AM",
+      duration: "45 min",
+      status: "Pending",
+      type: "Client Onboarding",
     },
     {
-      "id": 9,
-      "customer": "Zomato Technologies",
-      "contact": "Vikram Iyer",
-      "date": "2025-03-25",
-      "time": "2:30 PM",
-      "duration": "60 min",
-      "status": "Confirmed",
-      "type": "Product Demo"
+      id: 9,
+      customer: "Zomato Technologies",
+      contact: "Vikram Iyer",
+      date: "2025-03-25",
+      time: "2:30 PM",
+      duration: "60 min",
+      status: "Confirmed",
+      type: "Product Demo",
     },
     {
-      "id": 10,
-      "customer": "HDFC Bank IT",
-      "contact": "Kavita Malhotra",
-      "date": "2025-03-28",
-      "time": "9:30 AM",
-      "duration": "30 min",
-      "status": "Pending",
-      "type": "Security Audit"
+      id: 10,
+      customer: "HDFC Bank IT",
+      contact: "Kavita Malhotra",
+      date: "2025-03-28",
+      time: "9:30 AM",
+      duration: "30 min",
+      status: "Pending",
+      type: "Security Audit",
     },
     {
-      "id": 11,
-      "customer": "Flipkart Solutions",
-      "contact": "Rohan Agarwal",
-      "date": "2025-04-02",
-      "time": "3:00 PM",
-      "duration": "45 min",
-      "status": "Confirmed",
-      "type": "Vendor Meeting"
+      id: 11,
+      customer: "Flipkart Solutions",
+      contact: "Rohan Agarwal",
+      date: "2025-04-02",
+      time: "3:00 PM",
+      duration: "45 min",
+      status: "Confirmed",
+      type: "Vendor Meeting",
     },
     {
-      "id": 12,
-      "customer": "Paytm Services",
-      "contact": "Sneha Bhatia",
-      "date": "2025-04-05",
-      "time": "11:00 AM",
-      "duration": "30 min",
-      "status": "Pending",
-      "type": "Billing Discussion"
+      id: 12,
+      customer: "Paytm Services",
+      contact: "Sneha Bhatia",
+      date: "2025-04-05",
+      time: "11:00 AM",
+      duration: "30 min",
+      status: "Pending",
+      type: "Billing Discussion",
     },
     {
-      "id": 13,
-      "customer": "Ola Cabs",
-      "contact": "Kunal Saxena",
-      "date": "2025-04-08",
-      "time": "1:45 PM",
-      "duration": "60 min",
-      "status": "Confirmed",
-      "type": "Partnership Review"
-    }
-  ]
-  );
-  
+      id: 13,
+      customer: "Ola Cabs",
+      contact: "Kunal Saxena",
+      date: "2025-04-08",
+      time: "1:45 PM",
+      duration: "60 min",
+      status: "Confirmed",
+      type: "Partnership Review",
+    },
+  ]);
+
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [openModal, setOpenModal] = useState(false);
@@ -209,8 +208,8 @@ const AppointmentSchedule = () => {
       titleText: "New Appointment has been added successfully.",
       icon: "success",
       timer: 4000,
-      timerProgressBar: true, 
-      showConfirmButton: false, 
+      timerProgressBar: true,
+      showConfirmButton: false,
     });
   };
 
@@ -230,14 +229,14 @@ const AppointmentSchedule = () => {
       )
     );
     setOpenEditModal(false);
-    Swal.fire(({
-            title: "Update!",
-            text: "Appointment has been updated successfully.",
-            icon: "success",
-            timer: 4000,
-            timerProgressBar: true, 
-            showConfirmButton: false, 
-          }));
+    Swal.fire({
+      title: "Update!",
+      text: "Appointment has been updated successfully.",
+      icon: "success",
+      timer: 4000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
   };
 
   const handleDeleteAppointment = (id) => {
@@ -272,7 +271,7 @@ const AppointmentSchedule = () => {
 
   // Get today's date for comparison
   const today = new Date();
-  today.setHours(0, 0, 0, 0); 
+  today.setHours(0, 0, 0, 0);
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
@@ -321,12 +320,20 @@ const AppointmentSchedule = () => {
   const scheduleGoogleMeet = async (appointment) => {
     try {
       if (!gapi.client || !gapi.client.calendar) {
-        Swal.fire("Error", "Google Calendar API is not loaded yet. Please wait and try again.", "error");
+        Swal.fire(
+          "Error",
+          "Google Calendar API is not loaded yet. Please wait and try again.",
+          "error"
+        );
         return;
       }
 
       if (!gapi.auth2 || !gapi.auth2.getAuthInstance()) {
-        Swal.fire("Error", "Google API authentication is not initialized.", "error");
+        Swal.fire(
+          "Error",
+          "Google API authentication is not initialized.",
+          "error"
+        );
         return;
       }
 
@@ -393,7 +400,11 @@ const AppointmentSchedule = () => {
       }
     } catch (error) {
       console.error("Error scheduling meeting:", error);
-      Swal.fire("Error", "Failed to schedule meeting. Check console for details.", "error");
+      Swal.fire(
+        "Error",
+        "Failed to schedule meeting. Check console for details.",
+        "error"
+      );
     }
   };
 
@@ -463,11 +474,20 @@ const AppointmentSchedule = () => {
       <Tabs
         value={tabValue}
         onChange={(e, newValue) => setTabValue(newValue)}
-        sx={{ mb: 2, display: "flex", justifyContent: "center" }}
+        sx={{ mb: 3, display: "flex", justifyContent: "center" }}
       >
-        <Tab label="Upcoming" />
-        <Tab label="Past" />
-        <Tab label="All" />
+        <Tab
+          label="Upcoming"
+          sx={{ fontWeight: tabValue === 0 ? "bold" : "normal" }}
+        />
+        <Tab
+          label="Past"
+          sx={{ fontWeight: tabValue === 1 ? "bold" : "normal" }}
+        />
+        <Tab
+          label="All"
+          sx={{ fontWeight: tabValue === 2 ? "bold" : "normal" }}
+        />
       </Tabs>
 
       {/* Appointment Table */}
@@ -483,33 +503,54 @@ const AppointmentSchedule = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Status
                   </TableCell>
                   <TableCell
@@ -529,7 +570,9 @@ const AppointmentSchedule = () => {
                   <TableRow key={appointment.id}>
                     <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell align="center">{appointment.contact}</TableCell>
+                      <TableCell align="center">
+                        {appointment.contact}
+                      </TableCell>
                     )}
                     {!isSmallScreen && (
                       <TableCell align="center">{appointment.type}</TableCell>
@@ -539,7 +582,9 @@ const AppointmentSchedule = () => {
                       <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">{appointment.duration}</TableCell>
+                      <TableCell align="center">
+                        {appointment.duration}
+                      </TableCell>
                     )}
                     <TableCell align="center">
                       <span
@@ -603,33 +648,54 @@ const AppointmentSchedule = () => {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Status
                   </TableCell>
                   <TableCell
@@ -649,7 +715,9 @@ const AppointmentSchedule = () => {
                   <TableRow key={appointment.id}>
                     <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell align="center">{appointment.contact}</TableCell>
+                      <TableCell align="center">
+                        {appointment.contact}
+                      </TableCell>
                     )}
                     {!isSmallScreen && (
                       <TableCell align="center">{appointment.type}</TableCell>
@@ -659,7 +727,9 @@ const AppointmentSchedule = () => {
                       <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">{appointment.duration}</TableCell>
+                      <TableCell align="center">
+                        {appointment.duration}
+                      </TableCell>
                     )}
                     <TableCell align="center">
                       <span
@@ -723,33 +793,54 @@ const AppointmentSchedule = () => {
             <Table className="min-w-full">
               <TableHead>
                 <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Customer
                   </TableCell>
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Contact
                     </TableCell>
                   )}
                   {!isSmallScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Type
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Date
                   </TableCell>
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Time
                     </TableCell>
                   )}
                   {!isSmallScreen && !isMediumScreen && (
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
                       Duration
                     </TableCell>
                   )}
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
                     Status
                   </TableCell>
                   <TableCell
@@ -769,7 +860,9 @@ const AppointmentSchedule = () => {
                   <TableRow key={appointment.id}>
                     <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
-                      <TableCell align="center">{appointment.contact}</TableCell>
+                      <TableCell align="center">
+                        {appointment.contact}
+                      </TableCell>
                     )}
                     {!isSmallScreen && (
                       <TableCell align="center">{appointment.type}</TableCell>
@@ -779,7 +872,9 @@ const AppointmentSchedule = () => {
                       <TableCell align="center">{appointment.time}</TableCell>
                     )}
                     {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">{appointment.duration}</TableCell>
+                      <TableCell align="center">
+                        {appointment.duration}
+                      </TableCell>
                     )}
                     <TableCell align="center">
                       <span
