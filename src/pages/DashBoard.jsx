@@ -28,7 +28,7 @@ const DashBoard = () => {
           <TopNav  title={"DashBoard"}/>
           <main className="p-6 space-y-4">
             <div className="flex justify-end z-10">
-              <Link to="/Addlead">
+              <Link to="/leads">
                 <Button
                   variant="contained"
                   color="primary"
