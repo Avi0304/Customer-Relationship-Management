@@ -34,77 +34,138 @@ import Swal from "sweetalert2";
 const AppointmentSchedule = () => {
   const [appointments, setAppointments] = useState([
     {
-      id: 1,
-      customer: "Acme Inc.",
-      contact: "John Smith",
-      date: "2025-03-10",
-      time: "10:00 AM",
-      duration: "30 min",
-      status: "Confirmed",
-      type: "Sales Demo",
+      "id": 1,
+      "customer": "Tata Technologies",
+      "contact": "Ravi Sharma",
+      "date": "2025-03-10",
+      "time": "10:00 AM",
+      "duration": "30 min",
+      "status": "Confirmed",
+      "type": "Sales Demo"
     },
     {
-      id: 2,
-      customer: "Widget Corp",
-      contact: "Sarah Johnson",
-      date: "2025-03-12",
-      time: "2:00 PM",
-      duration: "45 min",
-      status: "Pending",
-      type: "Follow-up",
+      "id": 2,
+      "customer": "Infosys Ltd.",
+      "contact": "Neha Verma",
+      "date": "2025-03-12",
+      "time": "2:00 PM",
+      "duration": "45 min",
+      "status": "Pending",
+      "type": "Follow-up"
     },
     {
-      id: 3,
-      customer: "Tech Solutions",
-      contact: "Mike Davis",
-      date: "2025-03-15",
-      time: "11:30 AM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Consultation",
+      "id": 3,
+      "customer": "Reliance Digital",
+      "contact": "Amit Joshi",
+      "date": "2025-03-15",
+      "time": "11:30 AM",
+      "duration": "60 min",
+      "status": "Confirmed",
+      "type": "Consultation"
     },
     {
-      id: 4,
-      customer: "Axe IT Solutions",
-      contact: "Lisa Wong",
-      date: "2025-03-18",
-      time: "3:15 PM",
-      duration: "30 min",
-      status: "Cancelled",
-      type: "Support",
-    },
-    // Past Appointments
-    {
-      id: 5,
-      customer: "Legacy Corp",
-      contact: "Robert Brown",
-      date: "2025-02-28",
-      time: "9:00 AM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Business Meeting",
+      "id": 4,
+      "customer": "HCL Solutions",
+      "contact": "Pooja Nair",
+      "date": "2025-03-18",
+      "time": "3:15 PM",
+      "duration": "30 min",
+      "status": "Cancelled",
+      "type": "Support"
     },
     {
-      id: 6,
-      customer: "OldTech Ltd.",
-      contact: "Emma Wilson",
-      date: "2025-02-25",
-      time: "1:30 PM",
-      duration: "45 min",
-      status: "Confirmed",
-      type: "Technical Review",
+      "id": 5,
+      "customer": "Wipro Tech",
+      "contact": "Sandeep Menon",
+      "date": "2025-02-28",
+      "time": "9:00 AM",
+      "duration": "60 min",
+      "status": "Confirmed",
+      "type": "Business Meeting"
     },
     {
-      id: 7,
-      customer: "Classic Consulting",
-      contact: "David Johnson",
-      date: "2025-02-20",
-      time: "4:00 PM",
-      duration: "30 min",
-      status: "Confirmed",
-      type: "Strategy Session",
+      "id": 6,
+      "customer": "Mahindra IT Services",
+      "contact": "Anjali Desai",
+      "date": "2025-02-25",
+      "time": "1:30 PM",
+      "duration": "45 min",
+      "status": "Confirmed",
+      "type": "Technical Review"
     },
-  ]);
+    {
+      "id": 7,
+      "customer": "L&T Infotech",
+      "contact": "Rahul Kapoor",
+      "date": "2025-02-20",
+      "time": "4:00 PM",
+      "duration": "30 min",
+      "status": "Confirmed",
+      "type": "Strategy Session"
+    },
+    {
+      "id": 8,
+      "customer": "TCS Consulting",
+      "contact": "Meera Reddy",
+      "date": "2025-03-22",
+      "time": "10:45 AM",
+      "duration": "45 min",
+      "status": "Pending",
+      "type": "Client Onboarding"
+    },
+    {
+      "id": 9,
+      "customer": "Zomato Technologies",
+      "contact": "Vikram Iyer",
+      "date": "2025-03-25",
+      "time": "2:30 PM",
+      "duration": "60 min",
+      "status": "Confirmed",
+      "type": "Product Demo"
+    },
+    {
+      "id": 10,
+      "customer": "HDFC Bank IT",
+      "contact": "Kavita Malhotra",
+      "date": "2025-03-28",
+      "time": "9:30 AM",
+      "duration": "30 min",
+      "status": "Pending",
+      "type": "Security Audit"
+    },
+    {
+      "id": 11,
+      "customer": "Flipkart Solutions",
+      "contact": "Rohan Agarwal",
+      "date": "2025-04-02",
+      "time": "3:00 PM",
+      "duration": "45 min",
+      "status": "Confirmed",
+      "type": "Vendor Meeting"
+    },
+    {
+      "id": 12,
+      "customer": "Paytm Services",
+      "contact": "Sneha Bhatia",
+      "date": "2025-04-05",
+      "time": "11:00 AM",
+      "duration": "30 min",
+      "status": "Pending",
+      "type": "Billing Discussion"
+    },
+    {
+      "id": 13,
+      "customer": "Ola Cabs",
+      "contact": "Kunal Saxena",
+      "date": "2025-04-08",
+      "time": "1:45 PM",
+      "duration": "60 min",
+      "status": "Confirmed",
+      "type": "Partnership Review"
+    }
+  ]
+  );
+  
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [openModal, setOpenModal] = useState(false);

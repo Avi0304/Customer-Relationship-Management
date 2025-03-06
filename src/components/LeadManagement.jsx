@@ -32,24 +32,67 @@ import Swal from "sweetalert2";
 const LeadManagement = () => {
   const [leads, setLeads] = useState([
     {
-      id: 1,
-      name: "John Doe",
-      contactInfo: "john.doe@example.com",
-      status: "New",
+      "id": 1,
+      "name": "Rajesh Kumar",
+      "contactInfo": "rajesh.kumar@gmail.com",
+      "status": "New"
     },
     {
-      id: 2,
-      name: "Jane Smith",
-      contactInfo: "jane.smith@example.com",
-      status: "Contacted",
+      "id": 2,
+      "name": "Priya Sharma",
+      "contactInfo": "priya.sharma@gmail.com",
+      "status": "Contacted"
     },
     {
-      id: 3,
-      name: "Robert Brown",
-      contactInfo: "robert.brown@example.com",
-      status: "Converted",
+      "id": 3,
+      "name": "Amit Verma",
+      "contactInfo": "amit.verma@gmail.com",
+      "status": "Converted"
     },
-  ]);
+    {
+      "id": 4,
+      "name": "Neha Gupta",
+      "contactInfo": "neha.gupta@gmail.com",
+      "status": "New"
+    },
+    {
+      "id": 5,
+      "name": "Vikas Yadav",
+      "contactInfo": "vikas.yadav@gmail.com",
+      "status": "Contacted"
+    },
+    {
+      "id": 6,
+      "name": "Anjali Patel",
+      "contactInfo": "anjali.patel@gmail.com",
+      "status": "Converted"
+    },
+    {
+      "id": 7,
+      "name": "Rohan Singh",
+      "contactInfo": "rohan.singh@gmail.com",
+      "status": "New"
+    },
+    {
+      "id": 8,
+      "name": "Meera Nair",
+      "contactInfo": "meera.nair@gmail.com",
+      "status": "Contacted"
+    },
+    {
+      "id": 9,
+      "name": "Sandeep Joshi",
+      "contactInfo": "sandeep.joshi@gmail.com",
+      "status": "Converted"
+    },
+    {
+      "id": 10,
+      "name": "Kavita Reddy",
+      "contactInfo": "kavita.reddy@gmail.com",
+      "status": "New"
+    }
+  ]
+  );
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [openAddDialog, setOpenAddDialog] = useState(false);
