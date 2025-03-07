@@ -189,11 +189,27 @@ const AppointmentSchedule = () => {
   };
 
   const handleAddAppointment = () => {
+    if (
+      !newAppointment.customer ||
+      !newAppointment.contact ||
+      !newAppointment.date ||
+      !newAppointment.time ||
+      !newAppointment.duration ||
+      !newAppointment.type
+    ) {
+      Swal.fire("Oops!", "Please fill in all fields before adding the Appointment.", "error");
+      setOpenModal(false); 
+      return
+    }
+  
+    // If all fields are filled, add the appointment
     setAppointments([
       ...appointments,
       { id: appointments.length + 1, ...newAppointment },
     ]);
-    setOpenModal(false);
+  
+    setOpenModal(false); // Close dialog only if all fields are valid
+  
     setNewAppointment({
       customer: "",
       contact: "",
@@ -203,15 +219,18 @@ const AppointmentSchedule = () => {
       status: "Pending",
       type: "",
     });
+  
     Swal.fire({
       title: "Added!",
-      titleText: "New Appointment has been added successfully.",
+      text: "New Appointment has been added successfully.",
       icon: "success",
       timer: 4000,
       timerProgressBar: true,
       showConfirmButton: false,
     });
   };
+  
+  
 
   const handleEditClick = (appointment) => {
     setEditAppointment(appointment);
@@ -410,28 +429,61 @@ const AppointmentSchedule = () => {
 
   const convertTo24HourFormat = (time) => {
     console.log("Original Time:", time); // Debugging log
-    const [hours, minutes, period] = time.match(/(\d+):(\d+) (\w+)/).slice(1);
+  
+    if (!time) {
+      console.error("Error: Time is null or undefined.");
+      return "";
+    }
+  
+    // Check if time is already in 24-hour format (hh:mm)
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      return `${time}:00`; // Append seconds and return as is
+    }
+  
+    // Handle 12-hour format with AM/PM
+    const match = time.match(/(\d+):(\d+) (\w+)/);
+    if (!match) {
+      console.error("Error: Time format is incorrect:", time);
+      return "";
+    }
+  
+    const [hours, minutes, period] = match.slice(1);
     let hours24 =
-      period === "PM" && hours !== "12" ? parseInt(hours) + 12 : hours;
-    hours24 = period === "AM" && hours === "12" ? "00" : hours24;
+      period.toUpperCase() === "PM" && hours !== "12"
+        ? parseInt(hours) + 12
+        : hours;
+    hours24 = period.toUpperCase() === "AM" && hours === "12" ? "00" : hours24;
+  
     const formattedTime = `${hours24}:${minutes}:00`;
     console.log("Converted Time (24-hour format):", formattedTime); // Debugging log
+  
     return formattedTime;
   };
+  
+  
 
   const calculateEndTime = (date, time, duration) => {
-    const startTime = new Date(`${date}T${convertTo24HourFormat(time)}`);
-    console.log(
-      "Start Time for End Time Calculation:",
-      startTime.toISOString()
-    ); // Debugging log
-
-    const durationMinutes = parseInt(duration.split(" ")[0]);
+    const formattedTime = convertTo24HourFormat(time);
+    if (!formattedTime) {
+      console.error("Error: Unable to convert time format.");
+      return "";
+    }
+  
+    const startTime = new Date(`${date}T${formattedTime}`);
+    if (isNaN(startTime.getTime())) {
+      console.error("Error: Invalid date or time value:", date, formattedTime);
+      return "";
+    }
+  
+    console.log("Start Time for End Time Calculation:", startTime.toISOString());
+  
+    const durationMinutes = parseInt(duration.split(" ")[0]) || 0;
     startTime.setMinutes(startTime.getMinutes() + durationMinutes);
-
-    console.log("Calculated End Time:", startTime.toISOString()); // Debugging log
+  
+    console.log("Calculated End Time:", startTime.toISOString());
     return startTime.toISOString();
   };
+  
 
   return (
     <div className="mt-0">
@@ -599,8 +651,8 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell align="center">
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
+                     <TableCell className="whitespace-nowrap" align="center">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
@@ -744,8 +796,8 @@ const AppointmentSchedule = () => {
                         {appointment.status}
                       </span>
                     </TableCell>
-                    <TableCell align="center">
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-row">
+                    <TableCell className="whitespace-nowrap" align="center">
+                    <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
@@ -927,7 +979,7 @@ const AppointmentSchedule = () => {
       )}
 
       <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth>
-        <DialogTitle>Add New Appointment</DialogTitle>
+        <DialogTitle><h2 className="font-bold">Add New Appointment</h2></DialogTitle>
         <DialogContent className="space-y-4">
           <TextField
             fullWidth
@@ -991,7 +1043,7 @@ const AppointmentSchedule = () => {
           </Select>
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={() => setOpenModal(false)}>Cancel</Button>
+          <Button onClick={() => setOpenModal(false)} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
@@ -1008,7 +1060,7 @@ const AppointmentSchedule = () => {
         onClose={() => setOpenEditModal(false)}
         fullWidth
       >
-        <DialogTitle>Edit Appointment</DialogTitle>
+        <DialogTitle> <h2 className="font-bold">Edit Appointment</h2></DialogTitle>
         <DialogContent className="space-y-4">
           {editAppointment && (
             <>
@@ -1076,7 +1128,7 @@ const AppointmentSchedule = () => {
           )}
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={() => setOpenEditModal(false)}>Cancel</Button>
+          <Button onClick={() => setOpenEditModal(false)} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"

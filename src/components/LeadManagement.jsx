@@ -140,6 +140,7 @@ const LeadManagement = () => {
   const handleAddNewLead = () => {
     if (!newLead.name || !newLead.contactInfo) {
       Swal.fire("Error", "Please fill in all fields", "error");
+      setOpenAddDialog(false)
       return;
     }
 
@@ -397,15 +398,15 @@ const LeadManagement = () => {
             </Select>
           </FormControl>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseAddDialog} sx={{ color: "gray" }}>
+        <DialogActions sx={{m:1}}>
+          <Button onClick={handleCloseAddDialog} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
             Cancel
           </Button>
           <Button
             onClick={newLead.id ? handleAddNewLead : handleAddNewLead}
-            color="primary"
+            color="primary" variant="contained"
           >
-            {newLead.id ? "Save Changes" : "Add Lead"}
+            {newLead.id ? "Update" : "Add"}
           </Button>
         </DialogActions>
       </Dialog>

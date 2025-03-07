@@ -67,6 +67,7 @@ const CustomerDetails = () => {
   const handleSave = () => {
     if (!formData.customer || !formData.amount || !formData.status) {
       Swal.fire("Oops!", "All fields are required.", "error");
+      setOpen(false);
       return;
     }
 
@@ -209,7 +210,7 @@ const CustomerDetails = () => {
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
-          {selectedCustomer ? "Edit Customer" : "Add Customer"}
+         <h2 className="font-bold"> {selectedCustomer ? "Edit Customer" : "Add Customer"}</h2>
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -237,9 +238,9 @@ const CustomerDetails = () => {
             onChange={handleChange}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave} color="primary">
+        <DialogActions sx={{m:1}}>
+          <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
+          <Button onClick={handleSave} color="primary"variant="contained">
             {selectedCustomer ? "Update" : "Add"}
           </Button>
         </DialogActions>

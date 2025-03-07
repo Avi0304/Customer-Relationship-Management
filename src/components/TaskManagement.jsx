@@ -128,11 +128,23 @@ const TaskManagement = () => {
   };
 
   const addTask = () => {
-    if (newTask.title.trim() === "") return;
+    
+    if (!newTask.title.trim() || !newTask.dueDate || !newTask.company) {
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Please fill in all fields before adding a task.",
+        timer: 3000,
+        showConfirmButton: true,
+      });
+      setOpen(false);
+      return; 
+    }
+  
+    // If all fields are filled, add the task
     setTasks([...tasks, { ...newTask, id: Date.now(), completed: false }]);
     setNewTask({ title: "", dueDate: "", company: "", priority: "Low" });
-    setOpen(false);
-
+  
     Swal.fire({
       icon: "success",
       title: "Task Added",
@@ -140,7 +152,10 @@ const TaskManagement = () => {
       timer: 2000,
       showConfirmButton: false,
     });
+  
+    setOpen(false); 
   };
+  
 
   const startEditing = (task) => setEditingTask({ ...task });
 
@@ -253,11 +268,11 @@ const TaskManagement = () => {
             <MenuItem value="High">High</MenuItem>
           </Select>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} sx={{color: 'gray'}} size="large">
+        <DialogActions sx={{m:1}}>
+          <Button onClick={() => setOpen(false)} sx={{ color: "gray", "&:hover": { color: "darkgray" } }} size="large">
             Cancel
           </Button>
-          <Button onClick={addTask} color="primary" size="large">
+          <Button onClick={addTask} color="primary" size="large" variant="contained">
             Add Task
           </Button>
         </DialogActions>
