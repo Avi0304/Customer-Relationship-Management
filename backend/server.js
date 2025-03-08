@@ -16,9 +16,8 @@ app.use(morgan('dev'))
 // Connect to Database
 connectDB();
 
-app.get('/', (req,res) => {
-    res.send('Server is running');
-})
+// routes
+app.use('/api/user', require('./routes/Auth'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT,()=> console.log(`Server is Running on ${PORT}`.bgCyan));
