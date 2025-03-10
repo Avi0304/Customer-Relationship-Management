@@ -8,6 +8,8 @@ import Signup from './components/SignUp'
 import LeadPage from "./pages/LeadPage";
 import AppointmentPage from "./pages/AppointmentPage";
 import SalesPage from "./pages/SalesPage";
+import ResetPassword from "./components/ResetPassword";
+import ForgetPassword from "./components/ForgetPassword";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/sales" element={<SalesPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
     </>

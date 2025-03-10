@@ -23,6 +23,7 @@ const SignUp = () => {
         title: "Register Successfully...",
         text: "Redirecting to login...",
         icon: "success",
+        iconColor: 'green',
         timer: 1500,
         showConfirmButton: false,
         allowOutsideClick: false,
@@ -41,6 +42,7 @@ const SignUp = () => {
           title: "Error!",
           text: error.response.data.message,
           icon: "error",
+          iconColor: 'red',
           confirmButtonText: "OK",
         });
       } else {
@@ -48,6 +50,7 @@ const SignUp = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
+          iconColor: 'red',
           confirmButtonText: "OK",
         });
       }
@@ -164,7 +167,7 @@ const SignUp = () => {
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="text-indigo-600 font-semibold hover:underline"
+                  className="text-black font-semibold hover:underline"
                 >
                   Login
                 </Link>
