@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { LoginValidationSchema } from "./validation/AuthValidation";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,23 +8,47 @@ import Swal from "sweetalert2";
 const Login = () => {
   const navigate = useNavigate();
 
+  
+  const [rememberMe, setRememberMe] = useState(false);
+  const [savedEmail, setSavedEmail] = useState("");
+  const [savedPassword, setSavedPassword] = useState("");
+
+ 
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("rememberedEmail");
+    const storedPassword = localStorage.getItem("rememberedPassword");
+
+    if (storedEmail && storedPassword) {
+      setSavedEmail(storedEmail);
+      setSavedPassword(storedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/user/login",
-        {
-          email: values.email,
-          password: values.password,
-        }
-      );
+      const response = await axios.post("http://localhost:8080/api/user/login", {
+        email: values.email,
+        password: values.password,
+      });
 
+    
       localStorage.setItem("token", response.data.token);
+
+     
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", values.email);
+        localStorage.setItem("rememberedPassword", values.password);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+      }
 
       Swal.fire({
         title: "Login Successful!",
         text: "Redirecting...",
         icon: "success",
-        iconColor: 'green',
+        iconColor: "green",
         timer: 1500,
         showConfirmButton: false,
         allowOutsideClick: false,
@@ -43,7 +67,7 @@ const Login = () => {
           title: "Error!",
           text: error.response.data.message,
           icon: "error",
-          iconColor: 'red',
+          iconColor: "red",
           confirmButtonText: "OK",
         });
       } else {
@@ -51,7 +75,7 @@ const Login = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
-          iconColor: 'red',
+          iconColor: "red",
           confirmButtonText: "OK",
         });
       }
@@ -71,13 +95,14 @@ const Login = () => {
         </p>
 
         <Formik
-          initialValues={{ email: "", password: "" }}
+          enableReinitialize // Allows Formik to reinitialize when state changes
+          initialValues={{ email: savedEmail, password: savedPassword }}
           validationSchema={LoginValidationSchema}
           onSubmit={handleLogin}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, values }) => (
             <Form className="space-y-5">
-              {/* Email Field */}
+          
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Email
@@ -95,7 +120,7 @@ const Login = () => {
                 />
               </div>
 
-              {/* Password Field */}
+            
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Password
@@ -113,7 +138,17 @@ const Login = () => {
                 />
               </div>
 
-              <div className="text-right">
+            
+              <div className="flex items-center justify-between">
+                <label className="flex items-center text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  Remember Me
+                </label>
                 <Link
                   to="/forget-password"
                   className="text-sm font-medium text-black hover:underline hover:text-black"
@@ -122,7 +157,7 @@ const Login = () => {
                 </Link>
               </div>
 
-              {/* Login Button */}
+           
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
