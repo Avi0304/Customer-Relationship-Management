@@ -23,7 +23,6 @@ import { Edit, Delete, Visibility } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { Search } from "@mui/icons-material";
 
-
 const CustomerDetails = () => {
   const [customers, setCustomers] = useState([
     { id: 1, customer: "Rajat Sharma", amount: "₹1300", status: "Completed" },
@@ -178,10 +177,30 @@ const CustomerDetails = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Customer</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Amount</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Status</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">Actions</TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Customer
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Amount
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Status
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -191,15 +210,17 @@ const CustomerDetails = () => {
                 <TableCell align="center">{customer.amount}</TableCell>
                 <TableCell align="center">{customer.status}</TableCell>
                 <TableCell align="center">
-
                   <Button color="primary" onClick={() => handleOpen(customer)}>
-                  <FaEdit size={20}/>
+                    <FaEdit size={20} />
                   </Button>
                   <Button color="info" onClick={() => handleOpen(customer)}>
-                  <FaEye size={20} color="black" />
+                    <FaEye size={20} color="black" />
                   </Button>
-                  <Button color="error" onClick={() => handleDelete(customer.id)}>
-                  <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
+                  <Button
+                    color="error"
+                    onClick={() => handleDelete(customer.id)}
+                  >
+                    <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
                   </Button>
                 </TableCell>
               </TableRow>
@@ -210,7 +231,10 @@ const CustomerDetails = () => {
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
-         <h2 className="font-bold"> {selectedCustomer ? "Edit Customer" : "Add Customer"}</h2>
+          <h2 className="font-bold">
+            {" "}
+            {selectedCustomer ? "Edit Customer" : "Add Customer"}
+          </h2>
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -238,9 +262,14 @@ const CustomerDetails = () => {
             onChange={handleChange}
           />
         </DialogContent>
-        <DialogActions sx={{m:1}}>
-          <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
-          <Button onClick={handleSave} color="primary"variant="contained">
+        <DialogActions sx={{ m: 1 }}>
+          <Button
+            onClick={handleClose}
+            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary" variant="contained">
             {selectedCustomer ? "Update" : "Add"}
           </Button>
         </DialogActions>
