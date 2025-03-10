@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiMenu, FiX, FiHome, FiUsers, FiLogOut } from "react-icons/fi";
 import { FaUserPlus, FaTasks, FaCalendar, FaStore , FaChartLine, FaShoppingCart} from "react-icons/fa";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async() => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  }
 
   return (
     <div
@@ -135,7 +141,9 @@ const Sidebar = () => {
         </Link>
 
         {/* Logout Button */}
-        <button className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200">
+        <button className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200" 
+        onClick={handleLogout}
+        >
           <div className="flex items-center justify-center w-10">
             <FiLogOut size={24} className="text-red-400" />
           </div>

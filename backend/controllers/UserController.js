@@ -69,58 +69,73 @@ const transporter = nodemailer.createTransport({
 
 const forgetpassword = async (req, res) => {
     try {
-      const email = req.body.email.toLowerCase();
-      const user = await User.findOne({ email });
-  
-      if (!user) {
-        return res.status(400).json({ message: "Email is not found" });
-      }
-  
-      // Generate Reset Token
-      const resettoken = Math.random().toString(36).substring(2, 8);
-  
-      // ✅ Use findByIdAndUpdate to ensure it's saved in DB
-      await User.findByIdAndUpdate(user._id, { resettoken }, { new: true });
-  
-      console.log("Generated Token:", resettoken); // Debugging log
-  
-      // Send Email with Reset Token
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "Password Reset Request",
-        text: `Hello, use this code to reset your password: ${resettoken}`,
-      };
-  
-      await transporter.sendMail(mailOptions);
-  
-      res.json({ message: "Reset password email sent successfully" });
+        const email = req.body.email.toLowerCase();
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "Email is not found" });
+        }
+
+       
+        const resettoken = Math.random().toString(36).substring(2, 8);
+
+      
+        await User.findByIdAndUpdate(user._id, { resettoken }, { new: true });
+
+        console.log("Generated Token:", resettoken); // Debugging log
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Password Reset Request",
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+                    <h2 style="color: #333; text-align: center;">🔒 Password Reset Request</h2>
+                    <p style="color: #555;">
+                        Hello, <br><br>
+                        We received a request to reset your password. Use the **token below** to proceed with resetting your password:
+                    </p>
+                    <div style="text-align: center; font-size: 24px; font-weight: bold; color: #2c3e50; padding: 10px; background: #f4f4f4; border-radius: 5px; display: inline-block;">
+                        ${resettoken}
+                    </div>
+                    <p style="color: #555;">
+                        If you did not request this, you can safely ignore this email. <br><br>
+                        This token is valid for only **15 minutes**.
+                    </p>
+                    <hr>
+                    <p style="color: #555; font-size: 12px; text-align: center;">
+                        <strong>Contact Support</strong> <br>
+                        📞 <strong>+91 8849286008</strong> <br>
+                        ✉️ <a href="mailto:avip56325@gmail.com" style="color: #555 !important; text-decoration: none;">avip56325@gmail.com</a>
+                    </p>
+                </div>
+            `,
+        };
+        
+        
+        
+        await transporter.sendMail(mailOptions);
+
+        res.json({ message: "Reset password email sent successfully" });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-  };
-  
-  
+};
+
+
 
 const resetpassword = async (req, res) => {
     try {
         const { email, token, newPassword } = req.body;
-
-        console.log("Reset Password Request Received:");
-        console.log("Email:", email);
-        console.log("Token:", token);
-
         const user = await User.findOne({ email });
         if (!user) {
-            console.log("❌ User not found in the database.");
             return res.status(400).json({ message: "Email not found" });
         }
 
-        console.log("✅ User found:", user);
 
         if (user.resettoken !== token) {
-            console.log("❌ Reset token does not match.");
+
             return res.status(400).json({ message: "Reset token is invalid or expired" });
         }
 
@@ -129,11 +144,10 @@ const resetpassword = async (req, res) => {
         user.resettoken = null;
         await user.save();
 
-        console.log("✅ Password updated successfully.");
         res.json({ message: "Password has been reset successfully!" });
 
     } catch (error) {
-        console.error("❌ Error resetting password:", error);
+
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
