@@ -3,7 +3,7 @@ import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
 import SalesManagement from "../components/SalesManagement";
 
-function AppointmentPage() {
+function SalesPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex">
@@ -21,4 +21,4 @@ function AppointmentPage() {
   );
 }
 
-export default AppointmentPage;
+export default SalesPage;
