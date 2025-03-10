@@ -13,11 +13,16 @@ const UserSchema = mongoose.Schema({
         type: String,
         require: true
     },
+    resettoken:
+    {
+        type: String,
+        default: null
+    },
     verified: {
-        type:Boolean
+        type: Boolean
     }
-}, {timeStamp: true}
+}, { timeStamp: true }
 );
 
-const User = mongoose.model("User",UserSchema);
+const User = mongoose.model("User", UserSchema);
 module.exports = User
