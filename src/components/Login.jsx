@@ -10,10 +10,13 @@ const Login = () => {
 
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post("http://localhost:8080/api/user/login", {
-        email: values.email,
-        password: values.password,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/user/login",
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
 
       localStorage.setItem("token", response.data.token);
 
@@ -21,9 +24,10 @@ const Login = () => {
         title: "Login Successful!",
         text: "Redirecting...",
         icon: "success",
-        timer: 1500, 
+        iconColor: 'green',
+        timer: 1500,
         showConfirmButton: false,
-        allowOutsideClick: false, 
+        allowOutsideClick: false,
       });
 
       setTimeout(() => {
@@ -39,6 +43,7 @@ const Login = () => {
           title: "Error!",
           text: error.response.data.message,
           icon: "error",
+          iconColor: 'red',
           confirmButtonText: "OK",
         });
       } else {
@@ -46,6 +51,7 @@ const Login = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
+          iconColor: 'red',
           confirmButtonText: "OK",
         });
       }
@@ -55,7 +61,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
         <h2 className="text-3xl font-bold text-gray-800 text-center">
           Welcome Back
@@ -107,6 +113,15 @@ const Login = () => {
                 />
               </div>
 
+              <div className="text-right">
+                <Link
+                  to="/forget-password"
+                  className="text-sm font-medium text-black hover:underline hover:text-black"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+
               {/* Login Button */}
               <button
                 type="submit"
@@ -121,7 +136,7 @@ const Login = () => {
                 Don't have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-indigo-600 font-semibold hover:underline"
+                  className="text-black font-semibold hover:underline"
                 >
                   Sign up
                 </Link>
