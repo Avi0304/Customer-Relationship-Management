@@ -82,7 +82,7 @@ const forgetpassword = async (req, res) => {
       
         await User.findByIdAndUpdate(user._id, { resettoken }, { new: true });
 
-        console.log("Generated Token:", resettoken); // Debugging log
+        console.log("Generated Token:", resettoken); 
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
