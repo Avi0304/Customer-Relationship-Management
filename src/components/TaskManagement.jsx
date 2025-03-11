@@ -12,10 +12,10 @@ import {
 import { BiPlus, BiCalendar } from "react-icons/bi";
 import Swal from "sweetalert2";
 import { Card } from "./ui/card";
-import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { IoCheckmarkCircleSharp, IoArrowUndoCircle } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { HiBuildingOffice } from "react-icons/hi2";
 
 const TaskManagement = () => {
   const [tasks, setTasks] = useState([
@@ -419,6 +419,9 @@ const TaskManagement = () => {
                       <h4 className="font-semibold">{task.title}</h4>
                       <p className="text-sm text-gray-600 flex items-center">
                         <BiCalendar className="mr-1" size={18} /> {task.dueDate}
+                      </p>
+                      <p className="text-sm text-gray-600 flex items-center">
+                        <HiBuildingOffice  className="mr-1" size={18} /> {task.company}
                       </p>
                     </div>
                     <div className="flex space-x-3">
