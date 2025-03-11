@@ -15,6 +15,7 @@ import {
   Paper,
   Box,
   InputAdornment,
+  MenuItem, Select, FormControl, InputLabel
 } from "@mui/material";
 import { BiPlus } from "react-icons/bi";
 import { FaEdit, FaEye } from "react-icons/fa";
@@ -178,25 +179,25 @@ const CustomerDetails = () => {
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
               <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
               >
                 Customer
               </TableCell>
               <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
               >
                 Amount
               </TableCell>
               <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
               >
                 Status
               </TableCell>
               <TableCell
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
               >
                 Actions
@@ -206,10 +207,26 @@ const CustomerDetails = () => {
           <TableBody>
             {filteredCustomers.map((customer) => (
               <TableRow key={customer.id}>
-                <TableCell align="center">{customer.customer}</TableCell>
-                <TableCell align="center">{customer.amount}</TableCell>
-                <TableCell align="center">{customer.status}</TableCell>
-                <TableCell align="center">
+                <TableCell align="center" sx={{ width: "25%" }}>
+                  {customer.customer}
+                </TableCell>
+                <TableCell align="center" sx={{ width: "25%" }}>
+                  {customer.amount}
+                </TableCell>
+                <TableCell align="center" sx={{ width: "25%" }}>
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                      customer.status === "Completed"
+                        ? "bg-green-500 text-white"
+                        : customer.status === "Pending"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-red-500 text-white"
+                    }`}
+                  >
+                    {customer.status}
+                  </span>
+                </TableCell>
+                <TableCell align="center" sx={{ width: "25%" }}>
                   <Button color="primary" onClick={() => handleOpen(customer)}>
                     <FaEdit size={20} />
                   </Button>
@@ -253,14 +270,18 @@ const CustomerDetails = () => {
             value={formData.amount}
             onChange={handleChange}
           />
-          <TextField
-            fullWidth
-            margin="dense"
-            label="Status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Status</InputLabel>
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <MenuItem value="Completed">Completed</MenuItem>
+              <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Cancelled">Cancelled</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
           <Button

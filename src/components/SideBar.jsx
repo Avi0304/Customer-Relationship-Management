@@ -1,17 +1,36 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiMenu, FiX, FiHome, FiUsers, FiLogOut } from "react-icons/fi";
-import { FaUserPlus, FaTasks, FaCalendar, FaStore , FaChartLine, FaShoppingCart} from "react-icons/fa";
+import {
+  FaUserPlus,
+  FaTasks,
+  FaCalendar,
+  FaStore,
+  FaChartLine,
+  FaShoppingCart,
+} from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = async() => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  }
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    Swal.fire({
+      title: "Logout Successfully...",
+      text: "Redirecting to login page",
+      timer: 1500,
+      icon: "success",
+      iconColor: "green",
+      showConfirmButton: false,
+      allowOutsideClick: false,
+    });
+    setTimeout(() => {
+      navigate("/login");
+    }, 2000);
+  };
 
   return (
     <div
@@ -107,8 +126,8 @@ const Sidebar = () => {
         </Link>
 
         <Link
-                  to="/sales"
-                  className={`flex items-center p-2 rounded-lg transition-all duration-200 
+          to="/sales"
+          className={`flex items-center p-2 rounded-lg transition-all duration-200 
             ${
               location.pathname === "/sales"
                 ? "bg-blue-700 text-white"
@@ -141,8 +160,9 @@ const Sidebar = () => {
         </Link>
 
         {/* Logout Button */}
-        <button className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200" 
-        onClick={handleLogout}
+        <button
+          className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200"
+          onClick={handleLogout}
         >
           <div className="flex items-center justify-center w-10">
             <FiLogOut size={24} className="text-red-400" />

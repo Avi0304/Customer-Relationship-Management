@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
             </label>
             <input
               type="email"
-              placeholder="admin@example.com"
+              placeholder="Enter your Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"

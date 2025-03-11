@@ -174,6 +174,7 @@ const SalesManagement = () => {
             <MenuItem value="All">All</MenuItem>
             <MenuItem value="Completed">Completed</MenuItem>
             <MenuItem value="Pending">Pending</MenuItem>
+            <MenuItem value="Cancelled">Cancelled</MenuItem>
           </Select>
         </div>
 
@@ -193,11 +194,11 @@ const SalesManagement = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell align="center">ID</TableCell>
-              <TableCell align="center">Customer</TableCell>
-              <TableCell align="center">Amount</TableCell>
-              <TableCell align="center">Status</TableCell>
-              <TableCell align="center">Actions</TableCell>
+              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>ID</TableCell>
+              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Customer</TableCell>
+              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Amount</TableCell>
+              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
+              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -206,7 +207,19 @@ const SalesManagement = () => {
                 <TableCell align="center">{sale.id}</TableCell>
                 <TableCell align="center">{sale.customer}</TableCell>
                 <TableCell align="center">{sale.amount}</TableCell>
-                <TableCell align="center">{sale.status}</TableCell>
+                <TableCell align="center">
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                      sale.status === "Completed"
+                        ? "bg-green-500 text-white"
+                        : sale.status === "Pending"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-red-500 text-white"
+                    }`}
+                  >
+                    {sale.status}
+                  </span>
+                </TableCell>
                 <TableCell align="center">
                   <Button
                     onClick={() => handleEditSale(sale)}
@@ -261,6 +274,7 @@ const SalesManagement = () => {
             >
               <MenuItem value="Completed">Completed</MenuItem>
               <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Cancelled">Cancelled</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
@@ -318,6 +332,7 @@ const SalesManagement = () => {
             >
               <MenuItem value="Completed">Completed</MenuItem>
               <MenuItem value="Pending">Pending</MenuItem>
+              <MenuItem value="Cancelled">Cancelled</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
