@@ -182,6 +182,37 @@ const TaskManagement = () => {
     );
   };
 
+  const handleToggleComplete = (taskId, isCompleted) => {
+    Swal.fire({
+      title: isCompleted ? "Mark as Complete" : "Mark as InCompleted",
+      text: isCompleted
+        ? "This task will be marked as Complete."
+        : "This task will be marked as Incompleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, proceed!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+       
+        toggleComplete(taskId, !isCompleted); 
+
+        Swal.fire({
+          title: !isCompleted ? "Task InCompleted" : "Task Complete",
+          text: !isCompleted
+            ? "The task has been marked as Incompleted."
+            : "The task has been marked as Complete.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
+  
+  
+
   const deleteTask = (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -402,7 +433,7 @@ const TaskManagement = () => {
                         <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                       </Button>
                       <Button
-                        onClick={() => toggleComplete(task.id)}
+                        onClick={() => handleToggleComplete(task.id, task.completed)}
                         size="large"
                       >
                         {task.completed ? (

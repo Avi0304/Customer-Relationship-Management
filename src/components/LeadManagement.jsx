@@ -140,7 +140,7 @@ const LeadManagement = () => {
   const handleAddNewLead = () => {
     if (!newLead.name || !newLead.contactInfo) {
       Swal.fire("Error", "Please fill in all fields", "error");
-      setOpenAddDialog(false)
+      setOpenAddDialog(false);
       return;
     }
 
@@ -309,13 +309,22 @@ const LeadManagement = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#e0e0e0" }}>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
                 Name
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
                 Contact Info
               </TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }} align="center">
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
                 Status
               </TableCell>
               <TableCell
@@ -331,7 +340,20 @@ const LeadManagement = () => {
               <TableRow key={lead.id}>
                 <TableCell align="center">{lead.name}</TableCell>
                 <TableCell align="center">{lead.contactInfo}</TableCell>
-                <TableCell align="center">{lead.status}</TableCell>
+                <TableCell align="center">
+                  {" "}
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                      lead.status === "Converted"
+                        ? "bg-green-500 text-white"
+                        : lead.status === "New"
+                        ? "bg-blue-500 text-white"
+                        : "bg-yellow-500 text-white"
+                    }`}
+                  >
+                    {lead.status}
+                  </span>
+                </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
                   {/* Edit and Delete Buttons with Icons */}
 
@@ -398,13 +420,17 @@ const LeadManagement = () => {
             </Select>
           </FormControl>
         </DialogContent>
-        <DialogActions sx={{m:1}}>
-          <Button onClick={handleCloseAddDialog} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
+        <DialogActions sx={{ m: 1 }}>
+          <Button
+            onClick={handleCloseAddDialog}
+            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
+          >
             Cancel
           </Button>
           <Button
             onClick={newLead.id ? handleAddNewLead : handleAddNewLead}
-            color="primary" variant="contained"
+            color="primary"
+            variant="contained"
           >
             {newLead.id ? "Update" : "Add"}
           </Button>

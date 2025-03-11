@@ -4,16 +4,17 @@ import { LoginValidationSchema } from "./validation/AuthValidation";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { IoIosEye } from "react-icons/io";
+import { IoIosEyeOff } from "react-icons/io";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  
   const [rememberMe, setRememberMe] = useState(false);
   const [savedEmail, setSavedEmail] = useState("");
   const [savedPassword, setSavedPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
- 
   useEffect(() => {
     const storedEmail = localStorage.getItem("rememberedEmail");
     const storedPassword = localStorage.getItem("rememberedPassword");
@@ -27,15 +28,16 @@ const Login = () => {
 
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post("http://localhost:8080/api/user/login", {
-        email: values.email,
-        password: values.password,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/user/login",
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
 
-    
       localStorage.setItem("token", response.data.token);
 
-     
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", values.email);
         localStorage.setItem("rememberedPassword", values.password);
@@ -102,7 +104,6 @@ const Login = () => {
         >
           {({ isSubmitting, values }) => (
             <Form className="space-y-5">
-          
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Email
@@ -119,26 +120,36 @@ const Login = () => {
                   className="text-red-500 text-xs mt-1"
                 />
               </div>
-
-            
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <Field
-                  type="password"
-                  name="password"
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
-                  placeholder="Enter your password"
-                />
+                <div className="mt-1 flex items-center border border-gray-300 rounded-lg shadow-sm focus-within:ring-indigo-500 focus-within:border-indigo-500 transition">
+                  <Field
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className="w-full px-4 py-3 outline-none bg-transparent"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    className="p-3 text-gray-900 hover:text-gray-700 transition"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <IoIosEye size={20} />
+                    ) : (
+                      <IoIosEyeOff size={20} />
+                    )}
+                  </button>
+                </div>
                 <ErrorMessage
                   name="password"
                   component="p"
                   className="text-red-500 text-xs mt-1"
                 />
               </div>
-
-            
+              
               <div className="flex items-center justify-between">
                 <label className="flex items-center text-sm text-gray-700">
                   <input
@@ -156,8 +167,6 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-
-           
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
@@ -165,7 +174,6 @@ const Login = () => {
               >
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
-
               {/* Sign-up Link */}
               <p className="text-center text-sm text-gray-600">
                 Don't have an account?{" "}
