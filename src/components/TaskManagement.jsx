@@ -418,7 +418,7 @@ const TaskManagement = () => {
                     <div>
                       <h4 className="font-semibold">{task.title}</h4>
                       <p className="text-sm text-gray-600 flex items-center">
-                        <BiCalendar className="mr-1" size={18} /> {task.dueDate}
+                        <BiCalendar className="mr-1 mb-1" size={18} /> {task.dueDate}
                       </p>
                       <p className="text-sm text-gray-600 flex items-center">
                         <HiBuildingOffice  className="mr-1" size={18} /> {task.company}
