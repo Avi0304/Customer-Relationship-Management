@@ -60,7 +60,7 @@ const Task = () => {
   });
 
   return (
-    <Card className="col-span-3 min-h-83.5">
+    <Card className="col-span-3 min-h-83.5 bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md">
       <CardHeader>
         <h1 className="text-2xl font-bold leading-none tracking-tight mb-3">
           Tasks
@@ -114,12 +114,12 @@ const Task = () => {
                 <div className="flex items-center gap-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${color}`} />
                   <div>
-                    <p className="text-sm font-medium">{title}</p>
-                    <p className="text-xs text-gray-500">{company}</p>
-                    <p className="text-xs text-gray-500">{due}</p>
+                    <p className="text-sm font-medium light:text-gray-800 dark:text-gray-200">{title}</p>
+                    <p className="text-xs light:text-gray-500 dark:text-gray-300">{company}</p>
+                    <p className="text-xs light:text-gray-500 dark:text-gray-300">{due}</p>
                   </div>
                 </div>
-                <button className="text-blue-600 hover:underline text-sm">
+                <button className="text-blue-600 dark:text-blue-300 hover:underline text-sm">
                   Mark Complete
                 </button>
               </div>
