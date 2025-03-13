@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
 
 
 :root {
@@ -14,6 +17,18 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --background-light: #ffffff;  /* Clean light grey */
+  --background-dark: #0D1117;  /* Deep blue background */
+  --neon-primary: #ff00ff;      /* Bright magenta */
+  --neon-secondary: #00ffff;    /* Cyan */
+  --neon-accent: #39ff14;       /* Neon green */
+  --neon-purple: #3a37f2;       /* Deep space purple */
+  --neon-blue: #3677ff;         /* Cosmic blue */
+  --neon-pink: #ff71ce;         /* Stellar pink */
+  --neon-teal: #05ffa1;         /* Nebula teal */
+  --space-black: #0d0221;       /* Deep space black */
+  --neon-glow: 0 0 10px;        /* Glow effect value */
 }
 
 
@@ -22,26 +37,78 @@ body {
   margin: 0;
 }
 
-
-
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+/* Light mode - default */
+.light {
+  background-color: var(--background-light);
+  color: #0a2e4e;
 }
-button:hover {
-  border-color: #646cff;
+
+/* Dark mode */
+.dark {
+  background-color: var(--background-dark);
+  color: #e5e7eb;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
+
+/* Calendar Dark Mode Styles */
+.dark .react-calendar {
+  background-color: transparent;
+  color: #e5e7eb;
+}
+
+.dark .react-calendar button:enabled:hover {
+  background-color: #374151;
+}
+
+.dark .react-calendar__navigation button:disabled {
+  background-color: transparent;
+  color: #6b7280;
+}
+
+.dark .react-calendar__month-view__days__day--weekend {
+  color: #ef4444;
+}
+
+.dark .react-calendar__month-view__days__day--neighboringMonth {
+  color: #6b7280;
+}
+
+.dark .react-calendar__tile:disabled {
+  background-color: transparent;
+  color: #6b7280;
+}
+
+/* Calendar Light Mode Styles */
+.light .react-calendar {
+  background-color: transparent;
+  color: #111827;
+}
+
+.light .react-calendar__navigation button:disabled {
+  background-color: transparent;
+  color: #9ca3af;
+}
+
+.light .react-calendar__month-view__days__day--weekend {
+  color: #dc2626;
+}
+
+.light .react-calendar__month-view__days__day--neighboringMonth {
+  color: #9ca3af;
+}
+
+/* Reset default color scheme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+  }
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

@@ -51,9 +51,9 @@ const CustomerSegmentation = () => {
   }, []);
 
   return (
-    <Card className="col-span-3 bg-white shadow-lg rounded-lg p-6 w-full">
+    <Card className="col-span-3 bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md  shadow-lg rounded-lg p-6 w-full">
       <CardHeader>
-        <h1 className="text-2xl font-bold leading-none tracking-tight mb-3 text-gray-800">
+        <h1 className="text-2xl font-bold leading-none tracking-tight light:text-gray-900 dark:text-gray-100 mb-3 text-gray-800">
           Customer Segmentation
         </h1>
       </CardHeader>
@@ -85,8 +85,36 @@ const CustomerSegmentation = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend layout="horizontal" align="center" verticalAlign="bottom" />
+                <Tooltip  contentStyle={{
+                backgroundColor: 'var(--light-bg, #fff)',
+                borderColor: 'var(--light-border, #e5e7eb)',
+                borderRadius: '0.5rem',
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                '@media (prefers-color-scheme: dark)': {
+                  backgroundColor: 'hsl(var(--card))',
+                  borderColor: 'hsl(var(--border))',
+                }
+              }}
+              labelStyle={{
+                color: 'var(--light-text, #111827)',
+                fontWeight: 600,
+                '@media (prefers-color-scheme: dark)': {
+                  color: 'hsl(var(--foreground))',
+                }
+              }}
+              itemStyle={{
+                '@media (prefers-color-scheme: dark)': {
+                  color: 'hsl(var(--muted-foreground))',
+                }
+              }}/>
+                <Legend layout="horizontal" align="center" verticalAlign="bottom"   wrapperStyle={{
+                paddingLeft: '2rem',
+              }}
+              formatter={(value) => (
+                <span className="light:text-gray-700 dark:text-gray-300">
+                  {value}
+                </span>
+              )}/>
               </PieChart>
             </ResponsiveContainer>
           </div>

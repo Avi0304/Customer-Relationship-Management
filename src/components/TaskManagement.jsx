@@ -342,7 +342,7 @@ const TaskManagement = () => {
                     : task.priority === "Medium"
                     ? "border-yellow-400"
                     : "border-green-400"
-                }`}
+                } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
               >
                 {editingTask && editingTask.id === task.id ? (
                   <div className="w-full">
@@ -417,10 +417,10 @@ const TaskManagement = () => {
                   <>
                     <div>
                       <h4 className="font-semibold">{task.title}</h4>
-                      <p className="text-sm text-gray-600 flex items-center">
+                      <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">
                         <BiCalendar className="mr-1 mb-1" size={18} /> {task.dueDate}
                       </p>
-                      <p className="text-sm text-gray-600 flex items-center">
+                      <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">
                         <HiBuildingOffice  className="mr-1" size={18} /> {task.company}
                       </p>
                     </div>
