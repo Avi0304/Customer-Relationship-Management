@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiBell, FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
+import NotificationBell from "./NoticationBell";
 
 const TopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,8 +15,11 @@ const TopNav = ({ title }) => {
 
       <div className="flex items-center gap-6">
         <ThemeToggle />
+
+        <NotificationBell/>
+        
         {/* Notifications */}
-        <div className="relative flex items-center">
+        {/* <div className="relative flex items-center">
           <button className="relative hover:scale-110 transition-all duration-200">
             <FiBell size={26} className="light:text-gray-700 dark:text-gray-300 transition-colors duration-300" />
             {count > 0 && (
@@ -24,7 +28,7 @@ const TopNav = ({ title }) => {
               </span>
             )}
           </button>
-        </div>
+        </div> */}
 
         {/* Profile Dropdown */}
         <div className="relative ">
