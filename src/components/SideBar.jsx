@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiMenu, FiX, FiHome, FiUsers, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiX, FiHome, FiUsers, FiLogOut,   } from "react-icons/fi";
 import {
   FaUserPlus,
   FaTasks,
@@ -8,6 +8,7 @@ import {
   FaStore,
   FaChartLine,
   FaShoppingCart,
+  FaBullseye
 } from "react-icons/fa";
 import Swal from "sweetalert2";
 
@@ -158,6 +159,25 @@ const Sidebar = () => {
             Appointments
           </span>
         </Link>
+
+        <Link
+          to="/marketing"
+          className={`flex items-center p-2 rounded-lg transition-all duration-200 
+            ${
+              location.pathname === "/marketing"
+                ? "bg-blue-700 text-white"
+                : "hover:bg-gray-700/50 hover:text-green-400"
+            }`}
+        >
+          <div className="flex items-center justify-center w-10">
+            <FaBullseye  size={24} />
+          </div>
+          <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+            Marketing
+          </span>
+        </Link>
+
+        
 
         {/* Logout Button */}
         <button
