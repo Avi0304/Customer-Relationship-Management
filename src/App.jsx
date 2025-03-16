@@ -15,6 +15,7 @@ import ResetPassword from "./components/ResetPassword";
 import ForgetPassword from "./components/ForgetPassword";
 import PrivateRoute from "./components/PrivateRoute"; // For protected routes
 import PublicRoute from "./components/PublicRoute"; // For public routes
+import MarketingPage from "./pages/MarketingPage";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -37,6 +38,7 @@ function AppContent() {
           <Route path="/customer/view/:id" element={<PrivateRoute element={<CustomerDetails />} />} />
           <Route path="/appointment" element={<PrivateRoute element={<AppointmentPage />} />} />
           <Route path="/sales" element={<PrivateRoute element={<SalesPage />} />} />
+          <Route path="/marketing" element={<MarketingPage />} />
         </Routes>
       </Router>
     </div>
