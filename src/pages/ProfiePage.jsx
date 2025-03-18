@@ -2,7 +2,7 @@ import { useState } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
 import { useNavigate } from "react-router-dom";
-import { FiEdit2, FiSettings, FiCheck } from "react-icons/fi";
+import { FiEdit, FiSettings, FiCheck } from "react-icons/fi";
 import { Avatar } from "@mui/material";
 
 const ProfilePage = () => {
@@ -61,9 +61,9 @@ const ProfilePage = () => {
                 />
                 <label
                   htmlFor="profile-photo"
-                  className="absolute bottom-0 right-0 bg-white border rounded-full p-1 cursor-pointer shadow-md"
+                  className="absolute bottom-0 right-0 bg-white border rounded-full p-1 cursor-pointer shadow-lg"
                 >
-                  <FiEdit2 className="text-gray-600" />
+                  <FiEdit className="text-gray-600" />
                 </label>
               </div>
               <div>
@@ -128,7 +128,7 @@ const ProfileCard = ({ title, user, fields, onChange }) => {
         {isEditing ? (
           <FiCheck className="text-green-500 cursor-pointer" onClick={handleSave} />
         ) : (
-          <FiEdit2 className="text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => setIsEditing(true)} />
+          <FiEdit className="text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => setIsEditing(true)} />
         )}
       </h3>
       <div className="mt-3 space-y-2">
@@ -153,16 +153,27 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
 
   return (
     <div className="border-b border-gray-200 pb-2">
-      <p className="text-xs text-gray-500 uppercase">{label}</p>
+      <p className="text-xs text-gray-500 font-bold capitalize mb-1">{label}</p>
       <div className="text-gray-800 dark:text-white text-sm">
-        {isEditing ? (
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => onChange(inputValue)}
-            className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-          />
+      {isEditing ? (
+          label.toLowerCase() === "address" ? (
+            // Render a textarea for Address
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onBlur={() => onChange(inputValue)}
+              className="border rounded px-2 py-1 text-sm w-full h-20 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          ) : (
+            // Render an input for other fields
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onBlur={() => onChange(inputValue)}
+              className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          )
         ) : (
           <p>{Array.isArray(value) ? value.join(", ") : value}</p>
         )}

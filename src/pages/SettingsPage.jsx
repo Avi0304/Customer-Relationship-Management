@@ -12,12 +12,13 @@ import {
   Card,
 
 } from "@mui/material";
-import { FaUser, FaLock, FaBell, FaDatabase } from "react-icons/fa";
-import { FiUser, FiShield,FiBell, FiDatabase } from "react-icons/fi";
+import { useParams } from "react-router-dom";
+
 
 
 const SettingsPage = () => {
-  const [tab, setTab] = useState("profile");
+  const { tab: urlTab } = useParams();
+  const [tab, setTab] = useState(urlTab || 'profile');
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({
     fullName: "",
@@ -29,6 +30,12 @@ const SettingsPage = () => {
     email: false,
     push: false,
   });
+
+  useEffect(() => {
+    if (urlTab) {
+      setTab(urlTab);
+    }
+  }, [urlTab]);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1500);
@@ -49,36 +56,15 @@ const SettingsPage = () => {
         <TopNav title="Settings" />
 
         <div className="flex min-h-screen bg-white-100 ">
-          {/* Sidebar */}
-          <aside className="w-64 h-screen bg-white  p-5 bg-white dark:bg-[#1B222D]">
-            <h2 className="text-lg font-semibold mb-4">Settings</h2>
-            <ul className="space-y-4">
-              {[
-                { label: "Profile", icon: <FiUser />, value: "profile" },
-                { label: "Security", icon: <FiShield />, value: "security" },
-                { label: "Notifications", icon: <FiBell />, value: "notifications" },
-                { label: "Data Management", icon: <FiDatabase />, value: "data" },
-              ].map((item) => (
-                <li
-                  key={item.value}
-                  className={`flex items-center space-x-2 text-gray-700 hover:text-black cursor-pointer p-2 rounded ${tab === item.value ? "bg-gray-200 font-bold text-black" : ""
-                    }`}
-                  onClick={() => setTab(item.value)}
-                >
-                  {item.icon}
-                  <span>{item.label}</span>
-                </li>
-              ))}
-            </ul>
-          </aside>
-
 
           {/* Main Content */}
           <div className="flex-1 p-6">
             {/* Settings Content */}
-            <div className="max-w-4xl mx-auto ">
+            <div className="w-full">
               {loading ? (
-                <CircularProgress />
+                <div className="flex justify-center items-center h-64">
+                  <CircularProgress />
+                </div>
               ) : (
                 <>
                   {tab === "profile" && (
@@ -90,7 +76,7 @@ const SettingsPage = () => {
 
                       {/* Avatar Section */}
                       <div className="flex items-center mb-6">
-                        <Avatar sx={{ width: 64, height: 64, bgcolor: "gray" }}>
+                        <Avatar sx={{ width: 64, height: 64, bgcolor: "gray", ml: 2 }}>
                           {profile.fullName ? profile.fullName[0] : "A"}
                         </Avatar>
                         <Button
@@ -138,14 +124,19 @@ const SettingsPage = () => {
                           fullWidth
                         />
 
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{ width: "20%", background: 'black', padding: '2', textTransform: 'capitalize' }}
-                        >
-                          Save Changes
-                        </Button>
-
+                        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", mt: 2 }}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              width: "auto",
+                              background: "black",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            Save Changes
+                          </Button>
+                        </Box>
                       </div>
                     </div>
                   )}
@@ -170,9 +161,19 @@ const SettingsPage = () => {
                         fullWidth
                         sx={{ mb: 2 }}
                       />
-                      <Button variant="contained" color="primary" sx={{ background: 'black', textTransform: 'capitalize' }}>
-                        Update Password
-                      </Button>
+                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{
+                            width: "auto",
+                            background: "black",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          Update Changes
+                        </Button>
+                      </Box>
                     </div>
                   )}
 
@@ -202,12 +203,21 @@ const SettingsPage = () => {
                       ))}
 
                       {/* Save Preferences Button */}
-                      <Button variant="contained" color="primary" sx={{ background: 'black', textTransform: 'capitalize' }}>
-                        Save Preferences
-                      </Button>
+                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", mt: 2 }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{
+                            width: "auto",
+                            background: "black",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          Save Preferences
+                        </Button>
+                      </Box>
                     </div>
                   )}
-
 
                   {tab === "data" && (
                     <div className="bg-white shadow-xl rounded-lg p-6 bg-white dark:bg-[#1B222D]">
@@ -243,7 +253,7 @@ const SettingsPage = () => {
                         <h3 className="text-lg font-semibold text-red-600">Danger Zone</h3>
                         <p className="text-gray-500 text-sm mb-2">Permanently delete your account and all associated data</p>
 
-                        <Button variant="contained" color="error" sx={{textTransform:'capitalize'}}>
+                        <Button variant="contained" color="error" sx={{ textTransform: 'capitalize' }}>
                           Delete Account
                         </Button>
                       </div>

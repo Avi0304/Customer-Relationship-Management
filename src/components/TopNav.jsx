@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiBell, FiUser } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NoticationBell";
 import { useNavigate } from "react-router-dom";
@@ -19,18 +19,6 @@ const TopNav = ({ title }) => {
 
         <NotificationBell/>
         
-        {/* Notifications */}
-        {/* <div className="relative flex items-center">
-          <button className="relative hover:scale-110 transition-all duration-200">
-            <FiBell size={26} className="light:text-gray-700 dark:text-gray-300 transition-colors duration-300" />
-            {count > 0 && (
-              <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 font-semibold transition-all duration-300 transform animate-pulse">
-                {count}
-              </span>
-            )}
-          </button>
-        </div> */}
-
         {/* Profile Dropdown */}
         <div className="relative ">
           <button
@@ -72,7 +60,7 @@ const TopNav = ({ title }) => {
                        light:text-gray-700 dark:text-gray-100 
                        light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
                        hover:text-purple-500 rounded-md transition-colors duration-200"
-                onClick={() => navigate('/settings')}
+                onClick={() => navigate('/settings/profile')}
               >
                 Settings
               </button>
