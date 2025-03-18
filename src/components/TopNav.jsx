@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { FiBell, FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NoticationBell";
+import { useNavigate } from "react-router-dom";
 
 const TopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [count, setCount] = useState(3); // Example: Start with 3 notifications
+ const navigate = useNavigate();
 
   return (
     <div className="light:bg-white dark:bg-[#161B22] dark:backdrop-blur-xl shadow-lg flex items-center justify-between p-6 h-16 sticky top-0 z-50 dark:z-[60]">
@@ -61,6 +62,7 @@ const TopNav = ({ title }) => {
                        light:text-gray-700 dark:text-gray-100 
                        light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
                        hover:text-purple-500 rounded-md transition-colors duration-200"
+                onClick={() => navigate('/profile')}
               >
                 Profile
               </button>
@@ -70,6 +72,7 @@ const TopNav = ({ title }) => {
                        light:text-gray-700 dark:text-gray-100 
                        light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
                        hover:text-purple-500 rounded-md transition-colors duration-200"
+                onClick={() => navigate('/settings')}
               >
                 Settings
               </button>
