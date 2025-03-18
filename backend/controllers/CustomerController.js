@@ -13,7 +13,7 @@ const getAllCustomer = async (req, res) => {
 
 const addCustomer = async (req, res) => {
     try {
-        const { name, email, phone, segmentation, status, leadstatus } = req.body
+        const { name, email, phone, segmentation, status, leadstatus, amount } = req.body
 
         const existingCustomer = await Customer.findOne({ email });
         if (existingCustomer) {
@@ -26,7 +26,8 @@ const addCustomer = async (req, res) => {
             phone,
             segmentation,
             status: status || "pending",
-            leadstatus: leadstatus || "new"
+            leadstatus: leadstatus || "new",
+            amount
         })
 
         await newCustomer.save();

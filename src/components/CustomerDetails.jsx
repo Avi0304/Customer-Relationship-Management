@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -23,22 +23,10 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { Edit, Delete, Visibility } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { Search } from "@mui/icons-material";
+import axios from "axios";
 
 const CustomerDetails = () => {
-  const [customers, setCustomers] = useState([
-    { id: 1, customer: "Rajat Sharma", amount: "₹1300", status: "Completed" },
-    { id: 2, customer: "Megha Joshi", amount: "₹900", status: "Pending" },
-    { id: 3, customer: "Nitin Saxena", amount: "₹2000", status: "Completed" },
-    { id: 4, customer: "Aditi Nair", amount: "₹850", status: "Pending" },
-    { id: 5, customer: "Suresh Menon", amount: "₹700", status: "Completed" },
-    { id: 6, customer: "Pallavi Desai", amount: "₹450", status: "Pending" },
-    { id: 7, customer: "Vivek Chauhan", amount: "₹1600", status: "Completed" },
-    { id: 8, customer: "Sneha Reddy", amount: "₹720", status: "Pending" },
-    { id: 9, customer: "Anupam Verma", amount: "₹1350", status: "Completed" },
-    { id: 10, customer: "Divya Bhatt", amount: "₹500", status: "Pending" },
-    { id: 11, customer: "Rohan Kapoor", amount: "₹950", status: "Completed" },
-    { id: 12, customer: "Neha Malhotra", amount: "₹1120", status: "Pending" },
-  ]);
+  const [customers, setCustomers] = useState([]);
 
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
@@ -48,6 +36,23 @@ const CustomerDetails = () => {
     amount: "",
     status: "",
   });
+
+  useEffect(() => {
+    fetchCustomer();
+  }, []);
+
+  const fetchCustomer = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/Customer/all");
+      console.log("API Response:", response.data); // Debugging: Log the response
+      setCustomers(Array.isArray(response.data) ? response.data : []); // Ensure an array
+    } catch (error) {
+      console.error("Error fetching customers: ", error);
+      setCustomers([]); // Prevent undefined errors
+    }
+  };
+
+
 
   const handleOpen = (customer = null) => {
     setSelectedCustomer(customer);
@@ -64,40 +69,62 @@ const CustomerDetails = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    if (!formData.customer || !formData.amount || !formData.status) {
+  const handleSave = async () => {
+    if (!formData.name || !formData.email || !formData.phone || !formData.segmentation || !formData.amount) {
       Swal.fire("Oops!", "All fields are required.", "error");
-      setOpen(false);
       return;
     }
 
-    if (selectedCustomer) {
-      setCustomers(
-        customers.map((c) => (c.id === selectedCustomer.id ? formData : c))
-      );
-      Swal.fire({
-        title: "Updated!",
-        text: "Customer details have been updated successfully.",
-        icon: "success",
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-    } else {
-      setCustomers([...customers, { ...formData, id: Date.now() }]);
-      Swal.fire({
-        title: "Added!",
-        text: "New customer has been added successfully.",
-        icon: "success",
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
+    try {
+      if (selectedCustomer) {
+        // Update customer
+        await axios.put(`http://localhost:8080/api/Customer/update/${selectedCustomer._id}`, formData);
+        await fetchCustomer();
+        Swal.fire({
+          title: "Updated!",
+          text: "Customer details have been updated successfully.",
+          icon: "success",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      } else {
+        // Ensure correct payload before sending request
+        const newCustomerData = {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          segmentation: formData.segmentation,
+          status: formData.status || "pending", // Default status if not provided
+          leadstatus: formData.leadstatus || "new", // Default lead status
+          amount: formData.amount,
+        };
+
+        console.log("Sending Data:", newCustomerData); // Debugging
+
+        // Add new customer
+        await axios.post("http://localhost:8080/api/Customer/add", newCustomerData);
+        await fetchCustomer();
+        Swal.fire({
+          title: "Added!",
+          text: "New customer has been added successfully.",
+          icon: "success",
+          timer: 3000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+      }
+
+      handleClose();
+    } catch (error) {
+      console.error("Error in updating customer:", error);
+      Swal.fire("Error", "Something went wrong. Please try again.", "error");
     }
-    handleClose();
   };
 
-  const handleDelete = (id) => {
+
+
+  const handleDelete = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "This customer record will be permanently deleted!",
@@ -106,25 +133,39 @@ const CustomerDetails = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setCustomers(customers.filter((c) => c.id !== id));
-        Swal.fire({
-          title: "Deleted!",
-          text: "The Sales has been deleted.",
-          icon: "success",
-          timer: 4000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        try {
+          const response = await axios.delete(`http://localhost:8080/api/Customer/delete/${id}`);
+  
+          if (response.status === 200) {
+            setCustomers(customers.filter((c) => c._id !== id)); // Ensure you're using `_id`
+            Swal.fire({
+              title: "Deleted!",
+              text: "The customer has been deleted successfully.",
+              icon: "success",
+              timer: 4000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete the customer. Please try again.",
+            icon: "error",
+          });
+          console.error("Error deleting customer:", error);
+        }
       }
     });
   };
+  
 
-  // **Fixed filtering function**
   const filteredCustomers = customers.filter((c) =>
-    c.customer.toLowerCase().includes(search.toLowerCase())
+    c.name.toLowerCase().includes(search.toLowerCase())
   );
+
 
   return (
     <Box>
@@ -134,17 +175,6 @@ const CustomerDetails = () => {
         alignItems="center"
         mb={2}
       >
-        {/* <TextField
-          label="Search Customers"
-          variant="outlined"
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button variant="contained" color="primary" onClick={() => handleOpen()} startIcon={<BiPlus size={20} />}>
-          Add Customer
-        /> */}
-
         <div className="w-full sm:w-1/2 md:w-1/3">
           <TextField
             label="Search Customers"
@@ -177,7 +207,7 @@ const CustomerDetails = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-          <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+            <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
               <TableCell
                 sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
@@ -206,22 +236,21 @@ const CustomerDetails = () => {
           </TableHead>
           <TableBody>
             {filteredCustomers.map((customer) => (
-              <TableRow key={customer.id}>
+              <TableRow key={customer._id}>
                 <TableCell align="center" sx={{ width: "25%" }}>
-                  {customer.customer}
+                  {customer.name}
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   {customer.amount}
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                      customer.status === "Completed"
-                        ? "bg-green-500 text-white"
-                        : customer.status === "Pending"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status === "Completed"
+                      ? "bg-green-500 text-white"
+                      : customer.status === "Pending"
                         ? "bg-yellow-500 text-white"
                         : "bg-red-500 text-white"
-                    }`}
+                      }`}
                   >
                     {customer.status}
                   </span>
@@ -235,7 +264,7 @@ const CustomerDetails = () => {
                   </Button>
                   <Button
                     color="error"
-                    onClick={() => handleDelete(customer.id)}
+                    onClick={() => handleDelete(customer._id)}
                   >
                     <RiDeleteBin6Line className="h-4 w-4 text-red-600" />
                   </Button>
@@ -249,7 +278,6 @@ const CustomerDetails = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <h2 className="font-bold">
-            {" "}
             {selectedCustomer ? "Edit Customer" : "Add Customer"}
           </h2>
         </DialogTitle>
@@ -257,9 +285,38 @@ const CustomerDetails = () => {
           <TextField
             fullWidth
             margin="dense"
-            label="Customer"
-            name="customer"
-            value={formData.customer}
+            label="Name"
+            name="name"
+            value={formData.name || ""}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email || ""}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Phone"
+            name="phone"
+            type="tel"
+            value={formData.phone || ""}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            fullWidth
+            margin="dense"
+            label="Segmentation"
+            name="segmentation"
+            value={formData.segmentation || ""}
             onChange={handleChange}
           />
           <TextField
@@ -267,27 +324,22 @@ const CustomerDetails = () => {
             margin="dense"
             label="Amount"
             name="amount"
-            value={formData.amount}
+            type="String"
+            value={formData.amount || ""}
             onChange={handleChange}
+            required
           />
           <FormControl fullWidth margin="dense">
             <InputLabel>Status</InputLabel>
-            <Select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
+            <Select name="status" value={formData.status || "Pending"} onChange={handleChange}>
               <MenuItem value="Completed">Completed</MenuItem>
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Cancelled">Cancelled</MenuItem>
+              <MenuItem value="Pending">pending</MenuItem>
+              <MenuItem value="Cancelled">cancelled</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button
-            onClick={handleClose}
-            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
-          >
+          <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary" variant="contained">
@@ -295,6 +347,7 @@ const CustomerDetails = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
     </Box>
   );
 };
