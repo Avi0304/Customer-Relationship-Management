@@ -16,6 +16,8 @@ import ForgetPassword from "./components/ForgetPassword";
 import PrivateRoute from "./components/PrivateRoute"; // For protected routes
 import PublicRoute from "./components/PublicRoute"; // For public routes
 import MarketingPage from "./pages/MarketingPage";
+import ProfilePage from "./pages/ProfiePage";
+import SettingsPage from "./pages/SettingsPage";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -32,6 +34,8 @@ function AppContent() {
 
           {/* Private Routes */}
           <Route path="/" element={<PrivateRoute element={<DashBoard />} />} />
+          <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
+          <Route path="/settings" element={<PrivateRoute element={<SettingsPage />} />} />
           <Route path="/leads" element={<PrivateRoute element={<LeadPage />} />} />
           <Route path="/task" element={<PrivateRoute element={<TaskManagementPage />} />} />
           <Route path="/customers" element={<PrivateRoute element={<CustomerPage />} />} />
