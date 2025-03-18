@@ -35,7 +35,7 @@ function AppContent() {
           {/* Private Routes */}
           <Route path="/" element={<PrivateRoute element={<DashBoard />} />} />
           <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
-          <Route path="/settings" element={<PrivateRoute element={<SettingsPage />} />} />
+          <Route path="/settings/:tab?" element={<PrivateRoute element={<SettingsPage />} />} />
           <Route path="/leads" element={<PrivateRoute element={<LeadPage />} />} />
           <Route path="/task" element={<PrivateRoute element={<TaskManagementPage />} />} />
           <Route path="/customers" element={<PrivateRoute element={<CustomerPage />} />} />
