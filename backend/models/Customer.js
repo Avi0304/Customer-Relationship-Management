@@ -14,6 +14,10 @@ const CustomerSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    amount: {
+        type: String,
+        reqiured: true
+    },
     segmentation: {
         type: String,
         enum: ["High", "Medium", "Low"],
