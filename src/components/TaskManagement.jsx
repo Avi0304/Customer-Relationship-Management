@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Dialog,
@@ -17,90 +18,10 @@ import { IoCheckmarkCircleSharp, IoArrowUndoCircle } from "react-icons/io5";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { HiBuildingOffice } from "react-icons/hi2";
 
-const TaskManagement = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Fix login issue in CRM app",
-      dueDate: "2024-07-25",
-      priority: "High",
-      company: "Tata Consultancy Services",
-      completed: true,
-    },
-    {
-      id: 2,
-      title: "Review PR for frontend bug fixes",
-      dueDate: "2024-07-26",
-      priority: "Medium",
-      company: "Infosys Ltd.",
-      completed: true,
-    },
-    {
-      id: 3,
-      title: "Update API documentation",
-      dueDate: "2024-07-28",
-      priority: "Low",
-      company: "Tech Mahindra",
-      completed: false,
-    },
-    {
-      id: 4,
-      title: "Implement authentication in React project",
-      dueDate: "2024-07-30",
-      priority: "High",
-      company: "HCL Technologies",
-      completed: true,
-    },
-    {
-      id: 5,
-      title: "Deploy backend services to AWS",
-      dueDate: "2024-08-01",
-      priority: "Medium",
-      company: "Wipro Technologies",
-      completed: false,
-    },
-    {
-      id: 6,
-      title: "Optimize database queries",
-      dueDate: "2024-08-05",
-      priority: "High",
-      company: "L&T Infotech",
-      completed: false,
-    },
-    {
-      id: 7,
-      title: "Integrate payment gateway",
-      dueDate: "2024-08-08",
-      priority: "High",
-      company: "Paytm Services",
-      completed: true,
-    },
-    {
-      id: 8,
-      title: "Enhance security protocols",
-      dueDate: "2024-08-12",
-      priority: "Medium",
-      company: "HDFC Bank IT",
-      completed: false,
-    },
-    {
-      id: 9,
-      title: "Refactor frontend components",
-      dueDate: "2024-08-15",
-      priority: "Low",
-      company: "Flipkart Technologies",
-      completed: true,
-    },
-    {
-      id: 10,
-      title: "Set up CI/CD pipeline",
-      dueDate: "2024-08-18",
-      priority: "High",
-      company: "Reliance Digital",
-      completed: false,
-    },
-  ]);
+const API_URL = "http://localhost:8080/api/tasks";
 
+const TaskManagement = () => {
+  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
     title: "",
     dueDate: "",
@@ -111,103 +32,134 @@ const TaskManagement = () => {
   const [editingTask, setEditingTask] = useState(null);
   const [filter, setFilter] = useState("All");
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch Tasks from Backend
+  const fetchTasks = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${API_URL}/all`);
+      setTasks(data.tasks);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch tasks";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    if (savedTasks.length > 0) setTasks(savedTasks);
+    fetchTasks();
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewTask((prev) => ({ ...prev, [name]: value }));
+    if (editingTask) {
+      setEditingTask((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setNewTask((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const addTask = () => {
-    if (!newTask.title.trim() || !newTask.dueDate || !newTask.company) {
+  // Add Task
+  const addTask = async () => {
+    try {
+      const { data } = await axios.post(`${API_URL}/add`, newTask);
+      setTasks([...tasks, data.task]);
+
+      Swal.fire({
+        icon: "success",
+        title: "Task Added",
+        text: "Your new task has been successfully added!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      setNewTask({ title: "", dueDate: "", company: "", priority: "Low" });
+      setOpen(false);
+    } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Error!",
-        text: "Please fill in all fields before adding a task.",
-        timer: 3000,
-        showConfirmButton: true,
+        title: "Error",
+        text: "Failed to add task",
       });
+
       setOpen(false);
+    }
+  };
+
+  // Edit Task
+  const startEditing = (task) => setEditingTask({ ...task });
+
+  const saveEdit = async () => {
+    if (!editingTask.title || !editingTask.dueDate || !editingTask.company) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Input",
+        text: "All fields are required to update the task.",
+      });
       return;
     }
 
-    // If all fields are filled, add the task
-    setTasks([...tasks, { ...newTask, id: Date.now(), completed: false }]);
-    setNewTask({ title: "", dueDate: "", company: "", priority: "Low" });
+    // Format the date to "yyyy-MM-dd"
+    const formattedTask = {
+      ...editingTask,
+      dueDate: new Date(editingTask.dueDate).toISOString().split("T")[0],
+    };
 
-    Swal.fire({
-      icon: "success",
-      title: "Task Added",
-      text: "Your new task has been successfully added!",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    try {
+      const { data } = await axios.patch(
+        `${API_URL}/update/${editingTask._id}`,
+        formattedTask
+      );
 
-    setOpen(false);
+      setTasks(
+        tasks.map((task) => (task._id === data.task._id ? data.task : task))
+      );
+      setEditingTask(null);
+
+      Swal.fire({
+        icon: "success",
+        title: "Task Updated",
+        text: "Task details have been successfully updated!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error Response:", error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to update task";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
+    }
   };
 
-  const startEditing = (task) => setEditingTask({ ...task });
-
-  const saveEdit = () => {
-    setTasks(
-      tasks.map((task) => (task.id === editingTask.id ? editingTask : task))
-    );
-    setEditingTask(null);
-
-    Swal.fire({
-      icon: "success",
-      title: "Task Updated",
-      text: "The task has been updated successfully!",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+  // Toggle Complete
+  const toggleComplete = async (id, completed) => {
+    try {
+      const { data } = await axios.patch(`${API_URL}/toggle/${id}`, {
+        completed: !completed,
+      });
+      setTasks(tasks.map((task) => (task._id === id ? data.task : task)));
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to toggle task completion",
+      });
+    }
   };
 
-  const toggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const handleToggleComplete = (taskId, isCompleted) => {
-    Swal.fire({
-      title: isCompleted ? "Mark as Complete" : "Mark as InCompleted",
-      text: isCompleted
-        ? "This task will be marked as Complete."
-        : "This task will be marked as Incompleted.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, proceed!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        toggleComplete(taskId, !isCompleted);
-
-        Swal.fire({
-          title: !isCompleted ? "Task InCompleted" : "Task Complete",
-          text: !isCompleted
-            ? "The task has been marked as Incompleted."
-            : "The task has been marked as Complete.",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      }
-    });
-  };
-
-  const deleteTask = (id) => {
+  // Delete Task
+  const deleteTask = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -216,16 +168,26 @@ const TaskManagement = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setTasks(tasks.filter((task) => task.id !== id));
-        Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: "Your task has been deleted.",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        try {
+          await axios.delete(`${API_URL}/delete/${id}`);
+          setTasks(tasks.filter((task) => task._id !== id));
+
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "Your task has been deleted.",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to delete task",
+          });
+        }
       }
     });
   };
@@ -268,12 +230,17 @@ const TaskManagement = () => {
             label="Due Date"
             type="date"
             name="dueDate"
-            value={newTask.dueDate}
+            value={
+              newTask.dueDate
+                ? new Date(newTask.dueDate).toISOString().split("T")[0]
+                : "" // Ensures date is shown in "yyyy-MM-dd"
+            }
             onChange={handleChange}
             fullWidth
             margin="dense"
             InputLabelProps={{ shrink: true }}
           />
+
           <TextField
             label="Company Name"
             name="company"
@@ -338,7 +305,7 @@ const TaskManagement = () => {
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <Card
-                key={task.id}
+                key={task._id}
                 className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${
                   task.priority === "High"
                     ? "border-red-400"
@@ -347,7 +314,7 @@ const TaskManagement = () => {
                     : "border-green-400"
                 } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
               >
-                {editingTask && editingTask.id === task.id ? (
+                {editingTask && editingTask._id === task._id ? (
                   <div className="w-full">
                     <TextField
                       label="Title"
@@ -366,7 +333,13 @@ const TaskManagement = () => {
                       label="Due Date"
                       type="date"
                       name="dueDate"
-                      value={editingTask.dueDate}
+                      value={
+                        editingTask.dueDate
+                          ? new Date(editingTask.dueDate)
+                              .toISOString()
+                              .split("T")[0]
+                          : "" // Ensures date is shown in "yyyy-MM-dd"
+                      }
                       onChange={(e) =>
                         setEditingTask({
                           ...editingTask,
@@ -377,6 +350,7 @@ const TaskManagement = () => {
                       margin="dense"
                       InputLabelProps={{ shrink: true }}
                     />
+
                     <TextField
                       label="Company"
                       name="company"
@@ -420,9 +394,13 @@ const TaskManagement = () => {
                   <>
                     <div>
                       <h4 className="font-semibold">{task.title}</h4>
-                      <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">
+                      <p className="text-sm light:text-gray-600 dark:text-gray-300 flex items-center">
                         <BiCalendar className="mr-1 mb-1" size={18} />{" "}
-                        {task.dueDate}
+                        {task.dueDate
+                          ? new Date(task.dueDate)
+                              .toLocaleDateString("en-GB") // Formats date as "dd/MM/yyyy"
+                              .replace(/\//g, "-") // Replaces slashes with dashes
+                          : ""}
                       </p>
                       <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">
                         <HiBuildingOffice className="mr-1" size={18} />{" "}
@@ -434,16 +412,14 @@ const TaskManagement = () => {
                         <FaEdit size={22} />
                       </Button>
                       <Button
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => deleteTask(task._id)}
                         color="error"
                         size="large"
                       >
                         <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                       </Button>
                       <Button
-                        onClick={() =>
-                          handleToggleComplete(task.id, task.completed)
-                        }
+                        onClick={() => toggleComplete(task._id, task.completed)}
                         size="large"
                       >
                         {task.completed ? (
