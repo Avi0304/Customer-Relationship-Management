@@ -1,7 +1,7 @@
 import React from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
-import TaskManagement from '../components/TaskManagement'
+import TaskManagement from "../components/TaskManagement";
 
 function TasksPage() {
   return (
@@ -13,7 +13,7 @@ function TasksPage() {
           <TopNav title={"Task Management"} />
 
           <main className="p-6 space-y-4">
-            < TaskManagement/>
+            <TaskManagement />
           </main>
         </div>
       </div>
