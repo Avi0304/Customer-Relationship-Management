@@ -12,6 +12,7 @@ const app =express();
 app.use(cors())
 app.use(express.json());
 app.use(morgan('dev'))
+app.use(express.urlencoded({ extended: true }));
 
 // Connect to Database
 connectDB();
@@ -20,6 +21,7 @@ connectDB();
 app.use('/api/user', require('./routes/Auth'));
 app.use('/api/Customer',require('./routes/Customer'));
 app.use('/api/Appointment',require('./routes/AppointmentRoute'));
+app.use('/api/tasks', require('./routes/Task'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT,()=> console.log(`Server is Running on ${PORT}`.bgCyan));
