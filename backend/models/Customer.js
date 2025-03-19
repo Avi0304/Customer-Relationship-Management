@@ -3,20 +3,20 @@ const mongoose = require('mongoose');
 const CustomerSchema = new mongoose.Schema({
     name: {
         type: String,
-        require: true
+        required: true
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     phone: {
         type: String,
-        require: true
+        required: true
     },
     amount: {
         type: String,
-        reqiured: true
+        required: true
     },
     segmentation: {
         type: String,
@@ -33,7 +33,7 @@ const CustomerSchema = new mongoose.Schema({
         enum: ["new", "converted", "contacted"], 
         default: "new" 
     },
-},{ timeStamp: true })
+},{ timestamps: true })
 
 const Customer = mongoose.model('Customer',CustomerSchema);
 module.exports = Customer; 
