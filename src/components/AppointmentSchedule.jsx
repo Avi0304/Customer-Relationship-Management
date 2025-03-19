@@ -30,140 +30,12 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { useMediaQuery } from "@mui/material";
 import { gapi } from "gapi-script";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const AppointmentSchedule = () => {
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      customer: "Tata Technologies",
-      contact: "Ravi Sharma",
-      date: "2025-03-10",
-      time: "10:00 AM",
-      duration: "30 min",
-      status: "Confirmed",
-      type: "Sales Demo",
-    },
-    {
-      id: 2,
-      customer: "Infosys Ltd.",
-      contact: "Neha Verma",
-      date: "2025-03-12",
-      time: "2:00 PM",
-      duration: "45 min",
-      status: "Pending",
-      type: "Follow-up",
-    },
-    {
-      id: 3,
-      customer: "Reliance Digital",
-      contact: "Amit Joshi",
-      date: "2025-03-15",
-      time: "11:30 AM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Consultation",
-    },
-    {
-      id: 4,
-      customer: "HCL Solutions",
-      contact: "Pooja Nair",
-      date: "2025-03-18",
-      time: "3:15 PM",
-      duration: "30 min",
-      status: "Cancelled",
-      type: "Support",
-    },
-    {
-      id: 5,
-      customer: "Wipro Tech",
-      contact: "Sandeep Menon",
-      date: "2025-02-28",
-      time: "9:00 AM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Business Meeting",
-    },
-    {
-      id: 6,
-      customer: "Mahindra IT Services",
-      contact: "Anjali Desai",
-      date: "2025-02-25",
-      time: "1:30 PM",
-      duration: "45 min",
-      status: "Confirmed",
-      type: "Technical Review",
-    },
-    {
-      id: 7,
-      customer: "L&T Infotech",
-      contact: "Rahul Kapoor",
-      date: "2025-02-20",
-      time: "4:00 PM",
-      duration: "30 min",
-      status: "Confirmed",
-      type: "Strategy Session",
-    },
-    {
-      id: 8,
-      customer: "TCS Consulting",
-      contact: "Meera Reddy",
-      date: "2025-03-22",
-      time: "10:45 AM",
-      duration: "45 min",
-      status: "Pending",
-      type: "Client Onboarding",
-    },
-    {
-      id: 9,
-      customer: "Zomato Technologies",
-      contact: "Vikram Iyer",
-      date: "2025-03-25",
-      time: "2:30 PM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Product Demo",
-    },
-    {
-      id: 10,
-      customer: "HDFC Bank IT",
-      contact: "Kavita Malhotra",
-      date: "2025-03-28",
-      time: "9:30 AM",
-      duration: "30 min",
-      status: "Pending",
-      type: "Security Audit",
-    },
-    {
-      id: 11,
-      customer: "Flipkart Solutions",
-      contact: "Rohan Agarwal",
-      date: "2025-04-02",
-      time: "3:00 PM",
-      duration: "45 min",
-      status: "Confirmed",
-      type: "Vendor Meeting",
-    },
-    {
-      id: 12,
-      customer: "Paytm Services",
-      contact: "Sneha Bhatia",
-      date: "2025-04-05",
-      time: "11:00 AM",
-      duration: "30 min",
-      status: "Pending",
-      type: "Billing Discussion",
-    },
-    {
-      id: 13,
-      customer: "Ola Cabs",
-      contact: "Kunal Saxena",
-      date: "2025-04-08",
-      time: "1:45 PM",
-      duration: "60 min",
-      status: "Confirmed",
-      type: "Partnership Review",
-    },
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  const [pastappointments, setpastappointment] = useState([]);
+  const [upcomigappointment, setupcomingappointment] = useState([]);
 
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
@@ -184,11 +56,61 @@ const AppointmentSchedule = () => {
   const isSmallScreen = useMediaQuery("(max-width: 820px)");
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
 
+  useEffect(() => {
+    fetchAll();
+    fetchPast();
+    fetchUpcoming();
+  }, [])
+
+
+  const fetchAll = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/Appointment/");
+
+      if (Array.isArray(response.data)) {
+        setAppointments(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      setAppointments([]);
+    }
+  };
+
+  const fetchPast = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/Appointment/past');
+
+      if (Array.isArray(response.data.pastappointment)) {
+        setpastappointment(response.data.pastappointment);
+      } else {
+        setpastappointment([]);
+      }
+    } catch (error) {
+      console.error("Error in fetching past appointments:", error);
+      setpastappointment([]);
+    }
+  };
+
+  const fetchUpcoming = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/Appointment/upcoming');
+
+      if (Array.isArray(response.data.upcomingappointment)) {
+        setupcomingappointment(response.data.upcomingappointment);
+      } else {
+        setupcomingappointment([]);
+      }
+    } catch (error) {
+      console.error("Error in fetching the upcoming appointments: ", error);
+      setupcomingappointment([]);
+    }
+  }
+
   const handleInputChange = (e) => {
     setNewAppointment({ ...newAppointment, [e.target.name]: e.target.value });
   };
 
-  const handleAddAppointment = () => {
+  const handleAddAppointment = async () => {
     if (
       !newAppointment.customer ||
       !newAppointment.contact ||
@@ -198,39 +120,53 @@ const AppointmentSchedule = () => {
       !newAppointment.type
     ) {
       Swal.fire("Oops!", "Please fill in all fields before adding the Appointment.", "error");
-      setOpenModal(false); 
+      setOpenModal(false);
       return
     }
-  
-    // If all fields are filled, add the appointment
-    setAppointments([
-      ...appointments,
-      { id: appointments.length + 1, ...newAppointment },
-    ]);
-  
-    setOpenModal(false); // Close dialog only if all fields are valid
-  
-    setNewAppointment({
-      customer: "",
-      contact: "",
-      date: "",
-      time: "",
-      duration: "",
-      status: "Pending",
-      type: "",
-    });
-  
-    Swal.fire({
-      title: "Added!",
-      text: "New Appointment has been added successfully.",
-      icon: "success",
-      timer: 4000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/Appointment/add', {
+        customer: newAppointment.customer,
+        contact: newAppointment.contact,
+        date: newAppointment.date,
+        time: newAppointment.time,
+        duration: newAppointment.duration,
+        status: "Pending",
+        type: newAppointment.type,
+      });
+      setAppointments([...appointments, { id: response.data.id, ...newAppointment }]);
+
+      setOpenModal(false);
+
+      setNewAppointment({
+        customer: "",
+        contact: "",
+        date: "",
+        time: "",
+        duration: "",
+        status: "Pending",
+        type: "",
+      });
+
+      Swal.fire({
+        title: "Added!",
+        text: "New Appointment has been added successfully.",
+        icon: "success",
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+
+      fetchAll();
+      fetchPast();
+      fetchUpcoming();
+    } catch (error) {
+      console.error("Error adding appointment:", error.response?.data || error.message);
+      Swal.fire("Error", error.response?.data?.message || "Failed to add appointment. Try again later.", "error");
+    }
   };
-  
-  
+
+
 
   const handleEditClick = (appointment) => {
     setEditAppointment(appointment);
@@ -241,24 +177,50 @@ const AppointmentSchedule = () => {
     setEditAppointment({ ...editAppointment, [e.target.name]: e.target.value });
   };
 
-  const handleUpdateAppointment = () => {
-    setAppointments(
-      appointments.map((appt) =>
-        appt.id === editAppointment.id ? editAppointment : appt
-      )
-    );
-    setOpenEditModal(false);
-    Swal.fire({
-      title: "Update!",
-      text: "Appointment has been updated successfully.",
-      icon: "success",
-      timer: 4000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+  const handleUpdateAppointment = async () => {
+    try {
+      if (!editAppointment._id) {
+        Swal.fire("Error", "Invalid appointment ID.", "error");
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:8080/api/Appointment/update/${editAppointment._id}`,
+        editAppointment
+      );
+
+      setAppointments(
+        appointments.map((appt) =>
+          appt._id === editAppointment._id ? response.data.appointment : appt
+        )
+      );
+
+      setOpenEditModal(false);
+
+      Swal.fire({
+        title: "Updated!",
+        text: "Appointment has been updated successfully.",
+        icon: "success",
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+
+      fetchAll();
+      fetchPast();
+      fetchUpcoming();
+    } catch (error) {
+      console.error("Error updating appointment:", error.response?.data || error.message);
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to update appointment. Try again later.",
+        "error"
+      );
+    }
   };
 
-  const handleDeleteAppointment = (id) => {
+
+  const handleDeleteAppointment = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -267,22 +229,34 @@ const AppointmentSchedule = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setAppointments(
-          appointments.filter((appointment) => appointment.id !== id)
-        );
-        Swal.fire({
-          title: "Deleted!",
-          text: "The Appointment has been deleted.",
-          icon: "success",
-          timer: 4000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        try {
+        
+          await axios.delete(`http://localhost:8080/api/Appointment/delete/${id}`);
+
+          setAppointments((prev) => prev.filter((appointment) => appointment._id !== id));
+
+          fetchAll();
+          fetchPast();
+          fetchUpcoming();
+  
+          Swal.fire({
+            title: "Deleted!",
+            text: "The Appointment has been deleted.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting appointment:", error.response?.data || error.message);
+          Swal.fire("Error", error.response?.data?.message || "Failed to delete appointment. Try again later.", "error");
+        }
       }
     });
   };
+  
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -299,13 +273,29 @@ const AppointmentSchedule = () => {
       (statusFilter === "All Status" || appointment.status === statusFilter)
   );
 
-  const upcomingAppointments = filteredAppointments.filter(
-    (appointment) => new Date(appointment.date) >= today
-  );
+  const filteredPastAppointments = pastappointments.filter((appointment) => {
+    const matchesText =
+      appointment.customer.toLowerCase().includes(filter.toLowerCase()) ||
+      appointment.contact.toLowerCase().includes(filter.toLowerCase());
 
-  const pastAppointments = filteredAppointments.filter(
-    (appointment) => new Date(appointment.date) < today
-  );
+    const matchesStatus =
+      statusFilter === "All Status" || appointment.status === statusFilter;
+
+    return matchesText && matchesStatus;
+  });
+
+  // Filter function for upcoming appointments
+  const filteredUpcomingAppointments = upcomigappointment.filter((appointment) => {
+    const matchesText =
+      appointment.customer.toLowerCase().includes(filter.toLowerCase()) ||
+      appointment.contact.toLowerCase().includes(filter.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "All Status" || appointment.status === statusFilter;
+
+    return matchesText && matchesStatus;
+  });
+
 
   const CLIENT_ID =
     "147226171626-paikqrlke6klt0qv9knh21hkmnf8dmph.apps.googleusercontent.com";
@@ -391,7 +381,7 @@ const AppointmentSchedule = () => {
           attendees: [{ email: "client@example.com" }],
           conferenceData: {
             createRequest: {
-              requestId: `${appointment.id}-meet`,
+              requestId: `${appointment._id}-meet`,
               conferenceSolutionKey: { type: "hangoutsMeet" },
             },
           },
@@ -429,38 +419,33 @@ const AppointmentSchedule = () => {
 
   const convertTo24HourFormat = (time) => {
     console.log("Original Time:", time); // Debugging log
-  
+
     if (!time) {
       console.error("Error: Time is null or undefined.");
       return "";
     }
-  
-    // Check if time is already in 24-hour format (hh:mm)
-    if (/^\d{2}:\d{2}$/.test(time)) {
-      return `${time}:00`; // Append seconds and return as is
-    }
-  
-    // Handle 12-hour format with AM/PM
+
     const match = time.match(/(\d+):(\d+) (\w+)/);
     if (!match) {
       console.error("Error: Time format is incorrect:", time);
       return "";
     }
-  
-    const [hours, minutes, period] = match.slice(1);
-    let hours24 =
-      period.toUpperCase() === "PM" && hours !== "12"
-        ? parseInt(hours) + 12
-        : hours;
-    hours24 = period.toUpperCase() === "AM" && hours === "12" ? "00" : hours24;
-  
-    const formattedTime = `${hours24}:${minutes}:00`;
-    console.log("Converted Time (24-hour format):", formattedTime); // Debugging log
-  
+
+    let [hours, minutes, period] = match.slice(1);
+    hours = parseInt(hours, 10);
+    minutes = minutes.padStart(2, "0");
+
+    if (period.toUpperCase() === "PM" && hours !== 12) {
+      hours += 12;
+    } else if (period.toUpperCase() === "AM" && hours === 12) {
+      hours = 0;
+    }
+
+    const formattedTime = `${String(hours).padStart(2, "0")}:${minutes}:00`;
+    console.log("Converted Time (24-hour format):", formattedTime);
+
     return formattedTime;
   };
-  
-  
 
   const calculateEndTime = (date, time, duration) => {
     const formattedTime = convertTo24HourFormat(time);
@@ -468,22 +453,26 @@ const AppointmentSchedule = () => {
       console.error("Error: Unable to convert time format.");
       return "";
     }
-  
-    const startTime = new Date(`${date}T${formattedTime}`);
+
+    const startTime = new Date(`${date}T${formattedTime}+05:30`); // Explicit IST Offset
     if (isNaN(startTime.getTime())) {
       console.error("Error: Invalid date or time value:", date, formattedTime);
       return "";
     }
-  
+
     console.log("Start Time for End Time Calculation:", startTime.toISOString());
-  
-    const durationMinutes = parseInt(duration.split(" ")[0]) || 0;
+
+    const durationMinutes = parseInt(duration.split(" ")[0], 10) || 0;
     startTime.setMinutes(startTime.getMinutes() + durationMinutes);
-  
-    console.log("Calculated End Time:", startTime.toISOString());
-    return startTime.toISOString();
+
+    const endTimeISO = startTime.toISOString();
+    console.log("Calculated End Time:", endTimeISO);
+
+    return endTimeISO;
   };
-  
+
+
+
 
   return (
     <div className="mt-0">
@@ -545,7 +534,7 @@ const AppointmentSchedule = () => {
       {/* Appointment Table */}
       {tabValue === 0 && (
         <TableContainer component={Paper}>
-          {upcomingAppointments.length === 0 ? (
+          {filteredUpcomingAppointments.length === 0 ? (
             <Box p={3} display="flex" justifyContent="center">
               <Typography variant="h6" color="textSecondary">
                 No upcoming appointments.
@@ -554,7 +543,7 @@ const AppointmentSchedule = () => {
           ) : (
             <Table>
               <TableHead>
-              <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
 
                   <TableCell
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
@@ -619,8 +608,8 @@ const AppointmentSchedule = () => {
               </TableHead>
 
               <TableBody>
-                {upcomingAppointments.map((appointment) => (
-                  <TableRow key={appointment.id}>
+                {filteredUpcomingAppointments.map((appointment) => (
+                  <TableRow key={appointment._id}>
                     <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
                       <TableCell align="center">
@@ -641,18 +630,17 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                          appointment.status === "Confirmed"
-                            ? "bg-green-500 text-white"
-                            : appointment.status === "Pending"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                          ? "bg-green-500 text-white"
+                          : appointment.status === "Pending"
                             ? "bg-yellow-500 text-white"
                             : "bg-red-500 text-white"
-                        }`}
+                          }`}
                       >
                         {appointment.status}
                       </span>
                     </TableCell>
-                     <TableCell className="whitespace-nowrap" align="center">
+                    <TableCell className="whitespace-nowrap" align="center">
                       <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           size="small"
@@ -674,7 +662,7 @@ const AppointmentSchedule = () => {
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
-                            handleDeleteAppointment(appointment.id)
+                            handleDeleteAppointment(appointment._id)
                           }
                         >
                           <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
@@ -691,7 +679,7 @@ const AppointmentSchedule = () => {
 
       {tabValue === 1 && (
         <TableContainer component={Paper}>
-          {pastAppointments.length === 0 ? (
+          {filteredPastAppointments.length === 0 ? (
             <Box p={3} display="flex" justifyContent="center">
               <Typography variant="h6" color="textSecondary">
                 No past appointments.
@@ -700,7 +688,7 @@ const AppointmentSchedule = () => {
           ) : (
             <Table>
               <TableHead>
-              <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
 
                   <TableCell
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
@@ -765,7 +753,7 @@ const AppointmentSchedule = () => {
               </TableHead>
 
               <TableBody>
-                {pastAppointments.map((appointment) => (
+                {filteredPastAppointments.map((appointment) => (
                   <TableRow key={appointment.id}>
                     <TableCell align="center">{appointment.customer}</TableCell>
                     {!isSmallScreen && (
@@ -787,19 +775,18 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                          appointment.status === "Confirmed"
-                            ? "bg-green-500 text-white"
-                            : appointment.status === "Pending"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                          ? "bg-green-500 text-white"
+                          : appointment.status === "Pending"
                             ? "bg-yellow-500 text-white"
                             : "bg-red-500 text-white"
-                        }`}
+                          }`}
                       >
                         {appointment.status}
                       </span>
                     </TableCell>
                     <TableCell className="whitespace-nowrap" align="center">
-                    <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
                         <Button
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
@@ -820,7 +807,7 @@ const AppointmentSchedule = () => {
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
-                            handleDeleteAppointment(appointment.id)
+                            handleDeleteAppointment(appointment._id)
                           }
                         >
                           <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
@@ -846,7 +833,7 @@ const AppointmentSchedule = () => {
           ) : (
             <Table className="min-w-full">
               <TableHead>
-              <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
 
                   <TableCell
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
@@ -933,13 +920,12 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                          appointment.status === "Confirmed"
-                            ? "bg-green-500 text-white"
-                            : appointment.status === "Pending"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                          ? "bg-green-500 text-white"
+                          : appointment.status === "Pending"
                             ? "bg-yellow-500 text-white"
                             : "bg-red-500 text-white"
-                        }`}
+                          }`}
                       >
                         {appointment.status}
                       </span>
@@ -966,7 +952,7 @@ const AppointmentSchedule = () => {
                           size="small"
                           className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                           onClick={() =>
-                            handleDeleteAppointment(appointment.id)
+                            handleDeleteAppointment(appointment._id)
                           }
                         >
                           <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
