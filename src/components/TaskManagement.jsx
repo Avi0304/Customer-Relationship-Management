@@ -144,19 +144,42 @@ const TaskManagement = () => {
 
   // Toggle Complete
   const toggleComplete = async (id, completed) => {
-    try {
-      const { data } = await axios.patch(`${API_URL}/toggle/${id}`, {
-        completed: !completed,
-      });
-      setTasks(tasks.map((task) => (task._id === id ? data.task : task)));
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to toggle task completion",
-      });
-    }
+    Swal.fire({
+      title: completed ? "Mark as Incomplete?" : "Mark as Complete?",
+      text: `Are you sure you want to ${completed ? "undo" : "complete"} this task?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { data } = await axios.patch(`${API_URL}/toggle/${id}`, {
+            completed: !completed,
+          });
+  
+          setTasks((prevTasks) =>
+            prevTasks.map((task) => (task._id === id ? data.task : task))
+          );
+  
+          Swal.fire({
+            icon: "success",
+            title: "Updated!",
+            text: `Task has been ${completed ? "marked incomplete" : "completed"}.`,
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to toggle task completion",
+          });
+        }
+      }
+    });
   };
+  
 
   // Delete Task
   const deleteTask = async (id) => {
