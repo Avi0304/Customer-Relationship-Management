@@ -23,6 +23,10 @@ const DashBoard = () => {
     activeCustomers: 0,
     totalSales: 0,
     activeDeals: 0,
+    revenueChange: "0",
+    customerChange: "0",
+    salesChange: "0",
+    dealsChange: "0",
   });
 
   useEffect(() => {
@@ -66,25 +70,29 @@ const DashBoard = () => {
                 title="Total Revenue"
                 icon={FaRupeeSign}
                 value={`₹ ${stats.totalRevenue.toLocaleString()}`}
-                growth="+ 20.1% from last month"
+                // growth="+ 20.1% from last month"
+                growth={`${stats.revenueChange}% from last month`}
               />
               <StatsCard
                 title="Active Customers"
                 icon={FaUsers}
                 value={stats.activeCustomers.toLocaleString()}
-                growth="+ 90.1% from last month"
+                // growth="+ 90.1% from last month"
+                growth={`${stats.customerChange}% from last month`}
               />
               <StatsCard
                 title="Sales"
                 icon={FaChartBar}
                 value={stats.totalSales.toLocaleString()}
-                growth="+ 19% from last month"
+                // growth="+ 19% from last month"
+                growth={`${stats.salesChange}% from last month`}
               />
               <StatsCard
                 title="Active Deals"
                 icon={FaClock}
                 value={stats.activeDeals.toLocaleString()}
-                growth="+ 201 since last hour"
+                // growth="+ 201 since last hour"
+                growth={`${stats.dealsChange}% from last month`}
               />
             </div>
 
