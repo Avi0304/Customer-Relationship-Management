@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   TextField,
   Button,
@@ -27,19 +28,7 @@ import Swal from "sweetalert2";
 import { Search } from "@mui/icons-material";
 
 const SalesManagement = () => {
-  const [sales, setSales] = useState([
-    { id: 1, customer: "Rajat Sharma", amount: "₹1300", status: "Completed" },
-    { id: 2, customer: "Megha Joshi", amount: "₹900", status: "Pending" },
-    { id: 3, customer: "Nitin Saxena", amount: "₹2000", status: "Completed" },
-    { id: 4, customer: "Aditi Nair", amount: "₹850", status: "Pending" },
-    { id: 5, customer: "Suresh Menon", amount: "₹700", status: "Completed" },
-    { id: 6, customer: "Pallavi Desai", amount: "₹450", status: "Pending" },
-    { id: 7, customer: "Vivek Chauhan", amount: "₹1600", status: "Completed" },
-    { id: 8, customer: "Sneha Reddy", amount: "₹720", status: "Pending" },
-    { id: 9, customer: "Anupam Verma", amount: "₹1350", status: "Completed" },
-    { id: 10, customer: "Divya Bhatt", amount: "₹500", status: "Pending" },
-  ]);
-
+  const [sales, setSales] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
 
@@ -53,12 +42,27 @@ const SalesManagement = () => {
     status: "Pending",
   });
 
+  // ➤ Fetch Sales Data
+  const fetchSales = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/sales/all");
+      setSales(response.data);
+    } catch (error) {
+      console.error("Error fetching sales:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSales();
+  }, []);
+
+  // ➤ Add Sale
   const handleAddSale = () => {
     setNewSale({ customer: "", amount: "", status: "Pending" });
     setIsAdding(true);
   };
 
-  const handleSaveNewSale = () => {
+  const handleSaveNewSale = async () => {
     if (!newSale.customer || !newSale.amount) {
       Swal.fire(
         "Oops!",
@@ -69,27 +73,30 @@ const SalesManagement = () => {
       return;
     }
 
-    const formattedAmount = newSale.amount.startsWith("₹")
-      ? newSale.amount
-      : `₹${newSale.amount}`;
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/sales/add",
+        newSale
+      );
+      setSales([...sales, response.data.sale]);
+      setIsAdding(false);
 
-    setSales([
-      ...sales,
-      { id: sales.length + 1, ...newSale, amount: formattedAmount },
-    ]);
-    setIsAdding(false);
-
-    Swal.fire({
-      title: "Added!",
-      text: "New Sale has been added successfully.",
-      icon: "success",
-      timer: 4000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+      Swal.fire({
+        title: "Added!",
+        text: "New Sale has been added successfully.",
+        icon: "success",
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error adding sale:", error);
+      Swal.fire("Error", "Failed to add sale.", "error");
+    }
   };
 
-  const handleDeleteSale = (id) => {
+  // ➤ Delete Sale
+  const handleDeleteSale = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -98,42 +105,63 @@ const SalesManagement = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setSales(sales.filter((sale) => sale.id !== id));
-        Swal.fire({
-          title: "Deleted!",
-          text: "The Sale has been deleted.",
-          icon: "success",
-          timer: 4000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        try {
+          await axios.delete(`http://localhost:8080/api/sales/delete/${id}`);
+          setSales(sales.filter((sale) => sale._id !== id));
+
+          Swal.fire({
+            title: "Deleted!",
+            text: "The Sale has been deleted.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting sale:", error);
+          Swal.fire("Error", "Failed to delete sale.", "error");
+        }
       }
     });
   };
 
+  // ➤ Edit Sale
   const handleEditSale = (sale) => {
     setSelectedSale(sale);
     setIsEditing(true);
   };
 
-  const handleSaveSale = () => {
-    setSales(
-      sales.map((sale) => (sale.id === selectedSale.id ? selectedSale : sale))
-    );
-    setIsEditing(false);
+  const handleSaveSale = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/sales/update/${selectedSale._id}`,
+        selectedSale
+      );
 
-    Swal.fire({
-      title: "Updated!",
-      text: "Sale has been updated successfully.",
-      icon: "success",
-      timer: 4000,
-      timerProgressBar: true,
-      showConfirmButton: false,
-    });
+      setSales(
+        sales.map((sale) =>
+          sale._id === selectedSale._id ? response.data.sale : sale
+        )
+      );
+      setIsEditing(false);
+
+      Swal.fire({
+        title: "Updated!",
+        text: "Sale has been updated successfully.",
+        icon: "success",
+        timer: 4000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Error updating sale:", error);
+      Swal.fire("Error", "Failed to update sale.", "error");
+    }
   };
 
+  // ➤ Filter Sales
   const filteredSales = sales.filter(
     (sale) =>
       (filter === "All" || sale.status === filter) &&
@@ -193,18 +221,48 @@ const SalesManagement = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-          <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
-              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>ID</TableCell>
-              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Customer</TableCell>
-              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Amount</TableCell>
-              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
-              <TableCell align="center"  sx={{ fontWeight: "bold", fontSize: "1rem" }}>Actions</TableCell>
+            <TableRow
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+              }}
+            >
+              {/* <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
+                ID
+              </TableCell> */}
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
+                Customer
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
+                Amount
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
+                Status
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredSales.map((sale) => (
-              <TableRow key={sale.id}>
-                <TableCell align="center">{sale.id}</TableCell>
+              <TableRow key={sale._id}>
+                {/* <TableCell align="center">{sale._id}</TableCell> */}
                 <TableCell align="center">{sale.customer}</TableCell>
                 <TableCell align="center">{sale.amount}</TableCell>
                 <TableCell align="center">
@@ -227,7 +285,7 @@ const SalesManagement = () => {
                   >
                     <FaEdit size={20} />
                   </Button>
-                  <Button onClick={() => handleDeleteSale(sale.id)}>
+                  <Button onClick={() => handleDeleteSale(sale._id)}>
                     <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                   </Button>
                 </TableCell>
