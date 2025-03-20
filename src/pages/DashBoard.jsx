@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TopNav from "../components/TopNav";
 import Sidebar from "../components/SideBar";
 import StatsCard from "../components/StatsCard";
@@ -15,8 +15,29 @@ import {
 } from "react-icons/fa";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const DashBoard = () => {
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    activeCustomers: 0,
+    totalSales: 0,
+    activeDeals: 0,
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/Dashboard/stats");
+      setStats(response.data); // Directly set the fetched data
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Sidebar Navigation */}
@@ -25,7 +46,7 @@ const DashBoard = () => {
 
         {/* Main Content */}
         <div className="flex-1">
-          <TopNav  title={"DashBoard"}/>
+          <TopNav title={"DashBoard"} />
           <main className="p-6 space-y-4">
             <div className="flex justify-end z-10">
               <Link to="/leads">
@@ -38,30 +59,31 @@ const DashBoard = () => {
                 </Button>
               </Link>
             </div>
+
             {/* Stats Cards Section */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatsCard
                 title="Total Revenue"
                 icon={FaRupeeSign}
-                value="₹ 45,231.89"
+                value={`₹ ${stats.totalRevenue.toLocaleString()}`}
                 growth="+ 20.1% from last month"
               />
               <StatsCard
                 title="Active Customers"
                 icon={FaUsers}
-                value="+ 2,350"
+                value={stats.activeCustomers.toLocaleString()}
                 growth="+ 90.1% from last month"
               />
               <StatsCard
                 title="Sales"
                 icon={FaChartBar}
-                value="+ 12,234"
+                value={stats.totalSales.toLocaleString()}
                 growth="+ 19% from last month"
               />
               <StatsCard
                 title="Active Deals"
                 icon={FaClock}
-                value="+ 573"
+                value={stats.activeDeals.toLocaleString()}
                 growth="+ 201 since last hour"
               />
             </div>

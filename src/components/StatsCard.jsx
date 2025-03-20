@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
 const StatsCard = ({ title, icon: Icon, value, growth }) => {
+
   return (
     <Card
       className="shadow-md p-4 flex flex-col justify-between 
