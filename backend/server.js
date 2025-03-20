@@ -21,6 +21,7 @@ app.use("/api/Customer", require("./routes/Customer"));
 app.use("/api/Appointment", require("./routes/AppointmentRoute"));
 app.use("/api/tasks", require("./routes/Task"));
 app.use("/api/sales", require("./routes/Sales"));
+app.use("/api/Dashboard", require('./routes/DashBoardStatsRoute'));
 
 const PORT = process.env.PORT || 3000;
 
