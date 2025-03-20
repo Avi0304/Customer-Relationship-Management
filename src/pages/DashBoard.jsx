@@ -71,26 +71,26 @@ const DashBoard = () => {
                 icon={FaRupeeSign}
                 value={`₹ ${stats.totalRevenue.toLocaleString()}`}
                 // growth="+ 20.1% from last month"
-                growth={`${stats.revenueChange}% from last month`}
+                growth={`+ ${stats.revenueChange}% from last month`}
               />
               <StatsCard
                 title="Active Customers"
                 icon={FaUsers}
-                value={stats.activeCustomers.toLocaleString()}
+                value={`+${stats.activeCustomers.toLocaleString()}`}
                 // growth="+ 90.1% from last month"
-                growth={`${stats.customerChange}% from last month`}
+                growth={`+ ${stats.customerChange}% from last month`}
               />
               <StatsCard
                 title="Sales"
                 icon={FaChartBar}
-                value={stats.totalSales.toLocaleString()}
+                value={`+${stats.totalSales.toLocaleString()}`}
                 // growth="+ 19% from last month"
-                growth={`${stats.salesChange}% from last month`}
+                growth={`+ ${stats.salesChange}% from last month`}
               />
               <StatsCard
                 title="Active Deals"
                 icon={FaClock}
-                value={stats.activeDeals.toLocaleString()}
+                value={`+${stats.activeDeals.toLocaleString()}`}
                 // growth="+ 201 since last hour"
                 growth={`${stats.dealsChange}% from last month`}
               />

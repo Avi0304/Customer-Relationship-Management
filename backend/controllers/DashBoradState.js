@@ -45,15 +45,16 @@ const DashboardStats = async (req, res) => {
 
         // Calculate percentage changes
         const revenueChange = lastMonthRevenue
-            ? ((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
-            : 0;
+        ? Math.min(((totalRevenue - lastMonthRevenue) / lastMonthRevenue) * 100, 100)
+        : 0;
+    
 
         const customerChange = lastMonthCustomers
             ? ((activeCustomers - lastMonthCustomers) / lastMonthCustomers) * 100
             : 0;
 
         const salesChange = lastMonthSales
-            ? ((totalSales - lastMonthSales) / lastMonthSales) * 100
+            ? Math.min(((totalSales - lastMonthSales) / lastMonthSales) * 100,100)
             : 0;
 
         const dealsChange = lastHourDeals ? `+${lastHourDeals} ` : "+0 ";
