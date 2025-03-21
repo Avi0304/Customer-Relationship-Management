@@ -18,6 +18,28 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: null
     },
+    bio:{
+        type: String,
+    },
+    DOB: {
+        type: Date
+    },
+    phone: {
+        type: String
+    },
+    address: {
+        type: String
+    },
+    organization: {
+        type: String
+    },
+    occupation: {
+        type: String
+    },
+    skills: {
+        type: [String], 
+        default: []
+    },
     verified: {
         type: Boolean
     }

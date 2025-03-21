@@ -1,25 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
 import { useNavigate } from "react-router-dom";
 import { FiEdit, FiSettings, FiCheck } from "react-icons/fi";
 import { Avatar } from "@mui/material";
+import axios from "axios";
+import { format, parseISO, isValid } from "date-fns";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    profilePhoto: "https://via.placeholder.com/150",
-    fullName: "John Doe",
-    dateOfBirth: "01/01/1990",
-    bio: "Software Developer",
-    email: "johndoe@example.com",
-    address: "123 Main St, City, Country",
-    phone: "+1234567890",
-    organization: "Tech Corp",
-    occupation: "Developer",
-    skills: ["React", "Node.js", "JavaScript"],
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError(err.response?.data?.message || "Failed to fetch profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Handle profile photo change
   const handleProfilePhotoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -31,12 +45,9 @@ const ProfilePage = () => {
     }
   };
 
-  const handleFieldChange = (field, value) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [field]: value,
-    }));
-  };
+
+  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -49,8 +60,8 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Avatar
-                  src={user.profilePhoto}
-                  sx={{ width: 96, height: 96, border: "4px solid #d1d5db" }} 
+                  src={user.profilePhoto || "https://via.placeholder.com/150"}
+                  sx={{ width: 96, height: 96, border: "4px solid #d1d5db" }}
                 />
                 <input
                   type="file"
@@ -67,8 +78,8 @@ const ProfilePage = () => {
                 </label>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white ml-3">{user.fullName}</h2>
-                <p className="text-gray-600 dark:text-gray-400 ml-3">{user.occupation} at {user.organization}</p>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white ml-3">{user.name}</h2>
+                <p className="text-gray-600 dark:text-gray-400 ml-3">{user.occupation || "Not specified"}</p>
               </div>
               <button onClick={() => navigate("/settings")} className="ml-auto p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                 <FiSettings className="text-gray-600" />
@@ -81,22 +92,25 @@ const ProfilePage = () => {
             <ProfileCard
               title="Personal Information"
               user={user}
-              fields={["fullName", "dateOfBirth", "bio"]}
-              onChange={handleFieldChange}
+              fields={["name", "DOB", "bio"]}
+              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              endpoint="update-profile"
             />
 
             <ProfileCard
               title="Contact Information"
               user={user}
               fields={["email", "address", "phone"]}
-              onChange={handleFieldChange}
+              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              endpoint="update-contact"
             />
 
             <ProfileCard
               title="Professional Information"
               user={user}
               fields={["organization", "occupation", "skills"]}
-              onChange={handleFieldChange}
+              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              endpoint="update-professional"
             />
           </div>
         </main>
@@ -106,19 +120,42 @@ const ProfilePage = () => {
 };
 
 // **Editable Profile Card Component**
-const ProfileCard = ({ title, user, fields, onChange }) => {
+const ProfileCard = ({ title, user, fields, onChange, endpoint }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(() => {
+    // Initialize formData with existing user data
+    const initialData = {};
+    fields.forEach((field) => {
+      initialData[field] = user[field] || "";
+    });
+    return initialData;
+  });
 
   const handleInputChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    fields.forEach((field) => {
-      onChange(field, formData[field] || user[field]);
-    });
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      const response = await axios.put(
+        `http://localhost:8080/api/Profile/${endpoint}`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      onChange(response.data); // Update only the changed fields
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating profile:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -136,7 +173,7 @@ const ProfileCard = ({ title, user, fields, onChange }) => {
           <ProfileField
             key={field}
             label={field.replace(/([A-Z])/g, " $1").trim()}
-            value={user[field]}
+            value={formData[field]}
             isEditing={isEditing}
             onChange={(value) => handleInputChange(field, value)}
           />
@@ -149,33 +186,70 @@ const ProfileCard = ({ title, user, fields, onChange }) => {
 
 // **Editable Profile Field Component**
 const ProfileField = ({ label, value, isEditing, onChange }) => {
-  const [inputValue, setInputValue] = useState(value);
+
+  let formattedValue = value || "";
+
+  if (label.toLowerCase() === "d o b" && value) {
+    try {
+      const dateObj = new Date(value);
+      if (!isNaN(dateObj.getTime())) {
+        formattedValue = format(dateObj, "yyyy-MM-dd"); 
+      } else {
+        console.error("Invalid DOB format:", value);
+      }
+    } catch (error) {
+      console.error("Error parsing DOB:", value, error);
+    }
+  }
+
+
+  const [inputValue, setInputValue] = useState(formattedValue);
+
+  useEffect(() => {
+    setInputValue(formattedValue);
+  }, [formattedValue]);
+
+ 
+
+  const handleChange = (e) => {
+    setInputValue(e.target.value);
+    onChange(e.target.value);
+  };
 
   return (
     <div className="border-b border-gray-200 pb-2">
       <p className="text-xs text-gray-500 font-bold capitalize mb-1">{label}</p>
       <div className="text-gray-800 dark:text-white text-sm">
-      {isEditing ? (
-          label.toLowerCase() === "address" ? (
-            // Render a textarea for Address
+        {isEditing ? (
+          label.toLowerCase() === "d o b" ? (
+            <input
+              type="date"
+              value={inputValue}
+              onChange={handleChange}
+              className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          ) : label.toLowerCase() === "address" ? (
             <textarea
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onBlur={() => onChange(inputValue)}
+              onChange={handleChange}
               className="border rounded px-2 py-1 text-sm w-full h-20 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           ) : (
-            // Render an input for other fields
             <input
               type="text"
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onBlur={() => onChange(inputValue)}
+              onChange={handleChange}
               className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           )
         ) : (
-          <p>{Array.isArray(value) ? value.join(", ") : value}</p>
+          <p>
+            {label.toLowerCase() === "d o b" && isValid(parseISO(value))
+              ? format(parseISO(value), "dd-MM-yyyy") // Correct format for display
+              : Array.isArray(value)
+                ? value.join(", ")
+                : value || "N/A"}
+          </p>
         )}
       </div>
     </div>
