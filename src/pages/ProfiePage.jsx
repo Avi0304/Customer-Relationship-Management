@@ -31,19 +31,68 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
+
   }, []);
 
-  // Handle profile photo change
-  const handleProfilePhotoChange = (event) => {
+
+  // const handleProfilePhotoChange = async (event) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+
+  //   const formData = new FormData();
+  //   formData.append("photo", file);
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await axios.put(
+  //       "http://localhost:8080/api/Profile/update-photo",
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     setUser((prev) => ({ ...prev, profilePhoto: response.data.profilePhoto })); 
+  //   } catch (error) {
+  //     console.error("Error uploading profile photo:", error.response?.data || error.message);
+  //   }
+  // };
+
+  const handleProfilePhotoChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUser({ ...user, profilePhoto: reader.result });
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Show the uploaded image immediately
+    const imageUrl = URL.createObjectURL(file);
+    setUser((prev) => ({ ...prev, photo: imageUrl }));
+
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        "http://localhost:8080/api/Profile/update-photo",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Update state with the server response after successful upload
+      setUser((prev) => ({ ...prev, photo: response.data.profilePhoto }));
+    } catch (error) {
+      console.error("Error uploading profile photo:", error.response?.data || error.message);
     }
   };
+
+
 
 
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
@@ -60,9 +109,10 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Avatar
-                  src={user.profilePhoto || "https://via.placeholder.com/150"}
+                  src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
                   sx={{ width: 96, height: 96, border: "4px solid #d1d5db" }}
                 />
+
                 <input
                   type="file"
                   accept="image/*"
@@ -193,7 +243,7 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
     try {
       const dateObj = new Date(value);
       if (!isNaN(dateObj.getTime())) {
-        formattedValue = format(dateObj, "yyyy-MM-dd"); 
+        formattedValue = format(dateObj, "yyyy-MM-dd");
       } else {
         console.error("Invalid DOB format:", value);
       }
@@ -209,7 +259,7 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
     setInputValue(formattedValue);
   }, [formattedValue]);
 
- 
+
 
   const handleChange = (e) => {
     setInputValue(e.target.value);

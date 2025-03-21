@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
+const path = require("path");
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
+// app.use("/uploads", express.static("uploads"));
+
 
 // Routes
 app.use("/api/user", require("./routes/Auth"));
@@ -23,6 +26,8 @@ app.use("/api/tasks", require("./routes/Task"));
 app.use("/api/sales", require("./routes/Sales"));
 app.use("/api/Dashboard", require('./routes/DashBoardStatsRoute'));
 app.use("/api/Profile", require('./routes/ProfileRoute'));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 const PORT = process.env.PORT || 3000;
 

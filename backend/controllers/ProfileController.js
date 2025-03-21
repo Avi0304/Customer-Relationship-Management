@@ -4,10 +4,8 @@ const jwt = require('jsonwebtoken');
 const dayjs = require('dayjs');
 require("dotenv").config();
 const moment = require("moment");
-
-
-
-
+const fs = require("fs");
+const path = require("path");
 
 const getprofile = async (req, res) => {
     try {
@@ -155,4 +153,58 @@ const updateProfessional = async(req,res) =>{
     }
 }
 
-module.exports = { getprofile, updateProfile, updateContact, updateProfessional }
+const uploadPhoto = async (req, res) => {
+    try {
+        // 🔹 Validate Authorization Token
+        const authHeader = req.header("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Access Denied. No Token Provided" });
+        }
+
+        const token = authHeader.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.userId;
+
+        console.log("Decoded UserID:", userId);
+
+        // 🔹 Check if a file is uploaded
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        console.log("Uploaded File Info:", req.file);
+
+        // 🔹 Ensure `uploads/` folder exists
+        const uploadPath = path.join(__dirname, "..", "uploads");
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+
+        // 🔹 Store the file path in DB
+        const photoUrl = `/uploads/${req.file.filename}`;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { photo: photoUrl },  // 🔹 Update the `photo` field in `User` model
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log("Photo successfully updated for user:", updatedUser);
+
+        res.status(200).json({
+            message: "Profile photo updated successfully",
+            profilePhoto: updatedUser.photo,  // 🔹 Return updated photo URL
+        });
+
+    } catch (error) {
+        console.error("Error in uploadPhoto:", error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
+
+module.exports = { getprofile, updateProfile, updateContact, updateProfessional, uploadPhoto }
