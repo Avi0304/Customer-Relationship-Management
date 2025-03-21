@@ -152,7 +152,4 @@ const resetpassword = async (req, res) => {
     }
 };
 
-
-
-
 module.exports = { loginController, registerController, forgetpassword, resetpassword };
