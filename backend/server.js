@@ -8,8 +8,6 @@ const path = require("path");
 dotenv.config();
 const app = express();
 
-connectDB();
-
 // Middlewares
 app.use(cors());
 app.use(express.json());
@@ -17,22 +15,32 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 // app.use("/uploads", express.static("uploads"));
 
-
 // Routes
 app.use("/api/user", require("./routes/Auth"));
 app.use("/api/Customer", require("./routes/Customer"));
 app.use("/api/Appointment", require("./routes/AppointmentRoute"));
 app.use("/api/tasks", require("./routes/Task"));
 app.use("/api/sales", require("./routes/Sales"));
-app.use("/api/Dashboard", require('./routes/DashBoardStatsRoute'));
-app.use("/api/Profile", require('./routes/ProfileRoute'));
+app.use("/api/Dashboard", require("./routes/DashBoardStatsRoute"));
+app.use("/api/Profile", require("./routes/ProfileRoute"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 
 const PORT = process.env.PORT || 3000;
 
+const startServer = async () => {
+  try {
+    console.log("⏳ Connecting to MongoDB...");
 
-app.listen(PORT, () => {
-  console.log(`Server is Running on ${PORT}`.bgCyan);
-});
+    await connectDB();
+    console.log("✅ Database Connected Successfully".bgMagenta);
 
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is Running on ${PORT}`.bgCyan);
+    });
+  } catch (error) {
+    console.error("❌ Error Starting Server:", error.message.red);
+    process.exit(1);
+  }
+};
+
+startServer();
