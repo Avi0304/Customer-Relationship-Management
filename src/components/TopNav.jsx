@@ -1,12 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NoticationBell";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Avatar } from "@mui/material";
 
 const TopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log(response.data);
+        setUser(response.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError(err.response?.data?.message || "Failed to fetch profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+
+  }, []);
+
+  
+
+  useEffect(() => {
+    if (user) {
+      console.log("Updated User:", user);
+    }
+  }, [user]); // Log user when it's updated
 
   return (
     <div className="light:bg-white dark:bg-[#161B22] dark:backdrop-blur-xl shadow-lg flex items-center justify-between p-6 h-16 sticky top-0 z-50 dark:z-[60]">
@@ -17,22 +49,30 @@ const TopNav = ({ title }) => {
       <div className="flex items-center gap-6">
         <ThemeToggle />
 
-        <NotificationBell/>
-        
+        <NotificationBell />
+
         {/* Profile Dropdown */}
         <div className="relative ">
           <button
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity duration-200"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <div className="p-2 bg-gray-100 rounded-full light:bg-gray-100 dark:bg-gray-800 transition-transform duration-300 group-hover:scale-105 group-hover:ring-2 group-hover:ring-purple-500/30">
-              <FiUser
+            <div className="rounded-full light:bg-gray-100 dark:bg-gray-800 transition-transform duration-300 group-hover:scale-105 group-hover:ring-2 group-hover:ring-purple-500/30">
+              {/* <FiUser
                 size={24}
                 className="light:text-gray-700 dark:text-gray-300 transition-colors duration-300"
-              />
+              /> */}
+
+              <Avatar
+                src={user?.photo ? `http://localhost:8080${user.photo}` : ""}
+                alt={user?.name}
+                sx={{ width: 40, height: 40, bgcolor: "transparent", color: 'black' }}
+              >
+                {!user?.photo && user?.name?.charAt(0).toUpperCase()}
+              </Avatar>
             </div>
             <span className="text-gray-700 dark:text-gray-300 font-medium hidden md:block transition-colors duration-300">
-              Admin
+              {user ? user.name : "Loading..."}
             </span>
           </button>
 
