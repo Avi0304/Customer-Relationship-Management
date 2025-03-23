@@ -35,7 +35,9 @@ const DashBoard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/Dashboard/stats");
+      const response = await axios.get(
+        "http://localhost:8080/api/Dashboard/stats"
+      );
       setStats(response.data); // Directly set the fetched data
     } catch (error) {
       console.error("Error fetching stats:", error);
