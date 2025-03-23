@@ -28,20 +28,53 @@ function AppContent() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<PublicRoute element={<Login />} />} />
-          <Route path="/signup" element={<PublicRoute element={<Signup />} />} />
-          <Route path="/forget-password" element={<PublicRoute element={<ForgetPassword />} />} />
-          <Route path="/reset-password" element={<PublicRoute element={<ResetPassword />} />} />
+          <Route
+            path="/signup"
+            element={<PublicRoute element={<Signup />} />}
+          />
+          <Route
+            path="/forget-password"
+            element={<PublicRoute element={<ForgetPassword />} />}
+          />
+          <Route
+            path="/reset-password"
+            element={<PublicRoute element={<ResetPassword />} />}
+          />
 
           {/* Private Routes */}
           <Route path="/" element={<PrivateRoute element={<DashBoard />} />} />
-          <Route path="/profile" element={<PrivateRoute element={<ProfilePage />} />} />
-          <Route path="/settings/:tab?" element={<PrivateRoute element={<SettingsPage />} />} />
-          <Route path="/leads" element={<PrivateRoute element={<LeadPage />} />} />
-          <Route path="/task" element={<PrivateRoute element={<TaskManagementPage />} />} />
-          <Route path="/customers" element={<PrivateRoute element={<CustomerPage />} />} />
-          <Route path="/customer/view/:id" element={<PrivateRoute element={<CustomerDetails />} />} />
-          <Route path="/appointment" element={<PrivateRoute element={<AppointmentPage />} />} />
-          <Route path="/sales" element={<PrivateRoute element={<SalesPage />} />} />
+          <Route
+            path="/profile"
+            element={<PrivateRoute element={<ProfilePage />} />}
+          />
+          <Route
+            path="/settings/:tab?"
+            element={<PrivateRoute element={<SettingsPage />} />}
+          />
+          <Route
+            path="/leads"
+            element={<PrivateRoute element={<LeadPage />} />}
+          />
+          <Route
+            path="/task"
+            element={<PrivateRoute element={<TaskManagementPage />} />}
+          />
+          <Route
+            path="/customers"
+            element={<PrivateRoute element={<CustomerPage />} />}
+          />
+          <Route
+            path="/customer/view/:id"
+            element={<PrivateRoute element={<CustomerDetails />} />}
+          />
+          <Route
+            path="/appointment"
+            element={<PrivateRoute element={<AppointmentPage />} />}
+          />
+          <Route
+            path="/sales"
+            element={<PrivateRoute element={<SalesPage />} />}
+          />
           <Route path="/marketing" element={<MarketingPage />} />
         </Routes>
       </Router>

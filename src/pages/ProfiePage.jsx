@@ -1,102 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
 import { useNavigate } from "react-router-dom";
-import { FiEdit, FiSettings, FiCheck } from "react-icons/fi";
+import { FiEdit, FiSettings, FiCheck, FiX, FiCalendar } from "react-icons/fi";
 import { Avatar } from "@mui/material";
-import axios from "axios";
-import { format, parseISO, isValid } from "date-fns";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [user, setUser] = useState({
+    profilePhoto: "https://avatar.iran.liara.run/public/1",
+    fullName: "Aayush Patel",
+    dateOfBirth: "12/10/2003",
+    bio: "Software Developer",
+    email: "ap3017015@gmail.com",
+    address: "64, In Darwaja, Near Ramji Temple, Gamdi, Anand, Gujarat, India",
+    phone: "+91 7048512103",
+    organization: "Tech Elecon Pvt. Ltd.",
+    occupation: "Developer",
+    skills: ["React", "Node.js", "JavaScript"],
+  });
 
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(response.data);
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-        setError(err.response?.data?.message || "Failed to fetch profile");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-
-  }, []);
-
-
-  // const handleProfilePhotoChange = async (event) => {
-  //   const file = event.target.files[0];
-  //   if (!file) return;
-
-  //   const formData = new FormData();
-  //   formData.append("photo", file);
-
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const response = await axios.put(
-  //       "http://localhost:8080/api/Profile/update-photo",
-  //       formData,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     setUser((prev) => ({ ...prev, profilePhoto: response.data.profilePhoto })); 
-  //   } catch (error) {
-  //     console.error("Error uploading profile photo:", error.response?.data || error.message);
-  //   }
-  // };
-
-  const handleProfilePhotoChange = async (event) => {
+  const handleProfilePhotoChange = (event) => {
     const file = event.target.files[0];
-    if (!file) return;
-
-    // Show the uploaded image immediately
-    const imageUrl = URL.createObjectURL(file);
-    setUser((prev) => ({ ...prev, photo: imageUrl }));
-
-    const formData = new FormData();
-    formData.append("photo", file);
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        "http://localhost:8080/api/Profile/update-photo",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // Update state with the server response after successful upload
-      setUser((prev) => ({ ...prev, photo: response.data.profilePhoto }));
-    } catch (error) {
-      console.error("Error uploading profile photo:", error.response?.data || error.message);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUser({ ...user, profilePhoto: reader.result });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-
-
-
-  if (loading) return <p className="text-center text-gray-600">Loading...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
+  const handleFieldChange = (field, value) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      [field]:
+        field === "skills" ? value.split(",").map((s) => s.trim()) : value,
+    }));
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -104,15 +47,17 @@ const ProfilePage = () => {
       <div className="flex-1">
         <TopNav title={"Profile"} />
         <main className="p-6 space-y-4">
-          {/* Profile Header */}
-          <div className="w-full bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+          <div className="relative w-full bg-black shadow-lg rounded-lg p-6 text-white">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Avatar
-                  src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
-                  sx={{ width: 96, height: 96, border: "4px solid #d1d5db" }}
+                  src={user.profilePhoto}
+                  sx={{
+                    width: 96,
+                    height: 96,
+                    border: "4px solid #fff",
+                  }}
                 />
-
                 <input
                   type="file"
                   accept="image/*"
@@ -122,45 +67,46 @@ const ProfilePage = () => {
                 />
                 <label
                   htmlFor="profile-photo"
-                  className="absolute bottom-0 right-0 bg-white border rounded-full p-1 cursor-pointer shadow-lg"
+                  className="absolute bottom-0 right-0 bg-white border rounded-full p-1 cursor-pointer shadow-md"
                 >
                   <FiEdit className="text-gray-600" />
                 </label>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 dark:text-white ml-3">{user.name}</h2>
-                <p className="text-gray-600 dark:text-gray-400 ml-3">{user.occupation || "Not specified"}</p>
+                <h2 className="text-3xl font-bold">{user.fullName}</h2>
+                <p className="text-md">
+                  {user.occupation} at {user.organization}
+                </p>
               </div>
-              <button onClick={() => navigate("/settings")} className="ml-auto p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
-                <FiSettings className="text-gray-600" />
+              <button
+                onClick={() => navigate("/settings")}
+                className="ml-auto p-2 bg-white text-blue-500 rounded-full shadow-md"
+              >
+                <FiSettings />
               </button>
             </div>
           </div>
 
-          {/* Profile Sections */}
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
             <ProfileCard
               title="Personal Information"
               user={user}
-              fields={["name", "DOB", "bio"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
-              endpoint="update-profile"
+              fields={["fullName", "dateOfBirth", "bio"]}
+              onChange={handleFieldChange}
             />
 
             <ProfileCard
               title="Contact Information"
               user={user}
               fields={["email", "address", "phone"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
-              endpoint="update-contact"
+              onChange={handleFieldChange}
             />
 
             <ProfileCard
               title="Professional Information"
               user={user}
               fields={["organization", "occupation", "skills"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
-              endpoint="update-professional"
+              onChange={handleFieldChange}
             />
           </div>
         </main>
@@ -169,61 +115,58 @@ const ProfilePage = () => {
   );
 };
 
-// **Editable Profile Card Component**
-const ProfileCard = ({ title, user, fields, onChange, endpoint }) => {
+const ProfileCard = ({ title, user, fields, onChange }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(() => {
-    // Initialize formData with existing user data
-    const initialData = {};
-    fields.forEach((field) => {
-      initialData[field] = user[field] || "";
-    });
-    return initialData;
-  });
+  const [formData, setFormData] = useState({});
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData({ ...formData, [field]: value });
   };
 
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
-
-      const response = await axios.put(
-        `http://localhost:8080/api/Profile/${endpoint}`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      onChange(response.data); // Update only the changed fields
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating profile:", error.response?.data || error.message);
-    }
+  const handleSave = () => {
+    fields.forEach((field) => {
+      onChange(field, formData[field] || user[field]);
+    });
+    setIsEditing(false);
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-white flex justify-between items-center">
-        {title}
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 hover:scale-[1.02] transition-transform duration-300">
+      <div className="flex items-center justify-between border-b pb-3 mb-3">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+          {title}
+        </h3>
         {isEditing ? (
-          <FiCheck className="text-green-500 cursor-pointer" onClick={handleSave} />
+          <div className="flex gap-2">
+            <button
+              className="text-green-500 hover:text-green-600"
+              onClick={handleSave}
+            >
+              <FiCheck />
+            </button>
+            <button
+              className="text-red-500 hover:text-red-600"
+              onClick={() => setIsEditing(false)}
+            >
+              <FiX />
+            </button>
+          </div>
         ) : (
-          <FiEdit className="text-gray-500 cursor-pointer hover:text-gray-700" onClick={() => setIsEditing(true)} />
+          <button
+            className="text-blue-500 hover:text-blue-600"
+            onClick={() => setIsEditing(true)}
+          >
+            <FiEdit />
+          </button>
         )}
-      </h3>
-      <div className="mt-3 space-y-2">
+      </div>
+
+      <div className="grid grid-cols-1 gap-3">
         {fields.map((field) => (
           <ProfileField
             key={field}
             label={field.replace(/([A-Z])/g, " $1").trim()}
-            value={formData[field]}
+            value={field === "skills" ? user[field].join(", ") : user[field]}
             isEditing={isEditing}
             onChange={(value) => handleInputChange(field, value)}
           />
@@ -233,78 +176,73 @@ const ProfileCard = ({ title, user, fields, onChange, endpoint }) => {
   );
 };
 
-
-// **Editable Profile Field Component**
 const ProfileField = ({ label, value, isEditing, onChange }) => {
+  const isDateField = label.toLowerCase() === "date of birth";
+  const [inputValue, setInputValue] = useState(
+    isDateField
+      ? typeof value === "string"
+        ? new Date(value.split("/").reverse().join("-")) // Convert "12/10/2003" format to Date
+        : new Date(value)
+      : value
+  );
 
-  let formattedValue = value || "";
-
-  if (label.toLowerCase() === "d o b" && value) {
-    try {
-      const dateObj = new Date(value);
-      if (!isNaN(dateObj.getTime())) {
-        formattedValue = format(dateObj, "yyyy-MM-dd");
-      } else {
-        console.error("Invalid DOB format:", value);
-      }
-    } catch (error) {
-      console.error("Error parsing DOB:", value, error);
-    }
-  }
-
-
-  const [inputValue, setInputValue] = useState(formattedValue);
-
-  useEffect(() => {
-    setInputValue(formattedValue);
-  }, [formattedValue]);
-
-
-
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
-    onChange(e.target.value);
-  };
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   return (
-    <div className="border-b border-gray-200 pb-2">
-      <p className="text-xs text-gray-500 font-bold capitalize mb-1">{label}</p>
-      <div className="text-gray-800 dark:text-white text-sm">
+    <div className="flex flex-col gap-1">
+      <p className="text-xs text-gray-500 font-bold uppercase">{label}</p>
+      <div className="relative text-gray-800 dark:text-white text-sm">
         {isEditing ? (
-          label.toLowerCase() === "d o b" ? (
-            <input
-              type="date"
-              value={inputValue}
-              onChange={handleChange}
-              className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          ) : label.toLowerCase() === "address" ? (
-            <textarea
-              value={inputValue}
-              onChange={handleChange}
-              className="border rounded px-2 py-1 text-sm w-full h-20 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
+          isDateField ? (
+            <div className="relative">
+              <input
+                type="text"
+                value={inputValue.toLocaleDateString("en-GB")}
+                readOnly
+                className="border rounded-lg px-3 py-2 pr-10 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                onClick={() => setShowDatePicker(!showDatePicker)}
+              />
+              <FiCalendar
+                className="absolute right-3 top-3 text-blue-500 cursor-pointer"
+                onClick={() => setShowDatePicker(!showDatePicker)}
+              />
+
+              {showDatePicker && (
+                <div className="absolute top-12 left-0 z-50 bg-white p-2 shadow-md rounded-lg border">
+                  <DatePicker
+                    selected={inputValue}
+                    onChange={(date) => {
+                      const formattedDate = date.toLocaleDateString("en-GB");
+                      setInputValue(date);
+                      onChange(formattedDate);
+                      setShowDatePicker(false);
+                    }}
+                    inline
+                    dateFormat="dd/MM/yyyy"
+                    showYearDropdown
+                    scrollableYearDropdown
+                    yearDropdownItemNumber={60}
+                  />
+                </div>
+              )}
+            </div>
           ) : (
             <input
               type="text"
               value={inputValue}
-              onChange={handleChange}
-              className="border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+              onChange={(e) => setInputValue(e.target.value)}
+              onBlur={() => onChange(inputValue)}
+              className="border rounded-lg px-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           )
         ) : (
-          <p>
-            {label.toLowerCase() === "d o b" && isValid(parseISO(value))
-              ? format(parseISO(value), "dd-MM-yyyy") // Correct format for display
-              : Array.isArray(value)
-                ? value.join(", ")
-                : value || "N/A"}
+          <p className="text-gray-700 dark:text-gray-300">
+            {isDateField ? inputValue.toLocaleDateString("en-GB") : inputValue}
           </p>
         )}
       </div>
     </div>
   );
 };
-
 
 export default ProfilePage;
