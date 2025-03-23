@@ -18,24 +18,33 @@ const SettingsPage = () => {
   const [tab, setTab] = useState(urlTab || "profile");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
-  const [settings, setSettings] = useState({
-    fullName: "Aayush Patel",
-    dateOfBirth: "12/10/2003",
-    email: "ap3017015@gmail.com",
-    address: "64, In Darwaja, Near Ramji Temple, Gamdi, Anand, Gujarat, India",
-    phone: "+91 7048512103",
-    organization: "Tech Elecon Pvt. Ltd.",
-    occupation: "Developer",
-    skills: "React, Node.js, JavaScript",
-    currentPassword: "",
-    newPassword: "",
-  });
+  const [settings, setSettings] = useState(null);
 
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,
   });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setSettings(response.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+        setError(err.response?.data?.message || "Failed to fetch profile");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [refresh]);
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
@@ -55,15 +64,72 @@ const SettingsPage = () => {
   // === Profile Save Logic ===
   const handleSaveProfile = async () => {
     setSaving(true);
+  
     try {
-      await axios.put("/api/profile/update", settings);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        Swal.fire("Error", "Unauthorized access", "error");
+        setSaving(false);
+        return;
+      }
+  
+      // Define API endpoints for different profile sections
+      const endpoints = {
+        profile: "http://localhost:8080/api/profile/update-profile",
+        contact: "http://localhost:8080/api/profile/update-contact",
+        professional: "http://localhost:8080/api/profile/update-professional",
+      };
+  
+      const profileFields = ["name", "bio", "dob"];
+      const contactFields = ["email", "phone", "address"];
+      const professionalFields = ["organization", "skills", "occupation"];
+  
+      // Prepare data for each section
+      const profileData = {};
+      const contactData = {};
+      const professionalData = {};
+  
+      Object.keys(settings).forEach((field) => {
+        if (profileFields.includes(field) && settings[field]) {
+          profileData[field] = settings[field];
+        } else if (contactFields.includes(field) && settings[field]) {
+          contactData[field] = settings[field];
+        } else if (professionalFields.includes(field) && settings[field]) {
+          professionalData[field] = settings[field];
+        }
+      });
+  
+      // Send API requests only for the sections that have updates
+      if (Object.keys(profileData).length) {
+        await axios.put(endpoints.profile, profileData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+  
+      if (Object.keys(contactData).length) {
+        await axios.put(endpoints.contact, contactData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+  
+      if (Object.keys(professionalData).length) {
+        await axios.put(endpoints.professional, professionalData, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+  
       Swal.fire("Success", "Profile updated successfully", "success");
+      setRefresh((prev) => !prev); // Refresh the profile after updating
     } catch (error) {
-      Swal.fire("Error", "Failed to update profile", "error");
+      console.error("Error updating profile:", error.response?.data || error.message);
+      Swal.fire("Error", error.response?.data?.message || "Failed to update profile", "error");
     } finally {
       setSaving(false);
     }
   };
+  
+  
 
   // === Password Change Logic ===
   const handlePasswordChange = async () => {
@@ -188,16 +254,12 @@ const SettingsPage = () => {
                     {/* Avatar & Info */}
                     <div className="flex items-center gap-4 mb-6">
                       <Avatar
-                        src="https://avatar.iran.liara.run/public/1"
-                        sx={{
-                          width: 96,
-                          height: 96,
-                          border: "4px solid #fff",
-                        }}
+                           src={settings.photo ? settings.photo.startsWith("blob") ? settings.photo : `http://localhost:8080${settings.photo}` : "https://via.placeholder.com/150"}
+                           sx={{ width: 96, height: 96, border: "4px solid #fff" }}
                       />
                       <div>
                         <h2 className="text-3xl font-bold">
-                          {settings.fullName}
+                          {settings.name}
                         </h2>
                         <p className="text-md">
                           {settings.occupation} at {settings.organization}
@@ -208,8 +270,8 @@ const SettingsPage = () => {
                     {/* Fields Section */}
                     <div className="grid gap-4">
                       {[
-                        "fullName",
-                        "dateOfBirth",
+                        "name",
+                        "dob",
                         "email",
                         "address",
                         "phone",

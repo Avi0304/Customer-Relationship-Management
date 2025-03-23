@@ -29,16 +29,16 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    console.log("⏳ Connecting to MongoDB...");
+    console.log("Connecting to MongoDB...");
 
     await connectDB();
-    console.log("✅ Database Connected Successfully".bgMagenta);
+    console.log("Database Connected Successfully".bgMagenta);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server is Running on ${PORT}`.bgCyan);
+      console.log(`Server is Running on ${PORT}`.bgCyan);
     });
   } catch (error) {
-    console.error("❌ Error Starting Server:", error.message.red);
+    console.error("Error Starting Server:", error.message.red);
     process.exit(1);
   }
 };
