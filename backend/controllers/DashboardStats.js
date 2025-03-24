@@ -11,19 +11,37 @@ const DashboardStats = async (req, res) => {
     // Get the start of the last hour
     const lastHour = moment().subtract(1, "hours").toDate();
 
-    // Calculate current values
+    // Calculate current total revenue
     const totalRevenueResult = await Sale.aggregate([
       {
-        $group: { _id: null, totalAmount: { $sum: { $toDouble: "$amount" } } },
+        $addFields: {
+          numericAmount: {
+            $toDouble: {
+              $replaceAll: {
+                input: "$amount",
+                find: "₹",
+                replacement: "",
+              },
+            },
+          },
+        },
+      },
+      {
+        $group: { _id: null, totalAmount: { $sum: "$numericAmount" } },
       },
     ]);
     const totalRevenue =
       totalRevenueResult.length > 0 ? totalRevenueResult[0].totalAmount : 0;
 
+    // Count active customers
     const activeCustomers = await Customer.countDocuments({
       status: { $in: ["Pending", "Completed"] },
     });
+
+    // Count total sales
     const totalSales = await Sale.countDocuments();
+
+    // Count active deals
     const activeDeals = await Sale.countDocuments({ status: "Pending" });
 
     // Fetch previous month revenue
@@ -37,7 +55,20 @@ const DashboardStats = async (req, res) => {
         },
       },
       {
-        $group: { _id: null, totalAmount: { $sum: { $toDouble: "$amount" } } },
+        $addFields: {
+          numericAmount: {
+            $toDouble: {
+              $replaceAll: {
+                input: "$amount",
+                find: "₹",
+                replacement: "",
+              },
+            },
+          },
+        },
+      },
+      {
+        $group: { _id: null, totalAmount: { $sum: "$numericAmount" } },
       },
     ]);
     const lastMonthRevenue =
@@ -78,6 +109,7 @@ const DashboardStats = async (req, res) => {
 
     const dealsChange = lastHourDeals ? `+${lastHourDeals} ` : "+0 ";
 
+    // Send response
     res.status(200).json({
       totalRevenue,
       activeCustomers,
