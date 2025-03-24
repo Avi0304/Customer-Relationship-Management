@@ -1,7 +1,7 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
-import {UserContext} from "../context/UserContext"
+import { UserContext } from "../context/UserContext"
 import {
   Avatar,
   Box,
@@ -9,11 +9,13 @@ import {
   TextField,
   Switch,
   CircularProgress,
-  useTheme
+  useTheme,
+  Typography
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+
 
 const userPage = () => {
   const { tab: urlTab } = useParams();
@@ -22,8 +24,15 @@ const userPage = () => {
   const [saving, setSaving] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const theme = useTheme();
+  const [password, setPassword] = useState({
+    email: '',
+    token: '',
+    newPassword: "",
+  })
+  const [otp, setOtp] = useState(false);
+  const [success, setSuccess] = useState("");
 
-   const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -57,6 +66,15 @@ const userPage = () => {
     setTimeout(() => setLoading(false), 1500);
   }, []);
 
+  useEffect(() => {
+    setPassword({
+      email: "",
+      token: "",
+      newPassword: "",
+    });
+    setSuccess("");
+  }, [tab]);
+
   const handleFieldChange = (field, value) => {
     setUser((prevuser) => ({
       ...prevuser,
@@ -64,10 +82,103 @@ const userPage = () => {
     }));
   };
 
+  const handleFieldSecurity = (field, value) => {
+    setPassword((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Handle OTP Button Click
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/user/forget-password",
+        { email: password.email }
+      );
+
+      if (response.status === 200) {
+        setOtp(true);
+        Swal.fire({
+          title: "Send Reset Token!",
+          text: "Reset token send to your email.",
+          timer: 1500,
+          icon: "success",
+          iconColor: "green",
+          showConfirmButton: true,
+          allowOutsideClick: false,
+        });
+
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Oops!",
+        text: "Something went Wrong...",
+        icon: "error",
+        iconColor: 'red',
+        timer: 1500,
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+  // === Password Change Logic ===
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+
+    if (!password.email || !password.token || !password.newPassword) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please fill in all fields.",
+        icon: "warning",
+        iconColor: "orange",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/user/reset-password",
+        {
+          email: password.email,
+          token: password.token,
+          newPassword: password.newPassword,
+        }
+      );
+
+      if (response.status === 200) {
+        setSuccess("Password Reset Successfully...");
+        Swal.fire({
+          title: "Password Reset Successfully!",
+          // text: "Redirecting to the login page...",
+          icon: "success",
+          iconColor: "green",
+          timer: 1500,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+
+        // setTimeout(() => navigate("/login"), 2000);
+      }
+    } catch (error) {
+      console.error("Reset Password Error:", error.response?.data || error.message);
+
+      Swal.fire({
+        title: "Oops!",
+        text: error.response?.data?.message || "Something went wrong...",
+        icon: "error",
+        iconColor: "red",
+        timer: 1500,
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
+
+
   // === Profile Save Logic ===
   const handleSaveProfile = async () => {
     setSaving(true);
-  
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -76,23 +187,23 @@ const userPage = () => {
         setSaving(false);
         return;
       }
-  
+
       // Define API endpoints for different profile sections
       const endpoints = {
         profile: "http://localhost:8080/api/profile/update-profile",
         contact: "http://localhost:8080/api/profile/update-contact",
         professional: "http://localhost:8080/api/profile/update-professional",
       };
-  
+
       const profileFields = ["name", "bio", "dob"];
       const contactFields = ["email", "phone", "address"];
       const professionalFields = ["organization", "skills", "occupation"];
-  
+
       // Prepare data for each section
       const profileData = {};
       const contactData = {};
       const professionalData = {};
-  
+
       Object.keys(user).forEach((field) => {
         if (profileFields.includes(field) && user[field]) {
           profileData[field] = user[field];
@@ -102,28 +213,28 @@ const userPage = () => {
           professionalData[field] = user[field];
         }
       });
-  
+
       // Send API requests only for the sections that have updates
       if (Object.keys(profileData).length) {
         await axios.put(endpoints.profile, profileData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-  
+
       if (Object.keys(contactData).length) {
         await axios.put(endpoints.contact, contactData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-  
+
       if (Object.keys(professionalData).length) {
         await axios.put(endpoints.professional, professionalData, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-  
+
       Swal.fire("Success", "Profile updated successfully", "success");
-      setRefresh((prev) => !prev); 
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Error updating profile:", error.response?.data || error.message);
       Swal.fire("Error", error.response?.data?.message || "Failed to update profile", "error");
@@ -131,22 +242,7 @@ const userPage = () => {
       setSaving(false);
     }
   };
-  
-  
 
-  // === Password Change Logic ===
-  const handlePasswordChange = async () => {
-    const { currentPassword, newPassword } = user;
-    try {
-      await axios.put("/api/security/change-password", {
-        currentPassword,
-        newPassword,
-      });
-      Swal.fire("Success", "Password updated successfully", "success");
-    } catch (error) {
-      Swal.fire("Error", "Failed to update password", "error");
-    }
-  };
 
   // === Enable 2FA Logic ===
   const handleEnable2FA = async () => {
@@ -257,8 +353,8 @@ const userPage = () => {
                     {/* Avatar & Info */}
                     <div className="flex items-center gap-4 mb-6">
                       <Avatar
-                           src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
-                           sx={{ width: 96, height: 96, border: "4px solid #fff" }}
+                        src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
+                        sx={{ width: 96, height: 96, border: "4px solid #fff" }}
                       />
                       <div>
                         <h2 className="text-3xl font-bold">
@@ -337,52 +433,85 @@ const userPage = () => {
 
                     {/* Password Change Section */}
                     <div className="space-y-4">
-                      <TextField
-                        label="Current Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        value={user.currentPassword}
-                        onChange={(e) =>
-                          handleFieldChange("currentPassword", e.target.value)
-                        }
-                        sx={{ mb: 2 }}
-                      />
+                      {success ? (
+                        <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                          <Typography variant="body1" sx={{ color: "green", fontWeight: "bold" }}>
+                            {success}
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <>
+                          <TextField
+                            label="Email"
+                            variant="outlined"
+                            type="email"
+                            fullWidth
+                            value={password.email}
+                            onChange={(e) => handleFieldSecurity("email", e.target.value)}
+                            sx={{ mb: 2 }}
+                          />
 
-                      <TextField
-                        label="New Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        value={user.newPassword}
-                        onChange={(e) =>
-                          handleFieldChange("newPassword", e.target.value)
-                        }
-                        sx={{ mb: 2 }}
-                      />
-                      <TextField
-                        label="Confirm New Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        sx={{ mb: 2 }}
-                      />
+                          {otp && (
+                            <>
+                              <TextField
+                                label="Reset Token"
+                                variant="outlined"
+                                type="text"
+                                fullWidth
+                                value={password.token}
+                                onChange={(e) => handleFieldSecurity("token", e.target.value)}
+                                sx={{ mb: 2 }}
+                              />
 
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            backgroundColor: "#3B82F6",
-                            textTransform: "capitalize",
-                            width: "200px",
-                          }}
-                          onClick={handlePasswordChange}
-                        >
-                          Change Password
-                        </Button>
-                      </Box>
+                              <TextField
+                                label="New Password"
+                                variant="outlined"
+                                type="password"
+                                fullWidth
+                                value={password.newPassword}
+                                onChange={(e) => handleFieldSecurity("newPassword", e.target.value)}
+                                sx={{ mb: 2 }}
+                              />
+                            </>
+                          )}
+
+                          {!otp && (
+                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  backgroundColor: "#3B82F6",
+                                  textTransform: "capitalize",
+                                  width: "200px",
+                                }}
+                                onClick={handleSendOTP}
+                              >
+                                Send OTP
+                              </Button>
+                            </Box>
+                          )}
+
+                          {otp && (
+                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  backgroundColor: "#3B82F6",
+                                  textTransform: "capitalize",
+                                  width: "200px",
+                                }}
+                                onClick={handlePasswordChange}
+                              >
+                                Reset Password
+                              </Button>
+                            </Box>
+                          )}
+                        </>
+                      )}
                     </div>
+
 
                     {/* Two-Factor Authentication */}
                     <div className="border-t border-gray-300 my-4"></div>
