@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
+import {UserContext} from "../context/UserContext"
 import {
   Avatar,
   Box,
@@ -8,19 +9,21 @@ import {
   TextField,
   Switch,
   CircularProgress,
+  useTheme
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const SettingsPage = () => {
+const userPage = () => {
   const { tab: urlTab } = useParams();
   const [tab, setTab] = useState(urlTab || "profile");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const theme = useTheme();
 
-  const [settings, setSettings] = useState(null);
+   const { user, setUser } = useContext(UserContext);
 
   const [notifications, setNotifications] = useState({
     email: true,
@@ -34,7 +37,7 @@ const SettingsPage = () => {
         const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setSettings(response.data);
+        setUser(response.data);
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError(err.response?.data?.message || "Failed to fetch profile");
@@ -55,8 +58,8 @@ const SettingsPage = () => {
   }, []);
 
   const handleFieldChange = (field, value) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
+    setUser((prevuser) => ({
+      ...prevuser,
       [field]: value,
     }));
   };
@@ -90,13 +93,13 @@ const SettingsPage = () => {
       const contactData = {};
       const professionalData = {};
   
-      Object.keys(settings).forEach((field) => {
-        if (profileFields.includes(field) && settings[field]) {
-          profileData[field] = settings[field];
-        } else if (contactFields.includes(field) && settings[field]) {
-          contactData[field] = settings[field];
-        } else if (professionalFields.includes(field) && settings[field]) {
-          professionalData[field] = settings[field];
+      Object.keys(user).forEach((field) => {
+        if (profileFields.includes(field) && user[field]) {
+          profileData[field] = user[field];
+        } else if (contactFields.includes(field) && user[field]) {
+          contactData[field] = user[field];
+        } else if (professionalFields.includes(field) && user[field]) {
+          professionalData[field] = user[field];
         }
       });
   
@@ -120,7 +123,7 @@ const SettingsPage = () => {
       }
   
       Swal.fire("Success", "Profile updated successfully", "success");
-      setRefresh((prev) => !prev); // Refresh the profile after updating
+      setRefresh((prev) => !prev); 
     } catch (error) {
       console.error("Error updating profile:", error.response?.data || error.message);
       Swal.fire("Error", error.response?.data?.message || "Failed to update profile", "error");
@@ -133,7 +136,7 @@ const SettingsPage = () => {
 
   // === Password Change Logic ===
   const handlePasswordChange = async () => {
-    const { currentPassword, newPassword } = settings;
+    const { currentPassword, newPassword } = user;
     try {
       await axios.put("/api/security/change-password", {
         currentPassword,
@@ -246,23 +249,23 @@ const SettingsPage = () => {
               <>
                 {/* Profile Tab */}
                 {tab === "profile" && (
-                  <div className="bg-white shadow-xl rounded-lg p-6">
+                  <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
                     <h2 className="text-2xl font-semibold mb-2">
-                      Profile Settings
+                      Profile user
                     </h2>
 
                     {/* Avatar & Info */}
                     <div className="flex items-center gap-4 mb-6">
                       <Avatar
-                           src={settings.photo ? settings.photo.startsWith("blob") ? settings.photo : `http://localhost:8080${settings.photo}` : "https://via.placeholder.com/150"}
+                           src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
                            sx={{ width: 96, height: 96, border: "4px solid #fff" }}
                       />
                       <div>
                         <h2 className="text-3xl font-bold">
-                          {settings.name}
+                          {user.name}
                         </h2>
                         <p className="text-md">
-                          {settings.occupation} at {settings.organization}
+                          {user.occupation} at {user.organization}
                         </p>
                       </div>
                     </div>
@@ -282,7 +285,7 @@ const SettingsPage = () => {
                         <TextField
                           key={field}
                           label={field.replace(/([A-Z])/g, " $1").trim()}
-                          value={settings[field]}
+                          value={user[field]}
                           onChange={(e) =>
                             handleFieldChange(field, e.target.value)
                           }
@@ -303,7 +306,7 @@ const SettingsPage = () => {
                           variant="contained"
                           color="primary"
                           sx={{
-                            background: "black",
+                            backgroundColor: "#3B82F6",
                             textTransform: "capitalize",
                             width: "200px",
                           }}
@@ -325,11 +328,11 @@ const SettingsPage = () => {
                 {tab === "security" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
                     <h2 className="text-2xl font-semibold mb-2">
-                      Security Settings
+                      Security user
                     </h2>
                     <p className="text-sm text-gray-500 mb-6">
                       Strengthen your account security by updating your password
-                      and managing key settings.
+                      and managing key user.
                     </p>
 
                     {/* Password Change Section */}
@@ -339,7 +342,7 @@ const SettingsPage = () => {
                         variant="outlined"
                         type="password"
                         fullWidth
-                        value={settings.currentPassword}
+                        value={user.currentPassword}
                         onChange={(e) =>
                           handleFieldChange("currentPassword", e.target.value)
                         }
@@ -351,7 +354,7 @@ const SettingsPage = () => {
                         variant="outlined"
                         type="password"
                         fullWidth
-                        value={settings.newPassword}
+                        value={user.newPassword}
                         onChange={(e) =>
                           handleFieldChange("newPassword", e.target.value)
                         }
@@ -394,7 +397,7 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: "black",
+                          color: theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
@@ -431,7 +434,7 @@ const SettingsPage = () => {
                       Manage how you receive important updates and alerts.
                     </p>
 
-                    {/* Notification Settings */}
+                    {/* Notification user */}
                     <div className="space-y-4">
                       {[
                         {
@@ -491,7 +494,7 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: "black",
+                          color: theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
@@ -526,7 +529,7 @@ const SettingsPage = () => {
                     </h2>
                     <p className="text-sm text-gray-500 mb-6">
                       Manage your data, backup options, and account removal
-                      settings.
+                      user.
                     </p>
 
                     {/* Data Export Section */}
@@ -604,7 +607,7 @@ const SettingsPage = () => {
                             component="span"
                             sx={{
                               borderColor: "gray",
-                              color: "black",
+                              color: theme.palette.mode === "dark" ? "white" : "black",
                               textTransform: "capitalize",
                               px: 3,
                             }}
@@ -637,7 +640,7 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: "black",
+                          color: theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
@@ -681,4 +684,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default userPage;

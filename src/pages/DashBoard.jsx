@@ -94,7 +94,7 @@ const DashBoard = () => {
                 icon={FaClock}
                 value={`+${stats.activeDeals.toLocaleString()}`}
                 // growth="+ 201 since last hour"
-                growth={`${stats.dealsChange}% from last month`}
+                growth={`${stats.dealsChange}% from last hour`}
               />
             </div>
 

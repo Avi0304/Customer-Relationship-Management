@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
+import {UserContext} from "../context/UserContext"
 import { useNavigate } from "react-router-dom";
 import { FiEdit, FiSettings, FiCheck, FiX } from "react-icons/fi";
 import { Avatar } from "@mui/material";
@@ -9,7 +10,7 @@ import { format, parseISO, isValid } from "date-fns";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refresh, setRefresh] = useState(false);
@@ -125,6 +126,7 @@ const ProfilePage = () => {
               fields={["name", "DOB", "bio"]}
               onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
               endpoint="update-profile"
+              setRefresh={setRefresh}
             />
 
             <ProfileCard
@@ -133,6 +135,7 @@ const ProfilePage = () => {
               fields={["email", "address", "phone"]}
               onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
               endpoint="update-contact"
+              setRefresh={setRefresh}
             />
 
             <ProfileCard
@@ -141,6 +144,7 @@ const ProfilePage = () => {
               fields={["organization", "occupation", "skills"]}
               onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
               endpoint="update-professional"
+              setRefresh={setRefresh}
             />
           </div>
         </main>
@@ -150,7 +154,7 @@ const ProfilePage = () => {
 };
 
 // **Editable Profile Card Component**
-const ProfileCard = ({ title, user, fields, onChange, endpoint }) => {
+const ProfileCard = ({ title, user, fields, onChange, endpoint, setRefresh }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(() => {
     // Initialize formData with existing user data
@@ -180,10 +184,11 @@ const ProfileCard = ({ title, user, fields, onChange, endpoint }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+      
       onChange(response.data); 
       setIsEditing(false);
-      setRefresh(response.data);
+      // setUser(response.data)
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error("Error updating profile:", error.response?.data || error.message);
     }
