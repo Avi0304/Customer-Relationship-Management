@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
-import {UserContext} from "../context/UserContext"
+import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { FiEdit, FiSettings, FiCheck, FiX } from "react-icons/fi";
 import { Avatar } from "@mui/material";
@@ -15,14 +15,16 @@ const ProfilePage = () => {
   const [error, setError] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          "http://localhost:8080/api/Profile/get-profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setUser(response.data);
       } catch (err) {
         console.error("Error fetching profile:", err);
@@ -35,18 +37,17 @@ const ProfilePage = () => {
     fetchProfile();
   }, [refresh]);
 
-
   const handleProfilePhotoChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     // Show the uploaded image immediately
     const imageUrl = URL.createObjectURL(file);
     setUser((prev) => ({ ...prev, photo: imageUrl }));
-  
+
     const formData = new FormData();
     formData.append("photo", file);
-  
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
@@ -59,22 +60,22 @@ const ProfilePage = () => {
           },
         }
       );
-  
-    
+
       URL.revokeObjectURL(imageUrl);
-  
-     
+
       setUser((prev) => ({
         ...prev,
         photo: `http://localhost:8080${response.data.profilePhoto}`, // Ensure correct server path
       }));
-  
+
       setRefresh((prev) => !prev); // Trigger re-fetch if needed
     } catch (error) {
-      console.error("Error uploading profile photo:", error.response?.data || error.message);
+      console.error(
+        "Error uploading profile photo:",
+        error.response?.data || error.message
+      );
     }
   };
-  
 
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -90,7 +91,13 @@ const ProfilePage = () => {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Avatar
-                  src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
+                  src={
+                    user.photo
+                      ? user.photo.startsWith("blob")
+                        ? user.photo
+                        : `http://localhost:8080${user.photo}`
+                      : "https://via.placeholder.com/150"
+                  }
                   sx={{ width: 96, height: 96, border: "4px solid #fff" }}
                 />
 
@@ -110,9 +117,14 @@ const ProfilePage = () => {
               </div>
               <div>
                 <h2 className="text-3xl font-bold">{user.name}</h2>
-                <p className="text-md">{user.occupation || "Not specified"} at {user.organization}</p>
+                <p className="text-md">
+                  {user.occupation || "Not specified"} at {user.organization}
+                </p>
               </div>
-              <button onClick={() => navigate("/settings")} className="ml-auto p-2  bg-white text-blue-500 rounded-full shadow-md">
+              <button
+                onClick={() => navigate("/settings")}
+                className="ml-auto p-2  bg-white text-blue-500 rounded-full shadow-md"
+              >
                 <FiSettings />
               </button>
             </div>
@@ -124,7 +136,9 @@ const ProfilePage = () => {
               title="Personal Information"
               user={user}
               fields={["name", "DOB", "bio"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              onChange={(updatedData) =>
+                setUser((prev) => ({ ...prev, ...updatedData }))
+              }
               endpoint="update-profile"
               setRefresh={setRefresh}
             />
@@ -133,7 +147,9 @@ const ProfilePage = () => {
               title="Contact Information"
               user={user}
               fields={["email", "address", "phone"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              onChange={(updatedData) =>
+                setUser((prev) => ({ ...prev, ...updatedData }))
+              }
               endpoint="update-contact"
               setRefresh={setRefresh}
             />
@@ -142,7 +158,9 @@ const ProfilePage = () => {
               title="Professional Information"
               user={user}
               fields={["organization", "occupation", "skills"]}
-              onChange={(updatedData) => setUser((prev) => ({ ...prev, ...updatedData }))}
+              onChange={(updatedData) =>
+                setUser((prev) => ({ ...prev, ...updatedData }))
+              }
               endpoint="update-professional"
               setRefresh={setRefresh}
             />
@@ -154,7 +172,14 @@ const ProfilePage = () => {
 };
 
 // **Editable Profile Card Component**
-const ProfileCard = ({ title, user, fields, onChange, endpoint, setRefresh }) => {
+const ProfileCard = ({
+  title,
+  user,
+  fields,
+  onChange,
+  endpoint,
+  setRefresh,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(() => {
     // Initialize formData with existing user data
@@ -184,13 +209,16 @@ const ProfileCard = ({ title, user, fields, onChange, endpoint, setRefresh }) =>
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
-      onChange(response.data); 
+
+      onChange(response.data);
       setIsEditing(false);
       // setUser(response.data)
       setRefresh((prev) => !prev);
     } catch (error) {
-      console.error("Error updating profile:", error.response?.data || error.message);
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -229,13 +257,10 @@ const ProfileCard = ({ title, user, fields, onChange, endpoint, setRefresh }) =>
       </div>
     </div>
   );
-  
 };
-
 
 // **Editable Profile Field Component**
 const ProfileField = ({ label, value, isEditing, onChange }) => {
-
   let formattedValue = value || "";
 
   if (label.toLowerCase() === "d o b" && value) {
@@ -251,14 +276,11 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
     }
   }
 
-
   const [inputValue, setInputValue] = useState(formattedValue);
 
   useEffect(() => {
     setInputValue(formattedValue);
   }, [formattedValue]);
-
-
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
@@ -296,14 +318,13 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
             {label.toLowerCase() === "d o b" && isValid(parseISO(value))
               ? format(parseISO(value), "dd-MM-yyyy") // Correct format for display
               : Array.isArray(value)
-                ? value.join(", ")
-                : value || "N/A"}
+              ? value.join(", ")
+              : value || "N/A"}
           </p>
         )}
       </div>
     </div>
   );
 };
-
 
 export default ProfilePage;
