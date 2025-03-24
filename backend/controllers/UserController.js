@@ -18,6 +18,50 @@ const loginController = async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' })
         }
 
+        if(user.is2FAEnabled){
+            const otp = Math.floor(100000 + Math.random() * 900000).toString(); 
+            const otpExpires = new Date(Date.now() + 15 * 60 * 1000); 
+
+            user.otp  = otp;
+            user.otpExpires = otpExpires;
+            await user.save();
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: "🔐 Your 2FA Verification Code",
+                html: `
+                    <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+                        <h2 style="color: #333; text-align: center;">🔐 <b>Two-Factor Authentication</b></h2>
+                        <p style="font-size: 16px; color: #555;">
+                            Hello, <br><br>
+                            Your <b>One-Time Password (OTP)</b> for authentication is:
+                        </p>
+                        <div style="font-size: 22px; font-weight: bold; color: #2c3e50; text-align: center; padding: 10px; background: #eaf4fc; border-radius: 5px; display: inline-block;">
+                            ${otp}
+                        </div>
+                        <p style="font-size: 16px; color: #555;">
+                            This code is valid for <b>15 minutes</b>. Please do not share this OTP with anyone for security reasons.  
+                        </p>
+                        <p style="font-size: 14px; color: #999; text-align: center;">
+                            If you didn’t request this, please ignore this email.
+                        </p>
+
+                           <hr>
+                    <p style="color: #555; font-size: 12px; text-align: center;">
+                        <strong>Contact Support</strong> <br>
+                        📞 <strong>+91 8849286008</strong> <br>
+                        ✉️ <a href="mailto:avip56325@gmail.com" style="color: #555 !important; text-decoration: none;">avip56325@gmail.com</a>
+                    </p>
+                    </div>
+                `,
+            };
+            
+            await transporter.sendMail(mailOptions);
+
+            return res.status(200).json({ message: "OTP sent to your email. Please verify." });
+        }
+
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         })
@@ -77,7 +121,7 @@ const forgetpassword = async (req, res) => {
         }
 
        
-        const resettoken = Math.random().toString(36).substring(2, 8);
+        const resettoken =  Math.floor(100000 + Math.random() * 900000).toString(); 
 
       
         await User.findByIdAndUpdate(user._id, { resettoken }, { new: true });
@@ -152,4 +196,49 @@ const resetpassword = async (req, res) => {
     }
 };
 
-module.exports = { loginController, registerController, forgetpassword, resetpassword };
+const enable2FA = async(req,res) => {
+    try {
+        const {email, enable} = req.body;
+        const user = await User.findOne({email});
+
+        if(!user){
+            res.status(404).json({message: 'User not found...'});
+        }
+
+        user.is2FAEnabled = enable;
+        await user.save();
+        res.json({ message: `2FA ${enable ? "enabled" : "disabled"} successfully!` });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+const verifyOTP = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user || !user.is2FAEnabled) {
+            return res.status(400).json({ message: "Invalid request" });
+        }
+
+        if (user.otp !== otp || new Date() > user.otpExpires) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
+
+        // Clear OTP after successful verification
+        user.otp = null;
+        user.otpExpires = null;
+        await user.save();
+
+        // Generate JWT token
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        res.status(200).json({ token, userId: user._id });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+module.exports = { loginController, registerController, forgetpassword, resetpassword, enable2FA, verifyOTP };

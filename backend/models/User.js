@@ -18,6 +18,16 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: null
     },
+    is2FAEnabled: {
+        type: Boolean,
+        default: false
+    },
+    otp: {
+        type: String,
+    },
+    otpExpires: {
+        type: Date,
+    },
     bio:{
         type: String,
     },

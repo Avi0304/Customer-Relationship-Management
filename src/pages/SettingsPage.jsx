@@ -15,9 +15,10 @@ import {
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Settings } from "@mui/icons-material";
 
 
-const userPage = () => {
+const SettingsPage = () => {
   const { tab: urlTab } = useParams();
   const [tab, setTab] = useState(urlTab || "profile");
   const [loading, setLoading] = useState(true);
@@ -104,7 +105,7 @@ const userPage = () => {
           timer: 1500,
           icon: "success",
           iconColor: "green",
-          showConfirmButton: true,
+          showConfirmButton: false,
           allowOutsideClick: false,
         });
 
@@ -149,7 +150,7 @@ const userPage = () => {
         setSuccess("Password Reset Successfully...");
         Swal.fire({
           title: "Password Reset Successfully!",
-          // text: "Redirecting to the login page...",
+          text: "You can now log in with your new password.",
           icon: "success",
           iconColor: "green",
           timer: 1500,
@@ -247,10 +248,22 @@ const userPage = () => {
   // === Enable 2FA Logic ===
   const handleEnable2FA = async () => {
     try {
-      await axios.post("/api/security/enable-2fa");
-      Swal.fire("Success", "Two-Factor Authentication Enabled", "success");
+      const newStatus = !user.is2FAEnabled; 
+
+      await axios.post("http://localhost:8080/api/user/enable-2fa", {
+        email: user.email,
+        enable: newStatus,
+      });
+
+      Swal.fire("Success", `Two-Factor Authentication ${newStatus ? "Enabled" : "Disabled"}`, "success");
+
+      // Update the user state
+      setUser((prevUser) => ({
+        ...prevUser,
+        is2FAEnabled: newStatus, 
+      }));
     } catch (error) {
-      Swal.fire("Error", "Failed to enable 2FA", "error");
+      Swal.fire("Error", error.response?.data?.message || "Failed to update 2FA status", "error");
     }
   };
 
@@ -454,7 +467,7 @@ const userPage = () => {
                           {otp && (
                             <>
                               <TextField
-                                label="Reset Token"
+                                label="OTP"
                                 variant="outlined"
                                 type="text"
                                 fullWidth
@@ -532,7 +545,7 @@ const userPage = () => {
                         }}
                         onClick={handleEnable2FA}
                       >
-                        Enable 2FA
+                         {user.is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
                       </Button>
                     </div>
 
@@ -813,4 +826,4 @@ const userPage = () => {
   );
 };
 
-export default userPage;
+export default SettingsPage;
