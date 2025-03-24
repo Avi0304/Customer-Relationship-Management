@@ -1,44 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NoticationBell";
 import { useNavigate } from "react-router-dom";
+import {UserContext} from '../context/UserContext';
 import axios from "axios";
 import { Avatar } from "@mui/material";
 
 const TopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user } = useContext(UserContext);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log(response.data);
-        setUser(response.data);
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-        setError(err.response?.data?.message || "Failed to fetch profile");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       console.log(response.data);
+  //       setUser(response.data);
+  //     } catch (err) {
+  //       console.error("Error fetching profile:", err);
+  //       setError(err.response?.data?.message || "Failed to fetch profile");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchProfile();
+  //   fetchProfile();
 
-  }, []);
+  // }, []);
 
   
 
-  useEffect(() => {
-    if (user) {
-      console.log("Updated User:", user);
-    }
-  }, [user]); // Log user when it's updated
+  // useEffect(() => {
+  //   if (user) {
+  //     console.log("Updated User:", user);
+  //   }
+  // }, [user]); // Log user when it's updated
 
   return (
     <div className="light:bg-white dark:bg-[#161B22] dark:backdrop-blur-xl shadow-lg flex items-center justify-between p-6 h-16 sticky top-0 z-50 dark:z-[60]">

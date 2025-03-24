@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
-
+import { UserProvider } from "./context/UserContext";
 import DashBoard from "./pages/DashBoard";
 import TaskManagementPage from "./pages/TaskManagementPage";
 import CustomerDetails from "./components/CustomerDetails";
@@ -85,7 +85,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <UserProvider>
+        <AppContent />
+      </UserProvider>
     </ThemeProvider>
   );
 }

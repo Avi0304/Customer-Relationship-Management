@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-
 const Task = () => {
   const [filter, setFilter] = useState("All Tasks");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -88,40 +87,42 @@ const Task = () => {
     });
   };
 
-
   const filterTasks = () => {
     const today = new Date();
-    const Tomorrow = new Date();
-    Tomorrow.setDate(today.getDate() + 1);
-
-    const nextWeek = new Date();
-    nextWeek.setDate(today.getDate() + 7);
-
+    today.setHours(0, 0, 0, 0); // Normalize to midnight
+  
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+  
+    const startOfNextWeek = new Date(today);
+    startOfNextWeek.setDate(today.getDate() + (7 - today.getDay())); // Next Monday
+  
+    const endOfNextWeek = new Date(startOfNextWeek);
+    endOfNextWeek.setDate(startOfNextWeek.getDate() + 6); // Next Sunday
+  
     return tasks
       .filter((task) => {
-        if (!task.dueDate) return filter === 'All Tasks';
-
+        if (!task.dueDate) return filter === "All Tasks";
+  
         const taskDate = new Date(task.dueDate);
-        if (filter === 'Today') {
-          return (
-            taskDate.getFullYear() === today.getFullYear() &&
-            taskDate.getMonth() === today.getMonth() &&
-            taskDate.getDate() === today.getDate()
-          )
-        } else if (filter === 'Tomorrow') {
-          return (
-            taskDate.getFullYear() === today.getFullYear() &&
-            taskDate.getMonth() === today.getMonth() &&
-            taskDate.getDate() === today.getDate()
-          )
-        } else if (filter === 'Next Week') {
-          return taskDate >= Tomorrow && taskDate <= nextWeek;
+        taskDate.setHours(0, 0, 0, 0); // Normalize task date
+  
+        if (taskDate < today) return false; // Exclude past tasks
+  
+        if (filter === "Today") {
+          return taskDate.getTime() === today.getTime();
+        } else if (filter === "Tomorrow") {
+          return taskDate.getTime() === tomorrow.getTime();
+        } else if (filter === "Next Week") {
+          return taskDate >= startOfNextWeek && taskDate <= endOfNextWeek;
         }
+  
         return true;
       })
       .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
       .slice(0, 3);
-  }
+  };
+  
 
   const filteredTasks = filterTasks();
 
@@ -168,23 +169,34 @@ const Task = () => {
         ) : (
           <div className="space-y-4">
             {filteredTasks.length > 0 ? (
-              filteredTasks.map(({ _id, title, company, dueDate, priority, completed, }) => {
+              filteredTasks.map(({ _id, title, company, dueDate, priority, completed }) => {
                 return (
                   <div key={_id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className={`w-2.5 h-2.5  rounded-full ${priorityColor[priority?.charAt(0).toUpperCase() + priority?.slice(1).toLowerCase()] || "bg-gray-400"}`} />
+                      <span
+                        className={`w-2.5 h-2.5 rounded-full ${
+                          priorityColor[priority?.charAt(0).toUpperCase() + priority?.slice(1).toLowerCase()] || "bg-gray-400"
+                        }`}
+                      />
                       <div>
                         <p className="text-sm font-medium light:text-gray-800 dark:text-gray-200">{title}</p>
                         <p className="text-xs light:text-gray-500 dark:text-gray-300">{company}</p>
-                        <p className="text-xs light:text-gray-500 dark:text-gray-300">{dueDate ? new Date(dueDate).toLocaleString("en-US", {
-                          weekday: 'short',
-                          month: 'short',
-                          day: '2-digit',
-                          year: "numeric",
-                        }) : "No Due Date"}</p>
+                        <p className="text-xs light:text-gray-500 dark:text-gray-300">
+                          {dueDate
+                            ? new Date(dueDate).toLocaleString("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "2-digit",
+                                year: "numeric",
+                              })
+                            : "No Due Date"}
+                        </p>
                       </div>
                     </div>
-                    <button className="text-blue-600 dark:text-blue-300 hover:underline text-sm" onClick={() => toggleComplete(_id, completed)}>
+                    <button
+                      className="text-blue-600 dark:text-blue-300 hover:underline text-sm"
+                      onClick={() => toggleComplete(_id, completed)}
+                    >
                       {completed ? "Mark InComplete" : "Mark Complete"}
                     </button>
                   </div>
