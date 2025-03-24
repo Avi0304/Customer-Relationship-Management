@@ -10,23 +10,35 @@ const path = require("path");
 const getprofile = async (req, res) => {
     try {
         const authHeader = req.header("Authorization");
+
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Access Denied. No Token Provided" });
         }
 
         const token = authHeader.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.userId;
 
+        if (!token) {
+            return res.status(401).json({ message: "Invalid Token Format" });
+        }
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (error) {
+            return res.status(401).json({ message: "Invalid or Expired Token" });
+        }
+
+        const userId = decoded.userId;
         const user = await User.findById(userId).select("-password -resettoken");
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Ensure the correct field is used for DOB
         const formattedUser = {
             ...user.toObject(),
-            dob: user.DOB ? moment(user.DOB).format("DD-MM-YYYY") : null, // Format DOB correctly
+            dob: user.DOB ? moment(user.DOB).format("DD-MM-YYYY") : null,
+            is2FAEnabled: user.is2FAEnabled,
         };
 
         res.status(200).json(formattedUser);
@@ -35,6 +47,7 @@ const getprofile = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
 
 
 const updateProfile = async (req, res) => {

@@ -12,34 +12,6 @@ const TopNav = ({ title }) => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-  //       console.log(response.data);
-  //       setUser(response.data);
-  //     } catch (err) {
-  //       console.error("Error fetching profile:", err);
-  //       setError(err.response?.data?.message || "Failed to fetch profile");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfile();
-
-  // }, []);
-
-  
-
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log("Updated User:", user);
-  //   }
-  // }, [user]); // Log user when it's updated
 
   return (
     <div className="light:bg-white dark:bg-[#161B22] dark:backdrop-blur-xl shadow-lg flex items-center justify-between p-6 h-16 sticky top-0 z-50 dark:z-[60]">

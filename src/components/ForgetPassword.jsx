@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
             className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
             disabled={isLoading}
           >
-            {isLoading ? "Sending..." : "Send Reset Link"}
+            {isLoading ? "Sending..." : "Send OTP"}
           </button>
         </form>
 
