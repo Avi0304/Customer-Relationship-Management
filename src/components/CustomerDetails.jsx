@@ -241,7 +241,7 @@ const CustomerDetails = () => {
                   {customer.name}
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
-                  {customer.amount}
+                  ₹ {customer.amount}
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <span
