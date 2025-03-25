@@ -7,6 +7,7 @@ import { FiEdit, FiSettings, FiCheck, FiX } from "react-icons/fi";
 import { Avatar } from "@mui/material";
 import axios from "axios";
 import { format, parseISO, isValid } from "date-fns";
+import Swal from "sweetalert2";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -225,26 +226,58 @@ const ProfileCard = ({
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-700 hover:scale-[1.02] transition-transform duration-300">
       <h3 className="text-lg font-semibold text-gray-800 dark:text-white flex justify-between items-center">
-        {title}
-        {isEditing ? (
-          <>
-            <FiCheck
-              className="text-green-500 hover:text-green-600 cursor-pointer"
-              onClick={handleSave}
+        <span>{title}</span>
+        <div className="flex space-x-3">
+          {isEditing ? (
+            <>
+              <FiCheck
+                className="text-green-500 hover:text-green-600 cursor-pointer"
+                onClick={() => {
+                  handleSave(); // Call your handleSave function
+                  setIsEditing(false); // Set editing state to false
+                  Swal.fire({
+                    title: "Updated !",
+                    text: "Information changed Successfully!",
+                    icon: "success",
+                    iconColor: "green",
+                    timer: 1500,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                  });
+                }}
+                aria-label="Save"
+              />
+              <FiX
+                className="text-red-500 hover:text-red-600 cursor-pointer"
+                onClick={() => {
+                  Swal.fire({
+                    title: "Are you sure you want to discard changes?",
+                    text: "Once you discard, all unsaved changes will be lost and cannot be undone.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, discard changes!",
+                    cancelButtonText: "No, keep changes",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      setIsEditing(false);
+                    }
+                  });
+                }}
+                aria-label="Discard Changes"
+              />
+            </>
+          ) : (
+            <FiEdit
+              className="text-blue-500 hover:text-blue-600 cursor-pointer"
+              onClick={() => setIsEditing(true)}
+              aria-label="Edit"
             />
-            <FiX
-              className="text-red-500 hover:text-red-600 cursor-pointer"
-              onClick={() => setIsEditing(false)}
-            />
-          </>
-        ) : (
-          <FiEdit
-            className="text-blue-500 hover:text-blue-600 cursor-pointer"
-            onClick={() => setIsEditing(true)}
-          />
-        )}
+          )}
+        </div>
       </h3>
-      <div className="mt-3 space-y-2">
+      <div className="mt-4 space-y-3">
         {fields.map((field) => (
           <ProfileField
             key={field}
