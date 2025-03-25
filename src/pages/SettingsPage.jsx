@@ -20,6 +20,7 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { FaShieldAlt, FaFileCsv } from "react-icons/fa";
 import { LuFileJson2 } from "react-icons/lu";
 import { MdBackup, MdOutlineRestore, MdPolicy, MdDelete } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
 
 const token = localStorage.getItem("token"); // Fetch token dynamically
 
@@ -495,6 +496,46 @@ const SettingsPage = () => {
     }
   };
 
+  const handleProfilePhotoChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Show the uploaded image immediately
+    const imageUrl = URL.createObjectURL(file);
+    setUser((prev) => ({ ...prev, photo: imageUrl }));
+
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        "http://localhost:8080/api/Profile/update-photo",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      URL.revokeObjectURL(imageUrl);
+
+      setUser((prev) => ({
+        ...prev,
+        photo: `http://localhost:8080${response.data.profilePhoto}`, // Ensure correct server path
+      }));
+
+      setRefresh((prev) => !prev); // Trigger re-fetch if needed
+    } catch (error) {
+      console.error(
+        "Error uploading profile photo:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   return (
     <Box display="flex" minHeight="100vh">
       {/* Sidebar */}
@@ -517,21 +558,36 @@ const SettingsPage = () => {
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
                     {/* Avatar & Info Section */}
                     <div className="flex items-center gap-6 mb-6">
-                      <Avatar
-                        src={
-                          user.photo
-                            ? user.photo.startsWith("blob")
-                              ? user.photo
-                              : `http://localhost:8080${user.photo}`
-                            : "https://via.placeholder.com/150"
-                        }
-                        sx={{
-                          width: 96,
-                          height: 96,
-                          border: "4px solid #fff",
-                          boxShadow: "0 0 10px rgba(0,0,0,0.2)",
-                        }}
-                      />
+                      <div className="relative">
+                        <Avatar
+                          src={
+                            user.photo
+                              ? user.photo.startsWith("blob")
+                                ? user.photo
+                                : `http://localhost:8080${user.photo}`
+                              : "https://via.placeholder.com/150"
+                          }
+                          sx={{
+                            width: 96,
+                            height: 96,
+                            border: "4px solid #fff",
+                            boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+                          }}
+                        />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          id="profile-photo"
+                          onChange={handleProfilePhotoChange}
+                        />
+                        <label
+                          htmlFor="profile-photo"
+                          className="absolute bottom-0 right-0 bg-white border rounded-full border-gray-400 p-1 cursor-pointer shadow-lg"
+                        >
+                          <FiEdit className="text-gray-600" />
+                        </label>
+                      </div>
                       <div>
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                           {user.name}
@@ -563,12 +619,6 @@ const SettingsPage = () => {
                           }
                           fullWidth
                           variant="outlined"
-                          InputProps={{
-                            sx: {
-                              backgroundColor: "white",
-                              borderRadius: "8px",
-                            },
-                          }}
                         />
                       ))}
 

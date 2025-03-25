@@ -7,7 +7,7 @@ const CalendarWidget = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
-    <Card className='col-span-3 bg-white shadow-lg rounded-lg p-6 w-full   bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md'>
+    <Card className='col-span-3 bg-white shadow-lg rounded-lg p-6 w-full   bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md min-h-[450px]'>
       <CardHeader>
         <h1 className="text-2xl font-bold leading-none tracking-tight mb-3">Calendar</h1>
       </CardHeader>

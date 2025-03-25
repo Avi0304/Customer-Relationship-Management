@@ -11,7 +11,7 @@ const ThemeToggle = () => {
       <img 
         src={mode === "dark" ? darkModeImg : lightModeImg} 
         alt="Theme Toggle"
-        width="50" 
+        width="45" 
       />
     </div>
   );

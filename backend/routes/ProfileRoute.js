@@ -8,6 +8,7 @@ const {
 } = require("../controllers/ProfileController");
 const multer = require("multer");
 const path = require("path");
+const { verifyToken } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -34,9 +35,9 @@ const upload = multer({ storage, fileFilter });
 
 //  Routes
 router.get("/get-profile", getprofile);
-router.put("/update-profile", updateProfile);
-router.put("/update-contact", updateContact);
-router.put("/update-professional", updateProfessional);
+router.put("/update-profile", verifyToken,updateProfile);
+router.put("/update-contact", verifyToken,updateContact);
+router.put("/update-professional", verifyToken,updateProfessional);
 router.put("/update-photo", upload.single("photo"), uploadPhoto);
 
 module.exports = router;

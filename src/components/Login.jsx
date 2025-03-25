@@ -262,7 +262,7 @@ const Login = () => {
             )}
           </Formik>
         ) : (
-          <div>
+          <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
