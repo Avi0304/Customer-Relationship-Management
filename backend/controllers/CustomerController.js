@@ -40,11 +40,14 @@ const addCustomer = async (req, res) => {
       req.body;
 
     // Check if customer already exists
-    const existingCustomer = await Customer.findOne({ email });
+    const existingCustomer = await Customer.findOne({
+      $or: [{ email }, { phone }],
+    });
     if (existingCustomer) {
-      return res.status(400).json({ message: "Customer already exists" });
+      return res.status(400).json({
+        message: "Customer with this email or phone number already exists",
+      });
     }
-
     // Create and save new customer
     const newCustomer = new Customer({
       name,
@@ -116,7 +119,9 @@ const deleteCustomer = async (req, res) => {
     res.status(200).json({ message: "Customer deleted successfully" });
   } catch (error) {
     console.error("Error deleting customer:", error);
-    res.status(500).json({ message: "Error deleting customer", error });
+    res
+      .status(500)
+      .json({ message: "Error deleting customer", error: error.message });
   }
 };
 
