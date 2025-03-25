@@ -25,6 +25,7 @@ app.use("/api/Dashboard", require("./routes/DashBoardStatsRoute"));
 app.use("/api/Profile", require("./routes/ProfileRoute"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/data", require("./routes/Data"));
+app.use("/api/leads", require("./routes/Leads"));
 
 const PORT = process.env.PORT || 3000;
 
