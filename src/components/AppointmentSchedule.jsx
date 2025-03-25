@@ -60,12 +60,13 @@ const AppointmentSchedule = () => {
     fetchAll();
     fetchPast();
     fetchUpcoming();
-  }, [])
-
+  }, []);
 
   const fetchAll = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/Appointment/");
+      const response = await axios.get(
+        "http://localhost:8080/api/Appointment/"
+      );
 
       if (Array.isArray(response.data)) {
         setAppointments(response.data);
@@ -78,7 +79,9 @@ const AppointmentSchedule = () => {
 
   const fetchPast = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/Appointment/past');
+      const response = await axios.get(
+        "http://localhost:8080/api/Appointment/past"
+      );
 
       if (Array.isArray(response.data.pastappointment)) {
         setpastappointment(response.data.pastappointment);
@@ -93,7 +96,9 @@ const AppointmentSchedule = () => {
 
   const fetchUpcoming = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/Appointment/upcoming');
+      const response = await axios.get(
+        "http://localhost:8080/api/Appointment/upcoming"
+      );
 
       if (Array.isArray(response.data.upcomingappointment)) {
         setupcomingappointment(response.data.upcomingappointment);
@@ -104,7 +109,7 @@ const AppointmentSchedule = () => {
       console.error("Error in fetching the upcoming appointments: ", error);
       setupcomingappointment([]);
     }
-  }
+  };
 
   const handleInputChange = (e) => {
     setNewAppointment({ ...newAppointment, [e.target.name]: e.target.value });
@@ -119,22 +124,32 @@ const AppointmentSchedule = () => {
       !newAppointment.duration ||
       !newAppointment.type
     ) {
-      Swal.fire("Oops!", "Please fill in all fields before adding the Appointment.", "error");
+      Swal.fire(
+        "Oops!",
+        "Please fill in all fields before adding the Appointment.",
+        "error"
+      );
       setOpenModal(false);
-      return
+      return;
     }
 
     try {
-      const response = await axios.post('http://localhost:8080/api/Appointment/add', {
-        customer: newAppointment.customer,
-        contact: newAppointment.contact,
-        date: newAppointment.date,
-        time: newAppointment.time,
-        duration: newAppointment.duration,
-        status: "Pending",
-        type: newAppointment.type,
-      });
-      setAppointments([...appointments, { id: response.data.id, ...newAppointment }]);
+      const response = await axios.post(
+        "http://localhost:8080/api/Appointment/add",
+        {
+          customer: newAppointment.customer,
+          contact: newAppointment.contact,
+          date: newAppointment.date,
+          time: newAppointment.time,
+          duration: newAppointment.duration,
+          status: "Pending",
+          type: newAppointment.type,
+        }
+      );
+      setAppointments([
+        ...appointments,
+        { id: response.data.id, ...newAppointment },
+      ]);
 
       setOpenModal(false);
 
@@ -161,12 +176,18 @@ const AppointmentSchedule = () => {
       fetchPast();
       fetchUpcoming();
     } catch (error) {
-      console.error("Error adding appointment:", error.response?.data || error.message);
-      Swal.fire("Error", error.response?.data?.message || "Failed to add appointment. Try again later.", "error");
+      console.error(
+        "Error adding appointment:",
+        error.response?.data || error.message
+      );
+      Swal.fire(
+        "Error",
+        error.response?.data?.message ||
+          "Failed to add appointment. Try again later.",
+        "error"
+      );
     }
   };
-
-
 
   const handleEditClick = (appointment) => {
     setEditAppointment(appointment);
@@ -210,15 +231,18 @@ const AppointmentSchedule = () => {
       fetchPast();
       fetchUpcoming();
     } catch (error) {
-      console.error("Error updating appointment:", error.response?.data || error.message);
+      console.error(
+        "Error updating appointment:",
+        error.response?.data || error.message
+      );
       Swal.fire(
         "Error",
-        error.response?.data?.message || "Failed to update appointment. Try again later.",
+        error.response?.data?.message ||
+          "Failed to update appointment. Try again later.",
         "error"
       );
     }
   };
-
 
   const handleDeleteAppointment = async (id) => {
     Swal.fire({
@@ -232,15 +256,18 @@ const AppointmentSchedule = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-        
-          await axios.delete(`http://localhost:8080/api/Appointment/delete/${id}`);
+          await axios.delete(
+            `http://localhost:8080/api/Appointment/delete/${id}`
+          );
 
-          setAppointments((prev) => prev.filter((appointment) => appointment._id !== id));
+          setAppointments((prev) =>
+            prev.filter((appointment) => appointment._id !== id)
+          );
 
           fetchAll();
           fetchPast();
           fetchUpcoming();
-  
+
           Swal.fire({
             title: "Deleted!",
             text: "The Appointment has been deleted.",
@@ -250,13 +277,20 @@ const AppointmentSchedule = () => {
             showConfirmButton: false,
           });
         } catch (error) {
-          console.error("Error deleting appointment:", error.response?.data || error.message);
-          Swal.fire("Error", error.response?.data?.message || "Failed to delete appointment. Try again later.", "error");
+          console.error(
+            "Error deleting appointment:",
+            error.response?.data || error.message
+          );
+          Swal.fire(
+            "Error",
+            error.response?.data?.message ||
+              "Failed to delete appointment. Try again later.",
+            "error"
+          );
         }
       }
     });
   };
-  
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -285,17 +319,18 @@ const AppointmentSchedule = () => {
   });
 
   // Filter function for upcoming appointments
-  const filteredUpcomingAppointments = upcomigappointment.filter((appointment) => {
-    const matchesText =
-      appointment.customer.toLowerCase().includes(filter.toLowerCase()) ||
-      appointment.contact.toLowerCase().includes(filter.toLowerCase());
+  const filteredUpcomingAppointments = upcomigappointment.filter(
+    (appointment) => {
+      const matchesText =
+        appointment.customer.toLowerCase().includes(filter.toLowerCase()) ||
+        appointment.contact.toLowerCase().includes(filter.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "All Status" || appointment.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "All Status" || appointment.status === statusFilter;
 
-    return matchesText && matchesStatus;
-  });
-
+      return matchesText && matchesStatus;
+    }
+  );
 
   const CLIENT_ID =
     "147226171626-paikqrlke6klt0qv9knh21hkmnf8dmph.apps.googleusercontent.com";
@@ -460,7 +495,10 @@ const AppointmentSchedule = () => {
       return "";
     }
 
-    console.log("Start Time for End Time Calculation:", startTime.toISOString());
+    console.log(
+      "Start Time for End Time Calculation:",
+      startTime.toISOString()
+    );
 
     const durationMinutes = parseInt(duration.split(" ")[0], 10) || 0;
     startTime.setMinutes(startTime.getMinutes() + durationMinutes);
@@ -470,9 +508,6 @@ const AppointmentSchedule = () => {
 
     return endTimeISO;
   };
-
-
-
 
   return (
     <div className="mt-0">
@@ -518,7 +553,7 @@ const AppointmentSchedule = () => {
         sx={{ mb: 3, display: "flex", justifyContent: "center" }}
       >
         <Tab
-          label="Upcoming"
+          label="All"
           sx={{ fontWeight: tabValue === 0 ? "bold" : "normal" }}
         />
         <Tab
@@ -526,303 +561,14 @@ const AppointmentSchedule = () => {
           sx={{ fontWeight: tabValue === 1 ? "bold" : "normal" }}
         />
         <Tab
-          label="All"
+          label="Upcoming"
           sx={{ fontWeight: tabValue === 2 ? "bold" : "normal" }}
         />
       </Tabs>
 
       {/* Appointment Table */}
+
       {tabValue === 0 && (
-        <TableContainer component={Paper}>
-          {filteredUpcomingAppointments.length === 0 ? (
-            <Box p={3} display="flex" justifyContent="center">
-              <Typography variant="h6" color="textSecondary">
-                No upcoming appointments.
-              </Typography>
-            </Box>
-          ) : (
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
-
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Customer
-                  </TableCell>
-                  {!isSmallScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Contact
-                    </TableCell>
-                  )}
-                  {!isSmallScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Type
-                    </TableCell>
-                  )}
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Date
-                  </TableCell>
-                  {!isSmallScreen && !isMediumScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Time
-                    </TableCell>
-                  )}
-                  {!isSmallScreen && !isMediumScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Duration
-                    </TableCell>
-                  )}
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Status
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {filteredUpcomingAppointments.map((appointment) => (
-                  <TableRow key={appointment._id}>
-                    <TableCell align="center">{appointment.customer}</TableCell>
-                    {!isSmallScreen && (
-                      <TableCell align="center">
-                        {appointment.contact}
-                      </TableCell>
-                    )}
-                    {!isSmallScreen && (
-                      <TableCell align="center">{appointment.type}</TableCell>
-                    )}
-                    <TableCell align="center">{appointment.date}</TableCell>
-                    {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">{appointment.time}</TableCell>
-                    )}
-                    {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">
-                        {appointment.duration}
-                      </TableCell>
-                    )}
-                    <TableCell align="center">
-                      <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
-                          ? "bg-green-500 text-white"
-                          : appointment.status === "Pending"
-                            ? "bg-yellow-500 text-white"
-                            : "bg-red-500 text-white"
-                          }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap" align="center">
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() => handleEditClick(appointment)}
-                        >
-                          <FaEdit className="h-5 w-5" />
-                        </Button>
-
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() => scheduleGoogleMeet(appointment)}
-                        >
-                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
-                        </Button>
-
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() =>
-                            handleDeleteAppointment(appointment._id)
-                          }
-                        >
-                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </TableContainer>
-      )}
-
-      {tabValue === 1 && (
-        <TableContainer component={Paper}>
-          {filteredPastAppointments.length === 0 ? (
-            <Box p={3} display="flex" justifyContent="center">
-              <Typography variant="h6" color="textSecondary">
-                No past appointments.
-              </Typography>
-            </Box>
-          ) : (
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
-
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Customer
-                  </TableCell>
-                  {!isSmallScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Contact
-                    </TableCell>
-                  )}
-                  {!isSmallScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Type
-                    </TableCell>
-                  )}
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Date
-                  </TableCell>
-                  {!isSmallScreen && !isMediumScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Time
-                    </TableCell>
-                  )}
-                  {!isSmallScreen && !isMediumScreen && (
-                    <TableCell
-                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center"
-                    >
-                      Duration
-                    </TableCell>
-                  )}
-                  <TableCell
-                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center"
-                  >
-                    Status
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    Action
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {filteredPastAppointments.map((appointment) => (
-                  <TableRow key={appointment.id}>
-                    <TableCell align="center">{appointment.customer}</TableCell>
-                    {!isSmallScreen && (
-                      <TableCell align="center">
-                        {appointment.contact}
-                      </TableCell>
-                    )}
-                    {!isSmallScreen && (
-                      <TableCell align="center">{appointment.type}</TableCell>
-                    )}
-                    <TableCell align="center">{appointment.date}</TableCell>
-                    {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">{appointment.time}</TableCell>
-                    )}
-                    {!isSmallScreen && !isMediumScreen && (
-                      <TableCell align="center">
-                        {appointment.duration}
-                      </TableCell>
-                    )}
-                    <TableCell align="center">
-                      <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
-                          ? "bg-green-500 text-white"
-                          : appointment.status === "Pending"
-                            ? "bg-yellow-500 text-white"
-                            : "bg-red-500 text-white"
-                          }`}
-                      >
-                        {appointment.status}
-                      </span>
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap" align="center">
-                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() => handleEditClick(appointment)}
-                        >
-                          <FaEdit className="h-5 w-5" />
-                        </Button>
-
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() => scheduleGoogleMeet(appointment)}
-                        >
-                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
-                        </Button>
-
-                        <Button
-                          size="small"
-                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                          onClick={() =>
-                            handleDeleteAppointment(appointment._id)
-                          }
-                        >
-                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </TableContainer>
-      )}
-
-      {tabValue === 2 && (
         <TableContainer component={Paper} className="overflow-x-auto">
           {filteredAppointments.length === 0 ? (
             <Box p={3} display="flex" justifyContent="center">
@@ -833,8 +579,12 @@ const AppointmentSchedule = () => {
           ) : (
             <Table className="min-w-full">
               <TableHead>
-                <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
-
+                <TableRow
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+                  }}
+                >
                   <TableCell
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     align="center"
@@ -920,12 +670,313 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
-                          ? "bg-green-500 text-white"
-                          : appointment.status === "Pending"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
+                            ? "bg-green-500 text-white"
+                            : appointment.status === "Pending"
                             ? "bg-yellow-500 text-white"
                             : "bg-red-500 text-white"
-                          }`}
+                        }`}
+                      >
+                        {appointment.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap" align="center">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() => handleEditClick(appointment)}
+                        >
+                          <FaEdit className="h-5 w-5" />
+                        </Button>
+
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() => scheduleGoogleMeet(appointment)}
+                        >
+                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
+                        </Button>
+
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() =>
+                            handleDeleteAppointment(appointment._id)
+                          }
+                        >
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+      )}
+
+      {tabValue === 1 && (
+        <TableContainer component={Paper}>
+          {filteredPastAppointments.length === 0 ? (
+            <Box p={3} display="flex" justifyContent="center">
+              <Typography variant="h6" color="textSecondary">
+                No past appointments.
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+                  }}
+                >
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Customer
+                  </TableCell>
+                  {!isSmallScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Contact
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Type
+                    </TableCell>
+                  )}
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Date
+                  </TableCell>
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Time
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Duration
+                    </TableCell>
+                  )}
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {filteredPastAppointments.map((appointment) => (
+                  <TableRow key={appointment.id}>
+                    <TableCell align="center">{appointment.customer}</TableCell>
+                    {!isSmallScreen && (
+                      <TableCell align="center">
+                        {appointment.contact}
+                      </TableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <TableCell align="center">{appointment.type}</TableCell>
+                    )}
+                    <TableCell align="center">{appointment.date}</TableCell>
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell align="center">{appointment.time}</TableCell>
+                    )}
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell align="center">
+                        {appointment.duration}
+                      </TableCell>
+                    )}
+                    <TableCell align="center">
+                      <span
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
+                            ? "bg-green-500 text-white"
+                            : appointment.status === "Pending"
+                            ? "bg-yellow-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
+                      >
+                        {appointment.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap" align="center">
+                      <div className="flex flex-wrap gap-1 justify-start sm:flex-nowrap">
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() => handleEditClick(appointment)}
+                        >
+                          <FaEdit className="h-5 w-5" />
+                        </Button>
+
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() => scheduleGoogleMeet(appointment)}
+                        >
+                          <PiVideoCameraBold className="h-5 w-5 text-green-600" />
+                        </Button>
+
+                        <Button
+                          size="small"
+                          className="w-8 h-8 rounded-md p-1 border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                          onClick={() =>
+                            handleDeleteAppointment(appointment._id)
+                          }
+                        >
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+      )}
+
+      {tabValue === 2 && (
+        <TableContainer component={Paper}>
+          {filteredUpcomingAppointments.length === 0 ? (
+            <Box p={3} display="flex" justifyContent="center">
+              <Typography variant="h6" color="textSecondary">
+                No upcoming appointments.
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+                  }}
+                >
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Customer
+                  </TableCell>
+                  {!isSmallScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Contact
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Type
+                    </TableCell>
+                  )}
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Date
+                  </TableCell>
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Time
+                    </TableCell>
+                  )}
+                  {!isSmallScreen && !isMediumScreen && (
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Duration
+                    </TableCell>
+                  )}
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {filteredUpcomingAppointments.map((appointment) => (
+                  <TableRow key={appointment._id}>
+                    <TableCell align="center">{appointment.customer}</TableCell>
+                    {!isSmallScreen && (
+                      <TableCell align="center">
+                        {appointment.contact}
+                      </TableCell>
+                    )}
+                    {!isSmallScreen && (
+                      <TableCell align="center">{appointment.type}</TableCell>
+                    )}
+                    <TableCell align="center">{appointment.date}</TableCell>
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell align="center">{appointment.time}</TableCell>
+                    )}
+                    {!isSmallScreen && !isMediumScreen && (
+                      <TableCell align="center">
+                        {appointment.duration}
+                      </TableCell>
+                    )}
+                    <TableCell align="center">
+                      <span
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
+                            ? "bg-green-500 text-white"
+                            : appointment.status === "Pending"
+                            ? "bg-yellow-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {appointment.status}
                       </span>
@@ -968,7 +1019,9 @@ const AppointmentSchedule = () => {
       )}
 
       <Dialog open={openModal} onClose={() => setOpenModal(false)} fullWidth>
-        <DialogTitle><h2 className="font-bold">Add New Appointment</h2></DialogTitle>
+        <DialogTitle>
+          <h2 className="font-bold">Add New Appointment</h2>
+        </DialogTitle>
         <DialogContent className="space-y-4">
           <TextField
             fullWidth
@@ -1032,7 +1085,12 @@ const AppointmentSchedule = () => {
           </Select>
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={() => setOpenModal(false)} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
+          <Button
+            onClick={() => setOpenModal(false)}
+            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
+          >
+            Cancel
+          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -1049,7 +1107,10 @@ const AppointmentSchedule = () => {
         onClose={() => setOpenEditModal(false)}
         fullWidth
       >
-        <DialogTitle> <h2 className="font-bold">Edit Appointment</h2></DialogTitle>
+        <DialogTitle>
+          {" "}
+          <h2 className="font-bold">Edit Appointment</h2>
+        </DialogTitle>
         <DialogContent className="space-y-4">
           {editAppointment && (
             <>
@@ -1117,7 +1178,12 @@ const AppointmentSchedule = () => {
           )}
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={() => setOpenEditModal(false)} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>Cancel</Button>
+          <Button
+            onClick={() => setOpenEditModal(false)}
+            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
+          >
+            Cancel
+          </Button>
           <Button
             variant="contained"
             color="primary"
