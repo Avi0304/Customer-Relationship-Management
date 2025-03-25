@@ -1,0 +1,53 @@
+[
+    {
+      "_id": "67e24223e57ee84dfeae3d6e",
+      "userId": "67cee13ff0bdbd2acac38752",
+      "backupData": {
+        "theme": "dark",
+        "notifications": {
+          "email": true,
+          "push": false
+        },
+        "language": "en",
+        "privacySettings": {
+          "visibility": "private"
+        }
+      },
+      "createdAt": "2025-03-25T05:41:55.686Z",
+      "__v": 0
+    },
+    {
+      "_id": "67e2445f73bec1106403bd19",
+      "userId": "67cee13ff0bdbd2acac38752",
+      "backupData": {
+        "theme": "dark",
+        "notifications": {
+          "email": true,
+          "push": false
+        },
+        "language": "en",
+        "privacySettings": {
+          "visibility": "private"
+        }
+      },
+      "createdAt": "2025-03-25T05:51:27.637Z",
+      "__v": 0
+    },
+    {
+      "_id": "67e244a773bec1106403bd1c",
+      "userId": "67cee13ff0bdbd2acac38752",
+      "backupData": {
+        "theme": "dark",
+        "notifications": {
+          "email": true,
+          "push": true
+        },
+        "language": "en",
+        "privacySettings": {
+          "visibility": "private"
+        }
+      },
+      "createdAt": "2025-03-25T05:52:39.193Z",
+      "__v": 0
+    }
+  ]

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Sidebar from "../components/SideBar";
 import TopNav from "../components/TopNav";
-import { UserContext } from "../context/UserContext"
+import { UserContext } from "../context/UserContext";
 import {
   Avatar,
   Box,
@@ -10,13 +10,14 @@ import {
   Switch,
   CircularProgress,
   useTheme,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Settings } from "@mui/icons-material";
 
+const token = localStorage.getItem("token"); // Fetch token dynamically
 
 const SettingsPage = () => {
   const { tab: urlTab } = useParams();
@@ -26,10 +27,10 @@ const SettingsPage = () => {
   const [refresh, setRefresh] = useState(false);
   const theme = useTheme();
   const [password, setPassword] = useState({
-    email: '',
-    token: '',
+    email: "",
+    token: "",
     newPassword: "",
-  })
+  });
   const [otp, setOtp] = useState(false);
   const [success, setSuccess] = useState("");
 
@@ -40,16 +41,31 @@ const SettingsPage = () => {
     push: false,
   });
 
+  const [backupFile, setBackupFile] = useState(null);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(response.data);
+        const token = localStorage.getItem("token") || "";
+
+        if (!token) {
+          console.error("❌ No token found! User might not be logged in.");
+          setError("Unauthorized. Please log in.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          "http://localhost:8080/api/Profile/get-profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setUser(response.data); // ✅ Store user data
       } catch (err) {
-        console.error("Error fetching profile:", err);
+        console.error("❌ Error fetching profile:", err.response?.data || err);
         setError(err.response?.data?.message || "Failed to fetch profile");
       } finally {
         setLoading(false);
@@ -57,7 +73,7 @@ const SettingsPage = () => {
     };
 
     fetchProfile();
-  }, [refresh]);
+  }, [refresh]); // ✅ Runs when `refresh` changes
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
@@ -108,14 +124,13 @@ const SettingsPage = () => {
           showConfirmButton: false,
           allowOutsideClick: false,
         });
-
       }
     } catch (error) {
       Swal.fire({
         title: "Oops!",
         text: "Something went Wrong...",
         icon: "error",
-        iconColor: 'red',
+        iconColor: "red",
         timer: 1500,
         confirmButtonText: "OK",
       });
@@ -161,7 +176,10 @@ const SettingsPage = () => {
         // setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
-      console.error("Reset Password Error:", error.response?.data || error.message);
+      console.error(
+        "Reset Password Error:",
+        error.response?.data || error.message
+      );
 
       Swal.fire({
         title: "Oops!",
@@ -173,8 +191,6 @@ const SettingsPage = () => {
       });
     }
   };
-
-
 
   // === Profile Save Logic ===
   const handleSaveProfile = async () => {
@@ -237,33 +253,47 @@ const SettingsPage = () => {
       Swal.fire("Success", "Profile updated successfully", "success");
       setRefresh((prev) => !prev);
     } catch (error) {
-      console.error("Error updating profile:", error.response?.data || error.message);
-      Swal.fire("Error", error.response?.data?.message || "Failed to update profile", "error");
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to update profile",
+        "error"
+      );
     } finally {
       setSaving(false);
     }
   };
 
-
   // === Enable 2FA Logic ===
   const handleEnable2FA = async () => {
     try {
-      const newStatus = !user.is2FAEnabled; 
+      const newStatus = !user.is2FAEnabled;
 
       await axios.post("http://localhost:8080/api/user/enable-2fa", {
         email: user.email,
         enable: newStatus,
       });
 
-      Swal.fire("Success", `Two-Factor Authentication ${newStatus ? "Enabled" : "Disabled"}`, "success");
+      Swal.fire(
+        "Success",
+        `Two-Factor Authentication ${newStatus ? "Enabled" : "Disabled"}`,
+        "success"
+      );
 
       // Update the user state
       setUser((prevUser) => ({
         ...prevUser,
-        is2FAEnabled: newStatus, 
+        is2FAEnabled: newStatus,
       }));
     } catch (error) {
-      Swal.fire("Error", error.response?.data?.message || "Failed to update 2FA status", "error");
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to update 2FA status",
+        "error"
+      );
     }
   };
 
@@ -278,46 +308,164 @@ const SettingsPage = () => {
   };
 
   // === Data Management Logic ===
+  // === Export Data ===
   const handleExportData = async (format) => {
     try {
-      const response = await axios.get(`/api/data/export?format=${format}`);
+      const response = await axios.get(
+        `http://localhost:8080/api/data/export?format=${format}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob", // Ensure proper file handling
+        }
+      );
+
       const blob = new Blob([response.data], {
         type: format === "csv" ? "text/csv" : "application/json",
       });
+
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `data.${format}`;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+
+      Swal.fire("Success", `Data exported as ${format}`, "success");
     } catch (error) {
+      console.error("Error exporting data:", error);
       Swal.fire("Error", "Failed to export data", "error");
     }
   };
 
+  // === Backup Data and Store it Locally ===
   const handleBackup = async () => {
     try {
-      await axios.post("/api/data/backup");
-      Swal.fire("Success", "Backup created successfully", "success");
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        Swal.fire("Error", "Unauthorized. Please log in again.", "error");
+        return;
+      }
+
+      // ✅ Fetch the current user settings before backing up
+      const settingsResponse = await axios.get(
+        "http://localhost:8080/api/Profile/get-profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const userSettings = settingsResponse.data; // 🔹 Get actual user settings
+
+      // ✅ Send the correct user settings data for backup
+      const response = await axios.post(
+        "http://localhost:8080/api/data/backup",
+        { backupData: userSettings },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const backupData = response.data.backupData;
+      const jsonString = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const fileUrl = URL.createObjectURL(blob);
+
+      setBackupFile(blob); // ✅ Store the backup file in state
+
+      Swal.fire("Success", "Backup created successfully!", "success");
+
+      // ✅ Automatically trigger file download
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = `backup-${Date.now()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
-      Swal.fire("Error", "Failed to create backup", "error");
+      console.error("🔥 Error creating backup:", error.response?.data || error);
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to create backup",
+        "error"
+      );
     }
   };
 
+  // === Restore Data from Stored Backup File ===
   const handleRestore = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    console.log("🔹 Restore function triggered!");
+
+    const file = e.target.files[0] || backupFile;
+    console.log("📂 Selected File:", file);
+
+    if (!file) {
+      console.warn("⚠️ No file selected!");
+      Swal.fire("Error", "No backup file selected!", "error");
+      return;
+    }
+
+    if (!file.name.endsWith(".json")) {
+      console.warn("⚠️ Invalid file format:", file.name);
+      Swal.fire(
+        "Error",
+        "Invalid file format! Please upload a .json file.",
+        "error"
+      );
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    console.log("🔑 Token:", token);
+
+    if (!token) {
+      console.warn("⚠️ No token found! User might be logged out.");
+      Swal.fire("Error", "Unauthorized. Please log in again.", "error");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("backupFile", file);
+    console.log("📤 FormData ready:", formData);
 
     try {
-      await axios.post("/api/data/restore", formData);
-      Swal.fire("Success", "Data restored successfully", "success");
+      const response = await axios.post(
+        "http://localhost:8080/api/data/restore",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("✅ Restore Response:", response.data);
+      Swal.fire("Success", "Data restored successfully!", "success");
     } catch (error) {
-      Swal.fire("Error", "Failed to restore data", "error");
+      console.error("🔥 Error restoring data:", error.response?.data || error);
+      Swal.fire(
+        "Error",
+        error.response?.data?.message || "Failed to restore data",
+        "error"
+      );
     }
   };
 
-  // === Account Deletion Logic ===
+  const handleViewPolicy = () => {
+    Swal.fire({
+      title: "📜 Data Retention Policy",
+      html: `
+        <p>We store your data securely for up to <b>12 months</b>.</p>
+        <p>After this period, inactive data will be permanently deleted.</p>
+        <p>You can manually delete your data anytime from the settings.</p>
+      `,
+      icon: "info",
+      confirmButtonText: "Got it!",
+    });
+  };
+
+  // === Delete Account ===
   const handleDeleteAccount = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -331,9 +479,13 @@ const SettingsPage = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete("/api/account/delete");
+        await axios.delete("http://localhost:8080/api/data/delete", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         Swal.fire("Deleted", "Your account has been deleted", "success");
       } catch (error) {
+        console.error("Error deleting account:", error);
         Swal.fire("Error", "Failed to delete account", "error");
       }
     }
@@ -366,13 +518,17 @@ const SettingsPage = () => {
                     {/* Avatar & Info */}
                     <div className="flex items-center gap-4 mb-6">
                       <Avatar
-                        src={user.photo ? user.photo.startsWith("blob") ? user.photo : `http://localhost:8080${user.photo}` : "https://via.placeholder.com/150"}
+                        src={
+                          user.photo
+                            ? user.photo.startsWith("blob")
+                              ? user.photo
+                              : `http://localhost:8080${user.photo}`
+                            : "https://via.placeholder.com/150"
+                        }
                         sx={{ width: 96, height: 96, border: "4px solid #fff" }}
                       />
                       <div>
-                        <h2 className="text-3xl font-bold">
-                          {user.name}
-                        </h2>
+                        <h2 className="text-3xl font-bold">{user.name}</h2>
                         <p className="text-md">
                           {user.occupation} at {user.organization}
                         </p>
@@ -447,8 +603,17 @@ const SettingsPage = () => {
                     {/* Password Change Section */}
                     <div className="space-y-4">
                       {success ? (
-                        <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-                          <Typography variant="body1" sx={{ color: "green", fontWeight: "bold" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            my: 2,
+                          }}
+                        >
+                          <Typography
+                            variant="body1"
+                            sx={{ color: "green", fontWeight: "bold" }}
+                          >
                             {success}
                           </Typography>
                         </Box>
@@ -460,7 +625,9 @@ const SettingsPage = () => {
                             type="email"
                             fullWidth
                             value={password.email}
-                            onChange={(e) => handleFieldSecurity("email", e.target.value)}
+                            onChange={(e) =>
+                              handleFieldSecurity("email", e.target.value)
+                            }
                             sx={{ mb: 2 }}
                           />
 
@@ -472,7 +639,9 @@ const SettingsPage = () => {
                                 type="text"
                                 fullWidth
                                 value={password.token}
-                                onChange={(e) => handleFieldSecurity("token", e.target.value)}
+                                onChange={(e) =>
+                                  handleFieldSecurity("token", e.target.value)
+                                }
                                 sx={{ mb: 2 }}
                               />
 
@@ -482,14 +651,21 @@ const SettingsPage = () => {
                                 type="password"
                                 fullWidth
                                 value={password.newPassword}
-                                onChange={(e) => handleFieldSecurity("newPassword", e.target.value)}
+                                onChange={(e) =>
+                                  handleFieldSecurity(
+                                    "newPassword",
+                                    e.target.value
+                                  )
+                                }
                                 sx={{ mb: 2 }}
                               />
                             </>
                           )}
 
                           {!otp && (
-                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                            <Box
+                              sx={{ display: "flex", justifyContent: "center" }}
+                            >
                               <Button
                                 variant="contained"
                                 color="primary"
@@ -506,7 +682,9 @@ const SettingsPage = () => {
                           )}
 
                           {otp && (
-                            <Box sx={{ display: "flex", justifyContent: "center" }}>
+                            <Box
+                              sx={{ display: "flex", justifyContent: "center" }}
+                            >
                               <Button
                                 variant="contained"
                                 color="primary"
@@ -525,7 +703,6 @@ const SettingsPage = () => {
                       )}
                     </div>
 
-
                     {/* Two-Factor Authentication */}
                     <div className="border-t border-gray-300 my-4"></div>
                     <div className="mb-6">
@@ -539,13 +716,14 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: theme.palette.mode === "dark" ? "white" : "black",
+                          color:
+                            theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
                         onClick={handleEnable2FA}
                       >
-                         {user.is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
+                        {user.is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
                       </Button>
                     </div>
 
@@ -636,7 +814,8 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: theme.palette.mode === "dark" ? "white" : "black",
+                          color:
+                            theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
@@ -749,19 +928,22 @@ const SettingsPage = () => {
                             component="span"
                             sx={{
                               borderColor: "gray",
-                              color: theme.palette.mode === "dark" ? "white" : "black",
+                              color:
+                                theme.palette.mode === "dark"
+                                  ? "white"
+                                  : "black",
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onChange={handleRestore}
                           >
                             Restore Data
                           </Button>
                           <input
                             type="file"
                             id="restore-upload"
-                            accept=".csv, .json"
+                            accept=".json"
                             hidden
+                            onChange={handleRestore} // ✅ Now it's correctly placed
                           />
                         </label>
                       </div>
@@ -782,10 +964,12 @@ const SettingsPage = () => {
                         variant="outlined"
                         sx={{
                           borderColor: "gray",
-                          color: theme.palette.mode === "dark" ? "white" : "black",
+                          color:
+                            theme.palette.mode === "dark" ? "white" : "black",
                           textTransform: "capitalize",
                           px: 3,
                         }}
+                        onClick={handleViewPolicy}
                       >
                         View Policy
                       </Button>
