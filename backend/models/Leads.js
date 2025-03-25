@@ -9,6 +9,12 @@ const leadSchema = new mongoose.Schema(
       enum: ["New", "Contacted", "Converted"],
       default: "New",
     },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Customer",
+      default: null,
+      required: false,
+    },
   },
   { timestamps: true }
 );
