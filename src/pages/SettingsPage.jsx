@@ -16,6 +16,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Settings } from "@mui/icons-material";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { FaShieldAlt, FaFileCsv } from "react-icons/fa";
+import { LuFileJson2 } from "react-icons/lu";
+import { MdBackup, MdOutlineRestore, MdPolicy, MdDelete } from "react-icons/md";
 
 const token = localStorage.getItem("token"); // Fetch token dynamically
 
@@ -511,12 +515,8 @@ const SettingsPage = () => {
                 {/* Profile Tab */}
                 {tab === "profile" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Profile user
-                    </h2>
-
-                    {/* Avatar & Info */}
-                    <div className="flex items-center gap-4 mb-6">
+                    {/* Avatar & Info Section */}
+                    <div className="flex items-center gap-6 mb-6">
                       <Avatar
                         src={
                           user.photo
@@ -525,17 +525,24 @@ const SettingsPage = () => {
                               : `http://localhost:8080${user.photo}`
                             : "https://via.placeholder.com/150"
                         }
-                        sx={{ width: 96, height: 96, border: "4px solid #fff" }}
+                        sx={{
+                          width: 96,
+                          height: 96,
+                          border: "4px solid #fff",
+                          boxShadow: "0 0 10px rgba(0,0,0,0.2)",
+                        }}
                       />
                       <div>
-                        <h2 className="text-3xl font-bold">{user.name}</h2>
-                        <p className="text-md">
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                          {user.name}
+                        </h2>
+                        <p className="text-md text-gray-600 dark:text-gray-400">
                           {user.occupation} at {user.organization}
                         </p>
                       </div>
                     </div>
 
-                    {/* Fields Section */}
+                    {/* Form Fields Section */}
                     <div className="grid gap-4">
                       {[
                         "name",
@@ -556,6 +563,12 @@ const SettingsPage = () => {
                           }
                           fullWidth
                           variant="outlined"
+                          InputProps={{
+                            sx: {
+                              backgroundColor: "white",
+                              borderRadius: "8px",
+                            },
+                          }}
                         />
                       ))}
 
@@ -569,17 +582,17 @@ const SettingsPage = () => {
                       >
                         <Button
                           variant="contained"
-                          color="primary"
                           sx={{
                             backgroundColor: "#3B82F6",
                             textTransform: "capitalize",
                             width: "200px",
+                            "&:hover": { backgroundColor: "#2563EB" },
                           }}
-                          onClick={handleSaveProfile} // Add this
+                          onClick={handleSaveProfile}
                           disabled={saving}
                         >
                           {saving ? (
-                            <CircularProgress size={24} />
+                            <CircularProgress size={24} color="inherit" />
                           ) : (
                             "Save Changes"
                           )}
@@ -592,412 +605,404 @@ const SettingsPage = () => {
                 {/* Security Tab */}
                 {tab === "security" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Security user
-                    </h2>
-                    <p className="text-sm text-gray-500 mb-6">
-                      Strengthen your account security by updating your password
-                      and managing key user.
-                    </p>
-
                     {/* Password Change Section */}
-                    <div className="space-y-4">
-                      {success ? (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            my: 2,
-                          }}
-                        >
-                          <Typography
-                            variant="body1"
-                            sx={{ color: "green", fontWeight: "bold" }}
+                    <div className="mt-6">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-lg font-semibold flex items-center gap-2">
+                            <RiLockPasswordFill /> Change Password
+                          </h3>
+                          <p className="text-sm text-gray-500 mb-2">
+                            Add an extra layer of security by updating your
+                            password regularly.
+                          </p>
+                        </div>
+                        {success ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              my: 2,
+                            }}
                           >
-                            {success}
-                          </Typography>
-                        </Box>
-                      ) : (
-                        <>
-                          <TextField
-                            label="Email"
-                            variant="outlined"
-                            type="email"
-                            fullWidth
-                            value={password.email}
-                            onChange={(e) =>
-                              handleFieldSecurity("email", e.target.value)
-                            }
-                            sx={{ mb: 2 }}
-                          />
-
-                          {otp && (
-                            <>
-                              <TextField
-                                label="OTP"
-                                variant="outlined"
-                                type="text"
-                                fullWidth
-                                value={password.token}
-                                onChange={(e) =>
-                                  handleFieldSecurity("token", e.target.value)
-                                }
-                                sx={{ mb: 2 }}
-                              />
-
-                              <TextField
-                                label="New Password"
-                                variant="outlined"
-                                type="password"
-                                fullWidth
-                                value={password.newPassword}
-                                onChange={(e) =>
-                                  handleFieldSecurity(
-                                    "newPassword",
-                                    e.target.value
-                                  )
-                                }
-                                sx={{ mb: 2 }}
-                              />
-                            </>
-                          )}
-
-                          {!otp && (
-                            <Box
-                              sx={{ display: "flex", justifyContent: "center" }}
+                            <Typography
+                              variant="body1"
+                              sx={{ color: "green", fontWeight: "bold" }}
                             >
-                              <Button
-                                variant="contained"
-                                color="primary"
+                              {success}
+                            </Typography>
+                          </Box>
+                        ) : (
+                          <>
+                            <TextField
+                              label="Email"
+                              variant="outlined"
+                              type="email"
+                              fullWidth
+                              value={password.email}
+                              onChange={(e) =>
+                                handleFieldSecurity("email", e.target.value)
+                              }
+                              sx={{ mb: 2 }}
+                            />
+
+                            {otp && (
+                              <>
+                                <TextField
+                                  label="OTP"
+                                  variant="outlined"
+                                  type="text"
+                                  fullWidth
+                                  value={password.token}
+                                  onChange={(e) =>
+                                    handleFieldSecurity("token", e.target.value)
+                                  }
+                                  sx={{ mb: 2 }}
+                                />
+
+                                <TextField
+                                  label="New Password"
+                                  variant="outlined"
+                                  type="password"
+                                  fullWidth
+                                  value={password.newPassword}
+                                  onChange={(e) =>
+                                    handleFieldSecurity(
+                                      "newPassword",
+                                      e.target.value
+                                    )
+                                  }
+                                  sx={{ mb: 2 }}
+                                />
+                              </>
+                            )}
+
+                            {!otp && (
+                              <Box
                                 sx={{
-                                  backgroundColor: "#3B82F6",
-                                  textTransform: "capitalize",
-                                  width: "200px",
+                                  display: "flex",
+                                  justifyContent: "center",
                                 }}
-                                onClick={handleSendOTP}
                               >
-                                Send OTP
-                              </Button>
-                            </Box>
-                          )}
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    backgroundColor: "#3B82F6",
+                                    textTransform: "capitalize",
+                                    width: "200px",
+                                  }}
+                                  onClick={handleSendOTP}
+                                >
+                                  Send OTP
+                                </Button>
+                              </Box>
+                            )}
 
-                          {otp && (
-                            <Box
-                              sx={{ display: "flex", justifyContent: "center" }}
-                            >
-                              <Button
-                                variant="contained"
-                                color="primary"
+                            {otp && (
+                              <Box
                                 sx={{
-                                  backgroundColor: "#3B82F6",
-                                  textTransform: "capitalize",
-                                  width: "200px",
+                                  display: "flex",
+                                  justifyContent: "center",
                                 }}
-                                onClick={handlePasswordChange}
                               >
-                                Reset Password
-                              </Button>
-                            </Box>
-                          )}
-                        </>
-                      )}
-                    </div>
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    backgroundColor: "#3B82F6",
+                                    textTransform: "capitalize",
+                                    width: "200px",
+                                  }}
+                                  onClick={handlePasswordChange}
+                                >
+                                  Reset Password
+                                </Button>
+                              </Box>
+                            )}
+                          </>
+                        )}
+                      </div>
 
-                    {/* Two-Factor Authentication */}
-                    <div className="border-t border-gray-300 my-4"></div>
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold">
-                        Two-Factor Authentication (2FA)
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-2">
-                        Add an extra layer of security by enabling 2FA.
-                      </p>
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "gray",
-                          color:
-                            theme.palette.mode === "dark" ? "white" : "black",
-                          textTransform: "capitalize",
-                          px: 3,
-                        }}
-                        onClick={handleEnable2FA}
-                      >
-                        {user.is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
-                      </Button>
+                      {/* Two-Factor Authentication */}
+                      <div className="border-t border-gray-300 my-4"></div>
+                      <div className="mb-6">
+                        <div className="mb-4">
+                          <h3 className="text-lg font-semibold flex items-center gap-2">
+                            <FaShieldAlt />
+                            Two-Factor Authentication (2FA)
+                          </h3>
+                          <p className="text-sm text-gray-500 mb-2">
+                            Add an extra layer of security by enabling 2FA.
+                          </p>
+                        </div>
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            borderColor: "gray",
+                            color:
+                              theme.palette.mode === "dark" ? "white" : "black",
+                            textTransform: "capitalize",
+                            px: 3,
+                          }}
+                          onClick={handleEnable2FA}
+                        >
+                          {user.is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
+                        </Button>
+                      </div>
                     </div>
-
-                    {/* Save Button */}
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor: "#3B82F6",
-                          textTransform: "capitalize",
-                          width: "200px",
-                        }}
-                      >
-                        Save Changes
-                      </Button>
-                    </Box>
                   </div>
                 )}
 
                 {/* Notifications Tab */}
                 {tab === "notifications" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Notification Preferences
-                    </h2>
-                    <p className="text-sm text-gray-500 mb-6">
-                      Manage how you receive important updates and alerts.
-                    </p>
-
                     {/* Notification user */}
-                    <div className="space-y-4">
-                      {[
-                        {
-                          key: "email",
-                          label: "Email Notifications",
-                          description:
-                            "Receive important updates, reminders, and alerts via email.",
-                          icon: "📧",
-                        },
-                        {
-                          key: "push",
-                          label: "Push Notifications",
-                          description:
-                            "Get instant alerts directly in your browser.",
-                          icon: "🔔",
-                        },
-                      ].map(({ key, label, description, icon }) => (
-                        <div
-                          key={key}
-                          className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">{icon}</span>
-                            <div>
-                              <p className="font-semibold">{label}</p>
-                              <p className="text-sm text-gray-500">
-                                {description}
-                              </p>
+                    <div className="mt-6">
+                      <div className="space-y-4">
+                        {[
+                          {
+                            key: "email",
+                            label: "Email Notifications",
+                            description:
+                              "Receive important updates, reminders, and alerts via email.",
+                            icon: "📧",
+                          },
+                          {
+                            key: "push",
+                            label: "Push Notifications",
+                            description:
+                              "Get instant alerts directly in your browser.",
+                            icon: "🔔",
+                          },
+                        ].map(({ key, label, description, icon }) => (
+                          <div
+                            key={key}
+                            className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-xl">{icon}</span>
+                              <div>
+                                <p className="font-semibold">{label}</p>
+                                <p className="text-sm text-gray-500">
+                                  {description}
+                                </p>
+                              </div>
                             </div>
+
+                            <Switch
+                              checked={notifications[key]}
+                              onChange={() =>
+                                setNotifications((prev) => ({
+                                  ...prev,
+                                  [key]: !prev[key],
+                                }))
+                              }
+                            />
                           </div>
+                        ))}
+                      </div>
 
-                          <Switch
-                            checked={notifications[key]}
-                            onChange={() =>
-                              setNotifications((prev) => ({
-                                ...prev,
-                                [key]: !prev[key],
-                              }))
-                            }
-                          />
-                        </div>
-                      ))}
+                      <div className="border-t border-gray-300 my-4"></div>
+
+                      {/* Advanced Preferences */}
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold">
+                          Advanced Preferences
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-2">
+                          Customize the frequency and priority of notifications.
+                        </p>
+
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            borderColor: "gray",
+                            color:
+                              theme.palette.mode === "dark" ? "white" : "black",
+                            textTransform: "capitalize",
+                            px: 3,
+                          }}
+                        >
+                          Manage Preferences
+                        </Button>
+                      </div>
+
+                      {/* Save Button */}
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{
+                            backgroundColor: "#3B82F6",
+                            textTransform: "capitalize",
+                            width: "200px",
+                          }}
+                          onClick={handleSaveNotifications}
+                        >
+                          Save Preferences
+                        </Button>
+                      </Box>
                     </div>
-
-                    <div className="border-t border-gray-300 my-4"></div>
-
-                    {/* Advanced Preferences */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold">
-                        Advanced Preferences
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-2">
-                        Customize the frequency and priority of notifications.
-                      </p>
-
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "gray",
-                          color:
-                            theme.palette.mode === "dark" ? "white" : "black",
-                          textTransform: "capitalize",
-                          px: 3,
-                        }}
-                      >
-                        Manage Preferences
-                      </Button>
-                    </div>
-
-                    {/* Save Button */}
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          backgroundColor: "#3B82F6",
-                          textTransform: "capitalize",
-                          width: "200px",
-                        }}
-                        onClick={handleSaveNotifications}
-                      >
-                        Save Preferences
-                      </Button>
-                    </Box>
                   </div>
                 )}
 
                 {/* Data Management Tab */}
                 {tab === "data" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
-                    <h2 className="text-2xl font-semibold mb-2">
-                      Data Management
-                    </h2>
-                    <p className="text-sm text-gray-500 mb-6">
-                      Manage your data, backup options, and account removal
-                      user.
-                    </p>
-
                     {/* Data Export Section */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold">Export Data</h3>
-                      <p className="text-gray-500 text-sm mb-2">
-                        Download your data securely in CSV or JSON format.
-                      </p>
+                    <div className="mt-6">
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold">Export Data</h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          Download your data securely in CSV or JSON format.
+                        </p>
 
-                      <div className="flex gap-3">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            backgroundColor: "#3B82F6",
-                            color: "white",
-                            textTransform: "capitalize",
-                            px: 3,
-                          }}
-                          onClick={() => handleExportData("csv")}
-                        >
-                          Export as CSV
-                        </Button>
-
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            backgroundColor: "#3B82F6",
-                            color: "white",
-                            textTransform: "capitalize",
-                            px: 3,
-                          }}
-                          onClick={() => handleExportData("json")}
-                        >
-                          Export as JSON
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="border-t border-gray-300 my-4"></div>
-
-                    {/* Backup & Restore Section */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold">
-                        Backup & Restore
-                      </h3>
-                      <p className="text-gray-500 text-sm mb-2">
-                        Backup your current data or restore data from a backup
-                        file.
-                      </p>
-
-                      <div className="flex gap-3">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            backgroundColor: "#16A34A",
-                            color: "white",
-                            textTransform: "capitalize",
-                            px: 3,
-                          }}
-                          onClick={handleBackup}
-                        >
-                          Backup Now
-                        </Button>
-
-                        <label
-                          htmlFor="restore-upload"
-                          className="cursor-pointer"
-                        >
+                        <div className="flex gap-3">
                           <Button
-                            variant="outlined"
-                            color="secondary"
-                            component="span"
+                            variant="contained"
+                            color="primary"
                             sx={{
-                              borderColor: "gray",
-                              color:
-                                theme.palette.mode === "dark"
-                                  ? "white"
-                                  : "black",
+                              backgroundColor: "#3B82F6",
+                              color: "white",
                               textTransform: "capitalize",
                               px: 3,
                             }}
+                            onClick={() => handleExportData("csv")}
+                            startIcon={<FaFileCsv />}
                           >
-                            Restore Data
+                            Export as CSV
                           </Button>
-                          <input
-                            type="file"
-                            id="restore-upload"
-                            accept=".json"
-                            hidden
-                            onChange={handleRestore} // ✅ Now it's correctly placed
-                          />
-                        </label>
+
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor: "#3B82F6",
+                              color: "white",
+                              textTransform: "capitalize",
+                              px: 3,
+                            }}
+                            onClick={() => handleExportData("json")}
+                            startIcon={<LuFileJson2 />}
+                          >
+                            Export as JSON
+                          </Button>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="border-t border-gray-300 my-4"></div>
+                      <div className="border-t border-gray-300 my-4"></div>
 
-                    {/* Data Retention Policy */}
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold">
-                        Data Retention Policy
-                      </h3>
-                      <p className="text-gray-500 text-sm mb-2">
-                        View details about how long we store your data.
-                      </p>
+                      {/* Backup & Restore Section */}
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold">
+                          Backup & Restore
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          Backup your current data or restore data from a backup
+                          file.
+                        </p>
 
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "gray",
-                          color:
-                            theme.palette.mode === "dark" ? "white" : "black",
-                          textTransform: "capitalize",
-                          px: 3,
-                        }}
-                        onClick={handleViewPolicy}
-                      >
-                        View Policy
-                      </Button>
-                    </div>
+                        <div className="flex gap-3">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                              backgroundColor: "#16A34A",
+                              color: "white",
+                              textTransform: "capitalize",
+                              px: 3,
+                            }}
+                            onClick={handleBackup}
+                            startIcon={<MdBackup />}
+                          >
+                            Backup Now
+                          </Button>
 
-                    <div className="border-t border-gray-300 my-4"></div>
+                          <label
+                            htmlFor="restore-upload"
+                            className="cursor-pointer"
+                          >
+                            <Button
+                              variant="outlined"
+                              color="secondary"
+                              component="span"
+                              sx={{
+                                borderColor: "gray",
+                                color:
+                                  theme.palette.mode === "dark"
+                                    ? "white"
+                                    : "black",
+                                textTransform: "capitalize",
+                                px: 3,
+                              }}
+                              startIcon={<MdOutlineRestore />}
+                            >
+                              Restore Data
+                            </Button>
+                            <input
+                              type="file"
+                              id="restore-upload"
+                              accept=".json"
+                              hidden
+                              onChange={handleRestore} // ✅ Now it's correctly placed
+                            />
+                          </label>
+                        </div>
+                      </div>
 
-                    {/* Danger Zone */}
-                    <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-red-600">
-                        Danger Zone
-                      </h3>
-                      <p className="text-gray-500 text-sm mb-2">
-                        Permanently delete your account and all associated data.
-                        This action is irreversible.
-                      </p>
+                      <div className="border-t border-gray-300 my-4"></div>
 
-                      <Button
-                        variant="contained"
-                        color="error"
-                        sx={{
-                          textTransform: "capitalize",
-                          px: 3,
-                        }}
-                        onClick={handleDeleteAccount}
-                      >
-                        Delete Account
-                      </Button>
+                      {/* Data Retention Policy */}
+                      <div className="mb-6">
+                        <h3 className="text-lg font-semibold">
+                          Data Retention Policy
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          View details about how long we store your data.
+                        </p>
+
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            borderColor: "gray",
+                            color:
+                              theme.palette.mode === "dark" ? "white" : "black",
+                            textTransform: "capitalize",
+                            px: 3,
+                          }}
+                          onClick={handleViewPolicy}
+                          startIcon={<MdPolicy />}
+                        >
+                          View Policy
+                        </Button>
+                      </div>
+
+                      <div className="border-t border-gray-300 my-4"></div>
+
+                      {/* Danger Zone */}
+                      <div className="mt-4">
+                        <h3 className="text-lg font-semibold text-red-600">
+                          Danger Zone
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          Permanently delete your account and all associated
+                          data. This action is irreversible.
+                        </p>
+
+                        <Button
+                          variant="contained"
+                          color="error"
+                          sx={{
+                            textTransform: "capitalize",
+                            px: 3,
+                          }}
+                          onClick={handleDeleteAccount}
+                          startIcon={<MdDelete />}
+                        >
+                          Delete Account
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
