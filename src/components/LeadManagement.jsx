@@ -308,7 +308,12 @@ const LeadManagement = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-          <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+            <TableRow
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+              }}
+            >
               <TableCell
                 sx={{ fontWeight: "bold", fontSize: "1rem" }}
                 align="center"
