@@ -9,34 +9,22 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        console.error("❌ No token found! User might not be logged in.");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/Profile/get-profile",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setLoading(false); // ✅ Stop loading if no token is found
+          return;
+        }
 
-        console.log("✅ Fetched User Profile:", response.data);
+        const response = await axios.get("http://localhost:8080/api/Profile/get-profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         setUser(response.data);
       } catch (err) {
-        console.error("❌ Error fetching profile:", err.response?.data || err);
-
-        // 🔹 Handle Expired or Invalid Token
-        if (err.response?.status === 401) {
-          console.warn("⚠️ Token expired. Logging out...");
-          localStorage.removeItem("token"); // Remove invalid token
-        }
+        console.error("Error fetching profile:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ Ensure loading is set to false after fetching
       }
     };
 
