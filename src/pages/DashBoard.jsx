@@ -16,6 +16,7 @@ import {
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import SalesGraph from "../components/SalesGraph";
 
 const DashBoard = () => {
   const [stats, setStats] = useState({
@@ -110,6 +111,10 @@ const DashBoard = () => {
               </div>
               <div className="lg:col-span-3">
                 <CalendarWidget />
+              </div>
+
+              <div className="lg:col-span-7">
+                <SalesGraph />
               </div>
             </div>
           </main>

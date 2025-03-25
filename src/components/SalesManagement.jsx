@@ -264,7 +264,7 @@ const SalesManagement = () => {
               <TableRow key={sale._id}>
                 {/* <TableCell align="center">{sale._id}</TableCell> */}
                 <TableCell align="center">{sale.customer}</TableCell>
-                <TableCell align="center">{sale.amount}</TableCell>
+                <TableCell align="center">₹ {sale.amount}</TableCell>
                 <TableCell align="center">
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${

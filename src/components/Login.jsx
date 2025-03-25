@@ -17,6 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isEnable2FA, setIsEnable2FA] = useState(false);
   const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState("");
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const Login = () => {
       if (response.data.message === "OTP sent to your email. Please verify.") {
         setIsEnable2FA(true);
         setUserId(response.data.userId);
+        setEmail(values.email);
         return;
       }
 
@@ -103,7 +105,7 @@ const Login = () => {
   const handleOtpSubmit = async () => {
     try {
       const response = await axios.post("http://localhost:8080/api/user/verify-otp", {
-        email: "avip56325@gmail.com",
+        email: email,
         otp: otp,
       });
 
@@ -261,6 +263,15 @@ const Login = () => {
           </Formik>
         ) : (
           <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
             <label className="block text-sm font-medium text-gray-700">Enter verification code
             </label>
             <input
