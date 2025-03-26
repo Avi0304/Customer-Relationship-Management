@@ -23,3 +23,13 @@ export const SignupValidationSchema = Yup.object().shape({
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Confirm password is required')
 });
+
+export const NewLeadValidationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  contactInfo: Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string()
+      .matches(/^\d{10}$/, "Phone number must be 10 digits")
+      .required("Phone number is required"),
+  }),
+});

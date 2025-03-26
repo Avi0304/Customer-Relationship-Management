@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   TextField,
@@ -30,79 +30,41 @@ import * as XLSX from "xlsx"; // For exporting to Excel
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import axios from "axios";
+import { NewLeadValidationSchema } from '../components/validation/AuthValidation'
 
 const LeadManagement = () => {
-  const [leads, setLeads] = useState([
-    {
-      id: 1,
-      name: "Rajesh Kumar",
-      contactInfo: "rajesh.kumar@gmail.com",
-      status: "New",
-    },
-    {
-      id: 2,
-      name: "Priya Sharma",
-      contactInfo: "priya.sharma@gmail.com",
-      status: "Contacted",
-    },
-    {
-      id: 3,
-      name: "Amit Verma",
-      contactInfo: "amit.verma@gmail.com",
-      status: "Converted",
-    },
-    {
-      id: 4,
-      name: "Neha Gupta",
-      contactInfo: "neha.gupta@gmail.com",
-      status: "New",
-    },
-    {
-      id: 5,
-      name: "Vikas Yadav",
-      contactInfo: "vikas.yadav@gmail.com",
-      status: "Contacted",
-    },
-    {
-      id: 6,
-      name: "Anjali Patel",
-      contactInfo: "anjali.patel@gmail.com",
-      status: "Converted",
-    },
-    {
-      id: 7,
-      name: "Rohan Singh",
-      contactInfo: "rohan.singh@gmail.com",
-      status: "New",
-    },
-    {
-      id: 8,
-      name: "Meera Nair",
-      contactInfo: "meera.nair@gmail.com",
-      status: "Contacted",
-    },
-    {
-      id: 9,
-      name: "Sandeep Joshi",
-      contactInfo: "sandeep.joshi@gmail.com",
-      status: "Converted",
-    },
-    {
-      id: 10,
-      name: "Kavita Reddy",
-      contactInfo: "kavita.reddy@gmail.com",
-      status: "New",
-    },
-  ]);
+  
+  const [leads, setLeads] = useState([]);
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [newLead, setNewLead] = useState({
     name: "",
-    contactInfo: "",
-    status: "New",
+    contactInfo: { email: "", phone: "" },
+    status: "new",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  useEffect(() => {
+    fetchLeads();
+  }, [])
+
+  const fetchLeads = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/leads/all');
+      console.log(response.data);
+
+      if (Array.isArray(response.data)) {
+        setLeads(response.data);  
+      } else {
+        setLeads([]);  
+      }
+    } catch (error) {
+      console.error("Error in fetching leads data: ", error);
+      setLeads([]);  
+    }
+  }
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -115,9 +77,12 @@ const LeadManagement = () => {
   const filteredLeads = leads.filter(
     (lead) =>
       (lead.name.toLowerCase().includes(filter.toLowerCase()) ||
-        lead.contactInfo.toLowerCase().includes(filter.toLowerCase())) &&
+       lead.contactInfo.email.toLowerCase().includes(filter.toLowerCase()) ||
+       lead.contactInfo.phone.includes(filter)) &&
       (statusFilter === "All Status" || lead.status === statusFilter)
   );
+  
+
 
   const handleAddLeadClick = () => {
     setOpenAddDialog(true);
@@ -129,58 +94,115 @@ const LeadManagement = () => {
 
   const handleNewLeadChange = (event) => {
     const { name, value } = event.target;
-    setNewLead((prevState) => ({ ...prevState, [name]: value }));
+  
+    if (name === "email" || name === "phone") {
+      setNewLead((prevState) => ({
+        ...prevState,
+        contactInfo: { ...prevState.contactInfo, [name]: value },
+      }));
+    } else {
+      setNewLead((prevState) => ({ ...prevState, [name]: value }));
+    }
   };
+  
 
   // For Select (dropdown), extract name manually
   const handleStatusChange = (event) => {
     setNewLead((prevState) => ({ ...prevState, status: event.target.value }));
   };
 
-  const handleAddNewLead = () => {
-    if (!newLead.name || !newLead.contactInfo) {
-      Swal.fire("Error", "Please fill in all fields", "error");
+  const handleAddNewLead = async () => {
+    try {
+      await NewLeadValidationSchema.validate(newLead, { abortEarly: false });
+  
+      if (newLead._id) {
+        // Update existing lead using PUT request
+        const response = await axios.put(
+          `http://localhost:8080/api/leads/update/${newLead._id}`,
+          newLead
+        );
+  
+        console.log("Update Response Data:", response.data); // Debugging API response
+  
+        // Check if response data contains the updated lead
+        if (response.data && response.data.lead) {
+          setLeads((prevLeads) =>
+            prevLeads.map((lead) =>
+              lead._id === response.data.lead._id ? response.data.lead : lead
+            )
+          );
+  
+          Swal.fire({
+            title: "Updated!",
+            text: "Lead has been updated successfully.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } else {
+          console.error("Invalid response data:", response.data);
+          Swal.fire("Error", "Failed to update lead. Please try again.", "error");
+        }
+      } else {
+        // Add new lead using POST request
+        if (!newLead.name.trim() || !newLead.contactInfo.email.trim() || !newLead.contactInfo.phone.trim()) {
+          Swal.fire("Error", "All fields are required!", "error");
+          return;
+        }
+  
+        const response = await axios.post(
+          "http://localhost:8080/api/leads/add",
+          newLead
+        );
+  
+        console.log("Response Data:", response.data); // Debugging API response
+  
+        // Check if response data contains newLead
+        if (response.data && response.data.newLead) {
+          setLeads((prevLeads) => [...prevLeads, response.data.newLead]);
+  
+          Swal.fire({
+            title: "Added!",
+            text: "New lead has been added successfully.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } else {
+          console.error("Invalid response data:", response.data);
+          Swal.fire("Error", "Failed to add lead. Please try again.", "error");
+        }
+      }
+  
       setOpenAddDialog(false);
-      return;
-    }
-
-    if (newLead.id) {
-      setLeads((prevLeads) =>
-        prevLeads.map((lead) =>
-          lead.id === newLead.id ? { ...lead, ...newLead } : lead
-        )
-      );
-      Swal.fire({
-        title: "Update!",
-        text: "Lead has been updated successfully.",
-        icon: "success",
-        timer: 4000,
-        timerProgressBar: true,
-        showConfirmButton: false,
+  
+      // Reset newLead state
+      setNewLead({
+        name: "",
+        contactInfo: { email: "", phone: "" },
+        status: "new",
       });
-    } else {
-      const newLeadData = { ...newLead, id: leads.length + 1 };
-      setLeads((prevLeads) => [...prevLeads, newLeadData]);
+    } catch (error) {
+      console.error("Validation Error:", error);
       Swal.fire({
-        title: "Added!",
-        text: "New lead has been added successfully.",
-        icon: "success",
-        timer: 4000,
-        timerProgressBar: true,
-        showConfirmButton: false,
+        title: "Error!",
+        text: "Please check the entered details.",
+        icon: "error",
       });
     }
-
-    setOpenAddDialog(false);
-    setNewLead({ name: "", contactInfo: "", status: "New" });
   };
+  
+  
+  
 
   const handleEditLead = (lead) => {
     setNewLead(lead);
     setOpenAddDialog(true);
   };
 
-  const handleDeleteLead = (id) => {
+  const handleDeleteLead = async (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -189,20 +211,28 @@ const LeadManagement = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        setLeads((prevLeads) => prevLeads.filter((lead) => lead.id !== id));
-        Swal.fire({
-          title: "Deleted!",
-          text: "The lead has been deleted.",
-          icon: "success",
-          timer: 4000,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        try {
+          await axios.delete(`http://localhost:8080/api/leads/delete/${id}`);
+          setLeads((prevLeads) => prevLeads.filter((lead) => lead._id !== id));
+  
+          Swal.fire({
+            title: "Deleted!",
+            text: "The lead has been deleted.",
+            icon: "success",
+            timer: 4000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          });
+        } catch (error) {
+          console.error("Error deleting lead:", error);
+          Swal.fire("Error!", "Could not delete the lead.", "error");
+        }
       }
     });
   };
+  
 
   const handleExportToExcel = () => {
     Swal.fire({
@@ -230,14 +260,6 @@ const LeadManagement = () => {
         });
       }
     });
-  };
-
-  const handleOpenSnackbar = () => {
-    setOpenSnackbar(true);
-  };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
   };
 
   return (
@@ -275,9 +297,9 @@ const LeadManagement = () => {
               label="Status"
             >
               <MenuItem value="All Status">All Status</MenuItem>
-              <MenuItem value="New">New</MenuItem>
-              <MenuItem value="Contacted">Contacted</MenuItem>
-              <MenuItem value="Converted">Converted</MenuItem>
+              <MenuItem value="new">New</MenuItem>
+              <MenuItem value="contacted">Contacted</MenuItem>
+              <MenuItem value="converted">Converted</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -324,7 +346,13 @@ const LeadManagement = () => {
                 sx={{ fontWeight: "bold", fontSize: "1rem" }}
                 align="center"
               >
-                Contact Info
+                Email
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                align="center"
+              >
+                Phone
               </TableCell>
               <TableCell
                 sx={{ fontWeight: "bold", fontSize: "1rem" }}
@@ -342,21 +370,27 @@ const LeadManagement = () => {
           </TableHead>
           <TableBody>
             {filteredLeads.map((lead) => (
-              <TableRow key={lead.id}>
+              <TableRow key={lead._id}>
                 <TableCell align="center">{lead.name}</TableCell>
-                <TableCell align="center">{lead.contactInfo}</TableCell>
+                <TableCell align="center">
+                  {lead?.contactInfo?.email ?? "N/A"}
+                </TableCell>
+                <TableCell align="center">
+                  {lead?.contactInfo?.phone ?? "N/A"}
+                </TableCell>
+
+
                 <TableCell align="center">
                   {" "}
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                      lead.status === "Converted"
-                        ? "bg-green-500 text-white"
-                        : lead.status === "New"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalized ${lead.status === "converted"
+                      ? "bg-green-500 text-white"
+                      : lead.status === "new"
                         ? "bg-blue-500 text-white"
                         : "bg-yellow-500 text-white"
-                    }`}
+                      }`}
                   >
-                    {lead.status}
+                    {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
                   </span>
                 </TableCell>
                 <TableCell sx={{ textAlign: "center" }}>
@@ -371,7 +405,7 @@ const LeadManagement = () => {
                   </Button>
                   <Button
                     size="small"
-                    onClick={() => handleDeleteLead(lead.id)}
+                    onClick={() => handleDeleteLead(lead._id)}
                   >
                     <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                   </Button>
@@ -386,6 +420,7 @@ const LeadManagement = () => {
       <Dialog open={openAddDialog} onClose={handleCloseAddDialog}>
         <DialogTitle>{newLead.id ? "Edit Lead" : "Add New Lead"}</DialogTitle>
         <DialogContent>
+          {/* Lead Name Input */}
           <TextField
             label="Lead Name"
             variant="outlined"
@@ -393,38 +428,60 @@ const LeadManagement = () => {
             value={newLead.name}
             onChange={handleNewLeadChange}
             fullWidth
-            style={{ marginBottom: "16px" }}
             margin="dense"
-          />
-          <TextField
-            label="Contact Info"
-            variant="outlined"
-            name="contactInfo"
-            value={newLead.contactInfo}
-            onChange={handleNewLeadChange}
-            fullWidth
             style={{ marginBottom: "16px" }}
           />
 
-          {/* Status Dropdown with Full Width */}
-          <FormControl
-            fullWidth
+          {/* Email Input */}
+          <TextField
+            label="Email"
             variant="outlined"
+            name="email"
+            value={newLead.contactInfo.email || ""}
+            onChange={(e) =>
+              setNewLead((prevLead) => ({
+                ...prevLead,
+                contactInfo: { ...prevLead.contactInfo, email: e.target.value },
+              }))
+            }
+            fullWidth
+            margin="dense"
             style={{ marginBottom: "16px" }}
-          >
+          />
+
+          {/* Phone Input */}
+          <TextField
+            label="Phone"
+            variant="outlined"
+            name="phone"
+            value={newLead.contactInfo.phone || ""}
+            onChange={(e) =>
+              setNewLead((prevLead) => ({
+                ...prevLead,
+                contactInfo: { ...prevLead.contactInfo, phone: e.target.value },
+              }))
+            }
+            fullWidth
+            margin="dense"
+            style={{ marginBottom: "16px" }}
+          />
+
+          {/* Status Dropdown */}
+          <FormControl fullWidth variant="outlined" style={{ marginBottom: "16px" }}>
             <InputLabel>Status</InputLabel>
             <Select
               name="status"
-              value={newLead.status} // Default to "New"
+              value={newLead.status}
               onChange={handleStatusChange}
               label="Status"
             >
-              <MenuItem value="New">New</MenuItem>
-              <MenuItem value="Contacted">Contacted</MenuItem>
-              <MenuItem value="Converted">Converted</MenuItem>
+              <MenuItem value="new">New</MenuItem>
+              <MenuItem value="contacted">Contacted</MenuItem>
+              <MenuItem value="converted">Converted</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
+
         <DialogActions sx={{ m: 1 }}>
           <Button
             onClick={handleCloseAddDialog}
@@ -433,27 +490,15 @@ const LeadManagement = () => {
             Cancel
           </Button>
           <Button
-            onClick={newLead.id ? handleAddNewLead : handleAddNewLead}
+            onClick={handleAddNewLead}
             color="primary"
             variant="contained"
           >
-            {newLead.id ? "Update" : "Add"}
+            {newLead._id ? "Update" : "Add"}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for reminder */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message="Reminder: Follow up with leads!"
-        action={
-          <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
-            Close
-          </Button>
-        }
-      />
     </div>
   );
 };

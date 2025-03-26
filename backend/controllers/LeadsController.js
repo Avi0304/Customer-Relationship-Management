@@ -6,6 +6,17 @@ exports.createLead = async (req, res) => {
   try {
     const { name, contactInfo, status, customerId } = req.body;
 
+    if (
+      !contactInfo ||
+      typeof contactInfo !== "object" ||
+      !contactInfo.email ||
+      !contactInfo.phone
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Invalid contactInfo format. It should contain email and phone." });
+    }
+
     let newLead;
 
     if (customerId) {
@@ -64,28 +75,52 @@ exports.getLeadById = async (req, res) => {
   }
 };
 
-// Update lead status and sync with customer
 exports.updateLead = async (req, res) => {
   try {
     const { status } = req.body;
+
+    // Ensure status is lowercase
+    const validStatuses = ["new", "contacted", "converted"];
+    if (!validStatuses.includes(status.toLowerCase())) {
+      return res.status(400).json({ message: "Invalid lead status value." });
+    }
+
     const lead = await Lead.findById(req.params.id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
 
-    lead.status = status;
+    lead.status = status.toLowerCase();
     await lead.save();
 
+    let updatedCustomer = null; // Variable to store updated customer data
+
+    // If lead is converted, update customer status to "completed" and store lead details
     if (lead.customerId) {
-      await Customer.findByIdAndUpdate(lead.customerId, { leadstatus: status });
+      const updateData = { leadstatus: lead.status };
+
+      if (status.toLowerCase() === "converted") {
+        updateData.status = "completed"; // Ensure only valid values are used
+        updateData.leadId = lead._id; // Store lead reference
+      }
+
+      updatedCustomer = await Customer.findByIdAndUpdate(
+        lead.customerId,
+        updateData,
+        { new: true } // Returns the updated document
+      );
     }
 
-    res
-      .status(200)
-      .json({ message: "Lead updated and synced with customer", lead });
+    res.status(200).json({
+      message: "Lead updated and synced with customer",
+      lead,
+      customerId: lead.customerId, // Send customerId in response
+      updatedCustomer, // Include updated customer details
+    });
   } catch (error) {
     console.error("Error updating lead:", error);
     res.status(500).json({ message: "Error updating lead", error });
   }
 };
+
 
 // Delete lead and remove reference from customer
 exports.deleteLead = async (req, res) => {
