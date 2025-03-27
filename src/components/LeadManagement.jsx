@@ -31,10 +31,9 @@ import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import axios from "axios";
-import { NewLeadValidationSchema } from '../components/validation/AuthValidation'
+import { NewLeadValidationSchema } from "../components/validation/AuthValidation";
 
 const LeadManagement = () => {
-  
   const [leads, setLeads] = useState([]);
   const [filter, setFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
@@ -48,23 +47,23 @@ const LeadManagement = () => {
 
   useEffect(() => {
     fetchLeads();
-  }, [])
+  }, []);
 
   const fetchLeads = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/leads/all');
+      const response = await axios.get("http://localhost:8080/api/leads/all");
       console.log(response.data);
 
       if (Array.isArray(response.data)) {
-        setLeads(response.data);  
+        setLeads(response.data);
       } else {
-        setLeads([]);  
+        setLeads([]);
       }
     } catch (error) {
       console.error("Error in fetching leads data: ", error);
-      setLeads([]);  
+      setLeads([]);
     }
-  }
+  };
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -77,12 +76,10 @@ const LeadManagement = () => {
   const filteredLeads = leads.filter(
     (lead) =>
       (lead.name.toLowerCase().includes(filter.toLowerCase()) ||
-       lead.contactInfo.email.toLowerCase().includes(filter.toLowerCase()) ||
-       lead.contactInfo.phone.includes(filter)) &&
+        lead.contactInfo.email.toLowerCase().includes(filter.toLowerCase()) ||
+        lead.contactInfo.phone.includes(filter)) &&
       (statusFilter === "All Status" || lead.status === statusFilter)
   );
-  
-
 
   const handleAddLeadClick = () => {
     setOpenAddDialog(true);
@@ -94,7 +91,7 @@ const LeadManagement = () => {
 
   const handleNewLeadChange = (event) => {
     const { name, value } = event.target;
-  
+
     if (name === "email" || name === "phone") {
       setNewLead((prevState) => ({
         ...prevState,
@@ -104,7 +101,6 @@ const LeadManagement = () => {
       setNewLead((prevState) => ({ ...prevState, [name]: value }));
     }
   };
-  
 
   // For Select (dropdown), extract name manually
   const handleStatusChange = (event) => {
@@ -113,26 +109,28 @@ const LeadManagement = () => {
 
   const handleAddNewLead = async () => {
     try {
-      await NewLeadValidationSchema.validate(newLead, { abortEarly: false });
-  
+      // await NewLeadValidationSchema.validate(newLead, { abortEarly: false });
+
       if (newLead._id) {
         // Update existing lead using PUT request
         const response = await axios.put(
           `http://localhost:8080/api/leads/update/${newLead._id}`,
           newLead
         );
-  
+
         console.log("Update Response Data:", response.data); // Debugging API response
-  
+
         // Check if response data contains the updated lead
         if (response.data && response.data.updatedLead) {
           setLeads((prevLeads) => {
             const updatedLeads = prevLeads.map((lead) =>
-              lead._id === response.data.updatedLead._id ? response.data.updatedLead : lead
+              lead._id === response.data.updatedLead._id
+                ? response.data.updatedLead
+                : lead
             );
-            return [...updatedLeads]; 
+            return [...updatedLeads];
           });
-  
+
           Swal.fire({
             title: "Updated!",
             text: "Lead has been updated successfully.",
@@ -143,26 +141,34 @@ const LeadManagement = () => {
           });
         } else {
           console.error("Invalid response data:", response.data);
-          Swal.fire("Error", "Failed to update lead. Please try again.", "error");
+          Swal.fire(
+            "Error",
+            "Failed to update lead. Please try again.",
+            "error"
+          );
         }
       } else {
         // Add new lead using POST request
-        if (!newLead.name.trim() || !newLead.contactInfo.email.trim() || !newLead.contactInfo.phone.trim()) {
+        if (
+          !newLead.name.trim() ||
+          !newLead.contactInfo.email.trim() ||
+          !newLead.contactInfo.phone.trim()
+        ) {
           Swal.fire("Error", "All fields are required!", "error");
           return;
         }
-  
+
         const response = await axios.post(
           "http://localhost:8080/api/leads/add",
           newLead
         );
-  
+
         console.log("Response Data:", response.data); // Debugging API response
-  
+
         // Check if response data contains newLead
         if (response.data && response.data.newLead) {
           setLeads((prevLeads) => [...prevLeads, response.data.newLead]);
-  
+
           Swal.fire({
             title: "Added!",
             text: "New lead has been added successfully.",
@@ -176,9 +182,9 @@ const LeadManagement = () => {
           Swal.fire("Error", "Failed to add lead. Please try again.", "error");
         }
       }
-  
+
       setOpenAddDialog(false);
-  
+
       // Reset newLead state
       setNewLead({
         name: "",
@@ -194,9 +200,6 @@ const LeadManagement = () => {
       });
     }
   };
-  
-  
-  
 
   const handleEditLead = (lead) => {
     setNewLead(lead);
@@ -217,7 +220,7 @@ const LeadManagement = () => {
         try {
           await axios.delete(`http://localhost:8080/api/leads/delete/${id}`);
           setLeads((prevLeads) => prevLeads.filter((lead) => lead._id !== id));
-  
+
           Swal.fire({
             title: "Deleted!",
             text: "The lead has been deleted.",
@@ -233,7 +236,6 @@ const LeadManagement = () => {
       }
     });
   };
-  
 
   const handleExportToExcel = () => {
     Swal.fire({
@@ -380,16 +382,16 @@ const LeadManagement = () => {
                   {lead?.contactInfo?.phone ?? "N/A"}
                 </TableCell>
 
-
                 <TableCell align="center">
                   {" "}
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalized ${lead.status === "converted"
-                      ? "bg-green-500 text-white"
-                      : lead.status === "new"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalized ${
+                      lead.status === "converted"
+                        ? "bg-green-500 text-white"
+                        : lead.status === "new"
                         ? "bg-blue-500 text-white"
                         : "bg-yellow-500 text-white"
-                      }`}
+                    }`}
                   >
                     {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
                   </span>
@@ -468,7 +470,11 @@ const LeadManagement = () => {
           />
 
           {/* Status Dropdown */}
-          <FormControl fullWidth variant="outlined" style={{ marginBottom: "16px" }}>
+          <FormControl
+            fullWidth
+            variant="outlined"
+            style={{ marginBottom: "16px" }}
+          >
             <InputLabel>Status</InputLabel>
             <Select
               name="status"
@@ -499,7 +505,6 @@ const LeadManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </div>
   );
 };
