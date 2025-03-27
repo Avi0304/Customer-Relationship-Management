@@ -77,46 +77,59 @@ exports.getLeadById = async (req, res) => {
 
 exports.updateLead = async (req, res) => {
   try {
-    const { name, contactInfo, status, customerId } = req.body;
+    const { name, contactInfo, status } = req.body;
     const { id } = req.params;
 
-    // Ensure status is lowercase
+    // Ensure status is lowercase and valid
     const validStatuses = ["new", "contacted", "converted"];
     if (!validStatuses.includes(status.toLowerCase())) {
       return res.status(400).json({ message: "Invalid lead status value." });
     }
 
-    const lead = await Lead.findById(req.params.id);
+    let lead = await Lead.findById(id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
 
+    // Update lead status
     lead.status = status.toLowerCase();
     await lead.save();
-  const updatedLead = await Lead.findByIdAndUpdate(id, req.body, {new: true})
 
-    let updatedCustomer = null; // Variable to store updated customer data
+    let updatedCustomer = null; // Store customer details if created/updated
 
-    // If lead is converted, update customer status to "completed" and store lead details
-    if (lead.customerId) {
-      const updateData = { leadstatus: lead.status };
+    if (status.toLowerCase() === "converted") {
+      if (!lead.customerId) {
+        // If lead is converted but doesn't have a linked customer, create a new customer
+        const newCustomer = new Customer({
+          name: lead.name,
+          email: lead.contactInfo.email,
+          phone: lead.contactInfo.phone,
+          amount: "0", // Default amount, update as needed
+          segmentation: "Medium", // Default segmentation, update as needed
+          status: "pending",
+          leadstatus: "converted",
+          leadId: lead._id,
+        });
 
-      if (status.toLowerCase() === "converted") {
-        updateData.status = "completed"; // Ensure only valid values are used
-        updateData.leadId = lead._id; // Store lead reference
+        await newCustomer.save();
+
+        // Update the lead to store reference to the new customer
+        lead.customerId = newCustomer._id;
+        await lead.save();
+
+        updatedCustomer = newCustomer;
+      } else {
+        // If customer exists, update its status
+        updatedCustomer = await Customer.findByIdAndUpdate(
+          lead.customerId,
+          { leadstatus: "converted", status: "completed" },
+          { new: true }
+        );
       }
-
-      updatedCustomer = await Customer.findByIdAndUpdate(
-        lead.customerId,
-        updateData,
-        { new: true } // Returns the updated document
-      );
     }
 
     res.status(200).json({
-      message: "Lead updated and synced with customer",
+      message: "Lead updated successfully",
       lead,
-      customerId: lead.customerId, // Send customerId in response
-      updatedCustomer, // Include updated customer details
-      updatedLead
+      customer: updatedCustomer, // Send the customer details in response
     });
   } catch (error) {
     console.error("Error updating lead:", error);
