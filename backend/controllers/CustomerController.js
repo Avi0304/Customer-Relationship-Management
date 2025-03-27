@@ -39,15 +39,22 @@ const addCustomer = async (req, res) => {
     const { name, email, phone, segmentation, status, leadstatus, amount } =
       req.body;
 
-    // Check if customer already exists
-    const existingCustomer = await Customer.findOne({
-      $or: [{ email }, { phone }],
-    });
-    if (existingCustomer) {
-      return res.status(400).json({
-        message: "Customer with this email or phone number already exists",
-      });
+    // First, check if a customer with the same email exists
+    const existingEmailCustomer = await Customer.findOne({ email });
+    if (existingEmailCustomer) {
+      return res
+        .status(400)
+        .json({ message: "Customer with this email already exists" });
     }
+
+    // Check if a customer with the same phone number exists
+    const existingPhoneCustomer = await Customer.findOne({ phone });
+    if (existingPhoneCustomer) {
+      return res
+        .status(400)
+        .json({ message: "Customer with this phone number already exists" });
+    }
+
     // Create and save new customer
     const newCustomer = new Customer({
       name,

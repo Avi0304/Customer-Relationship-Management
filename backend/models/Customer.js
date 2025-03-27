@@ -14,9 +14,15 @@ const CustomerSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
+      validate: {
+        validator: function (v) {
+          return /^[0-9]{10}$/.test(v);
+        },
+        message: "Invalid phone number format",
+      },
     },
     amount: {
-      type: String,
+      type: Number,
       required: true,
     },
     segmentation: {
