@@ -13,10 +13,10 @@ import AppointmentPage from "./pages/AppointmentPage";
 import SalesPage from "./pages/SalesPage";
 import ResetPassword from "./components/ResetPassword";
 import ForgetPassword from "./components/ForgetPassword";
-import PrivateRoute from "./components/PrivateRoute"; // For protected routes
-import PublicRoute from "./components/PublicRoute"; // For public routes
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 import MarketingPage from "./pages/MarketingPage";
-import ProfilePage from "./pages/ProfiePage";
+import ProfilePage from "./pages/ProfilePage"; // Fixed import issue
 import SettingsPage from "./pages/SettingsPage";
 
 function AppContent() {

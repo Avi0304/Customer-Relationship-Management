@@ -27,6 +27,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/data", require("./routes/Data"));
 app.use("/api/leads", require("./routes/Leads"));
 
+if (!process.env.PORT) {
+  console.error("Missing environment variables. Check .env file.");
+  process.exit(1);
+}
+
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {

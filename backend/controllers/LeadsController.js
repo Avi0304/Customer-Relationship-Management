@@ -10,16 +10,30 @@ exports.createLead = async (req, res) => {
       !contactInfo ||
       typeof contactInfo !== "object" ||
       !contactInfo.email ||
-      !contactInfo.phone
+      !contactInfo.phone ||
+      !name ||
+      !status
     ) {
+      return res.status(400).json({
+        message:
+          "Invalid contactInfo format. It should contain email and phone.",
+      });
+    }
+
+    // Check if a lead with the same email already exists
+    const existingLead = await Lead.findOne({
+      "contactInfo.email": contactInfo.email,
+    });
+    if (existingLead) {
       return res
         .status(400)
-        .json({ message: "Invalid contactInfo format. It should contain email and phone." });
+        .json({ message: "Lead with this email already exists" });
     }
 
     let newLead;
 
     if (customerId) {
+      // If customerId is provided, validate if the customer exists
       const customer = await Customer.findById(customerId);
       if (!customer) {
         return res.status(404).json({ message: "Customer not found" });
@@ -28,14 +42,75 @@ exports.createLead = async (req, res) => {
       newLead = new Lead({ name, contactInfo, status, customerId });
       await newLead.save();
 
-      // Update customer only if customerId is provided
+      // Update the existing customer with lead details
       await Customer.findByIdAndUpdate(customerId, {
         leadstatus: status,
         leadId: newLead._id,
       });
+
+      // Check if there are other leads for this customer
+      const otherLeads = await Lead.find({ customerId });
+      if (otherLeads.length <= 1) {
+        await Customer.findByIdAndUpdate(customerId, { leadId: null });
+      }
     } else {
-      newLead = new Lead({ name, contactInfo, status });
-      await newLead.save();
+      // Check if a customer with the same email already exists
+      const existingCustomer = await Customer.findOne({
+        email: contactInfo.email,
+      });
+
+      if (!existingCustomer) {
+        // Create a new customer since none exists
+        const newCustomer = new Customer({
+          name,
+          email: contactInfo.email,
+          phone: contactInfo.phone,
+          segmentation: "Medium",
+          status: "pending",
+          leadstatus: status,
+        });
+
+        await newCustomer.save();
+
+        // Create a lead linked to this new customer
+        newLead = new Lead({
+          name,
+          contactInfo,
+          status,
+          customerId: newCustomer._id, // Link new customer
+        });
+
+        await newLead.save();
+
+        // Update customer with lead details
+        newCustomer.leadId = newLead._id;
+        await newCustomer.save();
+      } else {
+        // If customer exists, just create the lead and link it
+        newLead = new Lead({
+          name,
+          contactInfo,
+          status,
+          customerId: existingCustomer._id, // Link existing customer
+        });
+
+        await newLead.save();
+
+        // Update existing customer lead status
+        existingCustomer.leadId = newLead._id;
+        existingCustomer.leadstatus = status;
+        await existingCustomer.save();
+
+        // Check if there are other leads for this customer
+        const otherLeads = await Lead.find({
+          customerId: existingCustomer._id,
+        });
+        if (otherLeads.length <= 1) {
+          await Customer.findByIdAndUpdate(existingCustomer._id, {
+            leadId: null,
+          });
+        }
+      }
     }
 
     res.status(201).json({ message: "Lead created successfully", newLead });
@@ -82,16 +157,18 @@ exports.updateLead = async (req, res) => {
 
     // Ensure status is lowercase and valid
     const validStatuses = ["new", "contacted", "converted"];
-    if (!validStatuses.includes(status.toLowerCase())) {
+    if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid lead status value." });
     }
 
     let lead = await Lead.findById(id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
 
-    // Update lead status
-    lead.status = status.toLowerCase();
+    lead.status = status;
     await lead.save();
+    const updatedLead = await Lead.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
     let updatedCustomer = null; // Store customer details if created/updated
 
@@ -129,14 +206,15 @@ exports.updateLead = async (req, res) => {
     res.status(200).json({
       message: "Lead updated successfully",
       lead,
-      customer: updatedCustomer, // Send the customer details in response
+      customerId: lead.customerId, // Send customerId in response
+      updatedCustomer, // Include updated customer details
+      updatedLead,
     });
   } catch (error) {
     console.error("Error updating lead:", error);
     res.status(500).json({ message: "Error updating lead", error });
   }
 };
-
 
 // Delete lead and remove reference from customer
 exports.deleteLead = async (req, res) => {
