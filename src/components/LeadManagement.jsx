@@ -125,12 +125,13 @@ const LeadManagement = () => {
         console.log("Update Response Data:", response.data); // Debugging API response
   
         // Check if response data contains the updated lead
-        if (response.data && response.data.lead) {
-          setLeads((prevLeads) =>
-            prevLeads.map((lead) =>
-              lead._id === response.data.lead._id ? response.data.lead : lead
-            )
-          );
+        if (response.data && response.data.updatedLead) {
+          setLeads((prevLeads) => {
+            const updatedLeads = prevLeads.map((lead) =>
+              lead._id === response.data.updatedLead._id ? response.data.updatedLead : lead
+            );
+            return [...updatedLeads]; 
+          });
   
           Swal.fire({
             title: "Updated!",

@@ -77,7 +77,8 @@ exports.getLeadById = async (req, res) => {
 
 exports.updateLead = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { name, contactInfo, status, customerId } = req.body;
+    const { id } = req.params;
 
     // Ensure status is lowercase
     const validStatuses = ["new", "contacted", "converted"];
@@ -90,6 +91,7 @@ exports.updateLead = async (req, res) => {
 
     lead.status = status.toLowerCase();
     await lead.save();
+  const updatedLead = await Lead.findByIdAndUpdate(id, req.body, {new: true})
 
     let updatedCustomer = null; // Variable to store updated customer data
 
@@ -114,6 +116,7 @@ exports.updateLead = async (req, res) => {
       lead,
       customerId: lead.customerId, // Send customerId in response
       updatedCustomer, // Include updated customer details
+      updatedLead
     });
   } catch (error) {
     console.error("Error updating lead:", error);
