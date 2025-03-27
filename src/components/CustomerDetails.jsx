@@ -75,6 +75,11 @@ const CustomerDetails = () => {
       return;
     }
 
+    if (isNaN(formData.amount) || formData.amount.trim() === "") {
+      Swal.fire("Oops!", "Amount must be a valid number.", "error");
+      return;
+    }
+
     try {
       if (selectedCustomer) {
         // Update customer
@@ -117,7 +122,7 @@ const CustomerDetails = () => {
 
       handleClose();
     } catch (error) {
-      console.error("Error in updating customer:", error);
+      console.error("Error in updating customer:", error.response ? error.response.data : error);
       Swal.fire("Error", "Something went wrong. Please try again.", "error");
     }
   };
@@ -245,14 +250,14 @@ const CustomerDetails = () => {
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status === "Completed"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Completed"
                       ? "bg-green-500 text-white"
-                      : customer.status === "Pending"
+                      :customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Pending"
                         ? "bg-yellow-500 text-white"
                         : "bg-red-500 text-white"
                       }`}
                   >
-                    {customer.status}
+                    {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
                   </span>
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
@@ -332,9 +337,9 @@ const CustomerDetails = () => {
           <FormControl fullWidth margin="dense">
             <InputLabel>Status</InputLabel>
             <Select name="status" value={formData.status || "Pending"} onChange={handleChange}>
-              <MenuItem value="Completed">Completed</MenuItem>
-              <MenuItem value="Pending">pending</MenuItem>
-              <MenuItem value="Cancelled">cancelled</MenuItem>
+              <MenuItem value="completed">completed</MenuItem>
+              <MenuItem value="pending">pending</MenuItem>
+              <MenuItem value="cancelled">cancelled</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
