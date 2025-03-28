@@ -55,7 +55,7 @@ const AppointmentSchedule = () => {
   const [tabValue, setTabValue] = useState(0);
   const isSmallScreen = useMediaQuery("(max-width: 820px)");
   const isMediumScreen = useMediaQuery("(max-width: 1024px)");
-  const currentTheme = localStorage.getItem('theme') || "light";
+  const currentTheme = localStorage.getItem("theme") || "light";
 
   useEffect(() => {
     fetchAll();
@@ -187,7 +187,7 @@ const AppointmentSchedule = () => {
       Swal.fire(
         "Error",
         error.response?.data?.message ||
-        "Failed to add appointment. Try again later.",
+          "Failed to add appointment. Try again later.",
         "error"
       );
     }
@@ -227,8 +227,8 @@ const AppointmentSchedule = () => {
         text: "Appointment has been updated successfully.",
         icon: "success",
         iconColor: currentTheme === "dark" ? "#4ade80" : "green",
-            background: currentTheme === "dark" ? "#1e293b" : "#fff",
-            color: currentTheme === "dark" ? "#f8fafc" : "#000",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 4000,
         timerProgressBar: true,
         showConfirmButton: false,
@@ -245,7 +245,7 @@ const AppointmentSchedule = () => {
       Swal.fire(
         "Error",
         error.response?.data?.message ||
-        "Failed to update appointment. Try again later.",
+          "Failed to update appointment. Try again later.",
         "error"
       );
     }
@@ -256,8 +256,8 @@ const AppointmentSchedule = () => {
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
-            background: currentTheme === "dark" ? "#1e293b" : "#fff",
-            color: currentTheme === "dark" ? "#f8fafc" : "#000",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
@@ -296,7 +296,7 @@ const AppointmentSchedule = () => {
           Swal.fire(
             "Error",
             error.response?.data?.message ||
-            "Failed to delete appointment. Try again later.",
+              "Failed to delete appointment. Try again later.",
             "error"
           );
         }
@@ -444,8 +444,8 @@ const AppointmentSchedule = () => {
           text: `Meeting link: ${meetLink}`,
           icon: "success",
           iconColor: currentTheme === "dark" ? "#4ade80" : "green",
-            background: currentTheme === "dark" ? "#1e293b" : "#fff",
-            color: currentTheme === "dark" ? "#f8fafc" : "#000",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           showCancelButton: true,
           confirmButtonText: "Open Meeting",
           cancelButtonText: "Close",
@@ -604,7 +604,7 @@ const AppointmentSchedule = () => {
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     align="center"
                   >
-                    Customer
+                    Company
                   </TableCell>
                   {!isSmallScreen && (
                     <TableCell
@@ -685,12 +685,13 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
                             ? "bg-green-500 text-white"
                             : appointment.status === "Pending"
-                              ? "bg-yellow-500 text-white"
-                              : "bg-red-500 text-white"
-                          }`}
+                            ? "bg-yellow-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {appointment.status}
                       </span>
@@ -753,7 +754,7 @@ const AppointmentSchedule = () => {
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     align="center"
                   >
-                    Customer
+                    Company
                   </TableCell>
                   {!isSmallScreen && (
                     <TableCell
@@ -834,12 +835,13 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
                             ? "bg-green-500 text-white"
                             : appointment.status === "Pending"
-                              ? "bg-yellow-500 text-white"
-                              : "bg-red-500 text-white"
-                          }`}
+                            ? "bg-yellow-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {appointment.status}
                       </span>
@@ -902,7 +904,7 @@ const AppointmentSchedule = () => {
                     sx={{ fontWeight: "bold", fontSize: "1rem" }}
                     align="center"
                   >
-                    Customer
+                    Company
                   </TableCell>
                   {!isSmallScreen && (
                     <TableCell
@@ -983,12 +985,13 @@ const AppointmentSchedule = () => {
                     )}
                     <TableCell align="center">
                       <span
-                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${appointment.status === "Confirmed"
+                        className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                          appointment.status === "Confirmed"
                             ? "bg-green-500 text-white"
                             : appointment.status === "Pending"
-                              ? "bg-yellow-500 text-white"
-                              : "bg-red-500 text-white"
-                          }`}
+                            ? "bg-yellow-500 text-white"
+                            : "bg-red-500 text-white"
+                        }`}
                       >
                         {appointment.status}
                       </span>
@@ -1037,7 +1040,7 @@ const AppointmentSchedule = () => {
         <DialogContent className="space-y-4">
           <TextField
             fullWidth
-            label="Customer Name"
+            label="Company Name"
             name="customer"
             value={newAppointment.customer}
             onChange={handleInputChange}
@@ -1128,7 +1131,7 @@ const AppointmentSchedule = () => {
             <>
               <TextField
                 fullWidth
-                label="Customer Name"
+                label="Company Name"
                 name="customer"
                 value={editAppointment.customer}
                 onChange={handleEditInputChange}
