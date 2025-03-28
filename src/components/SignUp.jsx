@@ -23,7 +23,9 @@ const SignUp = () => {
         title: "Register Successfully...",
         text: "Redirecting to login...",
         icon: "success",
-        iconColor: 'green',
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 1500,
         showConfirmButton: false,
         allowOutsideClick: false,
@@ -50,7 +52,9 @@ const SignUp = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
-          iconColor: 'red',
+          iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
+          background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           confirmButtonText: "OK",
         });
       }
@@ -60,12 +64,12 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-gray-800 text-center">
+    <div className="min-h-screen flex items-center justify-center light:bg-gray-100 px-4 dark:bg-slate-950">
+       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
+        <h2 className="text-3xl font-bold text-gray-800 text-center dark:text-white">
           Create an Account
         </h2>
-        <p className="text-md text-gray-500 text-center mb-6">
+        <p className="text-md text-gray-500 text-center mb-6 dark:text-slate-400">
           Sign up to get started
         </p>
 
@@ -83,13 +87,13 @@ const SignUp = () => {
             <Form className="space-y-5">
               {/* Username Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Username
                 </label>
                 <Field
                   type="text"
                   name="username"
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm light:focus:ring-indigo-500 light:focus:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Choose a username"
                 />
                 <ErrorMessage
@@ -101,13 +105,13 @@ const SignUp = () => {
 
               {/* Email Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Email
                 </label>
                 <Field
                   type="email"
                   name="email"
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm light:focus:ring-indigo-500 light:focus:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Enter your email"
                 />
                 <ErrorMessage
@@ -119,13 +123,13 @@ const SignUp = () => {
 
               {/* Password Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Password
                 </label>
                 <Field
                   type="password"
                   name="password"
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm folight:focus:ring-indigo-500 light:focus:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Create a password"
                 />
                 <ErrorMessage
@@ -137,13 +141,13 @@ const SignUp = () => {
 
               {/* Confirm Password Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Confirm Password
                 </label>
                 <Field
                   type="password"
                   name="confirmPassword"
-                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm light:focus:ring-indigo-500 light:focus:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Confirm your password"
                 />
                 <ErrorMessage
@@ -156,18 +160,20 @@ const SignUp = () => {
               {/* Signup Button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105 
+                dark:bg-gradient-to-r dark:from-teal-500 dark:to-emerald-600 dark:hover:from-teal-600 dark:hover:to-emerald-700
+  "
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Signing Up..." : "Sign Up"}
               </button>
 
               {/* Login Link */}
-              <p className="text-center text-sm text-gray-600">
+              <p className="text-center text-sm text-gray-600 dark:text-slate-400">
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="text-black font-semibold hover:underline"
+                  className="light:text-black font-semibold hover:underline dark:text-slate-300"
                 >
                   Login
                 </Link>

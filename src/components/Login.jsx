@@ -19,6 +19,7 @@ const Login = () => {
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState(null);
+  const currentTheme = localStorage.getItem("theme") || "light";
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("rememberedEmail");
@@ -66,12 +67,13 @@ const Login = () => {
         title: "Login Successful!",
         text: "Redirecting...",
         icon: "success",
-        iconColor: "green",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 1500,
         showConfirmButton: false,
         allowOutsideClick: false,
       });
-
       setTimeout(() => {
         navigate("/");
       }, 1500);
@@ -85,7 +87,9 @@ const Login = () => {
           title: "Error!",
           text: error.response.data.message,
           icon: "error",
-          iconColor: "red",
+          iconColor: currentTheme === "dark" ? "#f87171" : "red",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           confirmButtonText: "OK",
         });
       } else {
@@ -93,7 +97,9 @@ const Login = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
-          iconColor: "red",
+          iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
+          background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           confirmButtonText: "OK",
         });
       }
@@ -123,7 +129,9 @@ const Login = () => {
         title: "Login Successful!",
         text: "Redirecting...",
         icon: "success",
-        iconColor: "green",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 1500,
         showConfirmButton: false,
         allowOutsideClick: false,
@@ -137,7 +145,9 @@ const Login = () => {
         title: "OTP Verification Failed!",
         text: "Please enter the correct OTP.",
         icon: "error",
-        iconColor: "red",
+        iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
+        background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         confirmButtonText: "OK",
       });
     }
@@ -145,26 +155,26 @@ const Login = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        {!isEnable2FA ? (<h2 className="text-3xl font-bold text-gray-800 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 dark:bg-slate-950">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
+        {!isEnable2FA ? (<h2 className="text-3xl font-bold light:text-gray-800 text-center dark:text-white">
           Welcome Back
         </h2>) : (<>
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
             <LuShield className="h-6 w-6 text-gray-700" />
           </div>
 
-          <h2 className="tracking-tight text-2xl font-bold text-center mb-2">
+          <h2 className="tracking-tight text-2xl font-bold text-center mb-2 dark: text-white">
             Verify Your Identity
           </h2>
         </>
 
         )}
 
-        {!isEnable2FA ? (<p className="text-md text-gray-500 text-center mb-6">
+        {!isEnable2FA ? (<p className="text-md text-gray-500 text-center mb-6 dark:text-slate-400">
           Login to access your account
         </p>) : (
-          <p className="text-md text-muted-foreground mb-6 text-center">
+          <p className="text-md text-muted-foreground mb-6 text-center dark:text-slate-400">
             We've sent a 6-digit verification code to your email. Enter the code below to continue.
           </p>
         )}
@@ -179,13 +189,13 @@ const Login = () => {
             {({ isSubmitting }) => (
               <Form className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark: dark:text-slate-300">
                     Email
                   </label>
                   <Field
                     type="email"
                     name="email"
-                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
+                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm light:focus:ring-indigo-500 light:focus:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                     placeholder="Enter your email"
                   />
                   <ErrorMessage
@@ -195,10 +205,10 @@ const Login = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                     Password
                   </label>
-                  <div className="mt-1 flex items-center border border-gray-300 rounded-lg shadow-sm focus-within:ring-indigo-500 focus-within:border-indigo-500 transition">
+                  <div className="mt-1 flex items-center border border-gray-300 rounded-lg shadow-sm light:focus-within:ring-indigo-500 light:focus-within:border-indigo-500 dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition">
                     <Field
                       type={showPassword ? "text" : "password"}
                       name="password"
@@ -207,7 +217,7 @@ const Login = () => {
                     />
                     <button
                       type="button"
-                      className="p-3 text-gray-900 hover:text-gray-700 transition"
+                      className="p-3 text-gray-900 hover:text-gray-700 transition dark:text-slate-300"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
@@ -225,7 +235,7 @@ const Login = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center text-sm text-gray-700">
+                  <label className="flex items-center text-sm text-gray-700 dark:text-slate-400">
                     <input
                       type="checkbox"
                       className="mr-2"
@@ -236,24 +246,25 @@ const Login = () => {
                   </label>
                   <Link
                     to="/forget-password"
-                    className="text-sm font-medium text-black hover:underline hover:text-black"
+                    className="text-sm font-medium text-black hover:underline hover:text-black dark:text-slate-300 dark:hover:text-white"
                   >
                     Forgot Password?
                   </Link>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105 dark:bg-gradient-to-r dark:from-teal-500 dark:to-emerald-600 dark:hover:from-teal-600 dark:hover:to-emerald-700"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Logging in..." : "Login"}
                 </button>
+
                 {/* Sign-up Link */}
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-sm text-gray-600 dark:text-slate-400">
                   Don't have an account?{" "}
                   <Link
                     to="/signup"
-                    className="text-black font-semibold hover:underline"
+                    className="text-black font-semibold hover:underline dark:text-slate-300"
                   >
                     Sign up
                   </Link>
@@ -263,7 +274,7 @@ const Login = () => {
           </Formik>
         ) : (
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">Email</label>
             <input
               type="email"
               className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg"
@@ -272,7 +283,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label className="block text-sm font-medium text-gray-700">Enter verification code
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">Enter verification code
             </label>
             <input
               type="text"
@@ -283,7 +294,9 @@ const Login = () => {
             />
             <button
               type="button"
-              className="w-full mt-4 bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105"
+              className="w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-800 hover:to-black text-white font-semibold py-3 rounded-lg transition duration-300 shadow-lg transform hover:scale-105 
+              dark:bg-gradient-to-r dark:from-teal-500 dark:to-emerald-600 dark:hover:from-teal-600 dark:hover:to-emerald-700
+"
               onClick={handleOtpSubmit}
             >
               Verify and Continue

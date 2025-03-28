@@ -36,6 +36,7 @@ const CustomerDetails = () => {
     amount: "",
     status: "",
   });
+  const currentTheme = localStorage.getItem("theme") || "light";
 
   useEffect(() => {
     fetchCustomer();
@@ -89,6 +90,9 @@ const CustomerDetails = () => {
           title: "Updated!",
           text: "Customer details have been updated successfully.",
           icon: "success",
+          iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           timer: 3000,
           timerProgressBar: true,
           showConfirmButton: false,
@@ -114,6 +118,9 @@ const CustomerDetails = () => {
           title: "Added!",
           text: "New customer has been added successfully.",
           icon: "success",
+          iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           timer: 3000,
           timerProgressBar: true,
           showConfirmButton: false,
@@ -134,6 +141,8 @@ const CustomerDetails = () => {
       title: "Are you sure?",
       text: "This customer record will be permanently deleted!",
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
@@ -142,13 +151,16 @@ const CustomerDetails = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.delete(`http://localhost:8080/api/Customer/delete/${id}`);
-  
+
           if (response.status === 200) {
             setCustomers(customers.filter((c) => c._id !== id)); // Ensure you're using `_id`
             Swal.fire({
               title: "Deleted!",
               text: "The customer has been deleted successfully.",
               icon: "success",
+              iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+              background: currentTheme === "dark" ? "#1e293b" : "#fff",
+              color: currentTheme === "dark" ? "#f8fafc" : "#000",
               timer: 4000,
               timerProgressBar: true,
               showConfirmButton: false,
@@ -159,13 +171,16 @@ const CustomerDetails = () => {
             title: "Error!",
             text: "Failed to delete the customer. Please try again.",
             icon: "error",
+            iconColor: currentTheme === "dark" ? "#f87171" : "red",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
           });
           console.error("Error deleting customer:", error);
         }
       }
     });
   };
-  
+
 
   const filteredCustomers = customers.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
@@ -252,7 +267,7 @@ const CustomerDetails = () => {
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Completed"
                       ? "bg-green-500 text-white"
-                      :customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Pending"
+                      : customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Pending"
                         ? "bg-yellow-500 text-white"
                         : "bg-red-500 text-white"
                       }`}
@@ -265,7 +280,7 @@ const CustomerDetails = () => {
                     <FaEdit size={20} />
                   </Button>
                   <Button color="info" onClick={() => handleOpen(customer)}>
-                    <FaEye size={20} color="black" />
+                    <FaEye size={20} className="text-black dark:text-[#E5E7EB]"/>
                   </Button>
                   <Button
                     color="error"
