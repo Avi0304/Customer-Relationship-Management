@@ -67,7 +67,7 @@ const Task = () => {
 
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
-              task.id === data.task.id ? { ...task, completed: data.task.completed } : task
+              task._id === id ? { ...task, completed: data.task.completed } : task
             )
           );
 
