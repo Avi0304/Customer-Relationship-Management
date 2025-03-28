@@ -30,9 +30,11 @@ const Sidebar = () => {
     Swal.fire({
       title: "Logout Successfully...",
       text: "Redirecting to login page",
+      iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       timer: 1500,
       icon: "success",
-      iconColor: "green",
       showConfirmButton: false,
       allowOutsideClick: false,
     });
@@ -43,6 +45,7 @@ const Sidebar = () => {
 
   // Check if the user is on the settings page
   const isSettingsPage = location.pathname.startsWith("/settings");
+  const currentTheme = localStorage.getItem('theme') || 'light';
 
   return (
     <div

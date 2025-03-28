@@ -3,9 +3,11 @@ import { FiUser } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NoticationBell";
 import { useNavigate } from "react-router-dom";
-import {UserContext} from '../context/UserContext';
+import { UserContext } from '../context/UserContext';
 import axios from "axios";
 import { Avatar } from "@mui/material";
+import { FaUser } from "react-icons/fa";
+import { IoIosSettings } from "react-icons/io";
 
 const TopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +53,7 @@ const TopNav = ({ title }) => {
 
           {isOpen && (
             <div
-              className="absolute right-0 mt-3 w-56 
+              className="absolute right-0 mt-3 w-50 
                light:bg-white dark:bg-gray-800 dark:backdrop-blur-xl 
                rounded-lg shadow-xl dark:shadow-lg 
                p-3 transform transition-all duration-300 
@@ -59,23 +61,24 @@ const TopNav = ({ title }) => {
                z-50 dark:z-[60]"
             >
               <button
-                className="block w-full text-left px-4 py-2 
-                       light:text-gray-700 dark:text-gray-100 
-                       light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
-                       hover:text-purple-500 rounded-md transition-colors duration-200"
+                className="flex items-center gap-2 w-full text-left px-4 py-2 
+             light:text-gray-700 dark:text-gray-100 
+             light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
+             hover:text-purple-500 rounded-md transition-colors duration-200"
                 onClick={() => navigate('/profile')}
               >
-                Profile
+                <FaUser /> Profile
               </button>
 
+
               <button
-                className="block w-full text-left px-4 py-2 
+                className="flex items-center gap-2 w-full text-left px-4 py-2 
                        light:text-gray-700 dark:text-gray-100 
                        light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
                        hover:text-purple-500 rounded-md transition-colors duration-200"
                 onClick={() => navigate('/settings/profile')}
               >
-                Settings
+                <IoIosSettings /> Settings
               </button>
             </div>
           )}

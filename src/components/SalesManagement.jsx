@@ -41,6 +41,7 @@ const SalesManagement = () => {
     amount: "",
     status: "Pending",
   });
+  const currentTheme = localStorage.getItem('theme') || 'light';
 
   // ➤ Fetch Sales Data
   const fetchSales = async () => {
@@ -85,6 +86,9 @@ const SalesManagement = () => {
         title: "Added!",
         text: "New Sale has been added successfully.",
         icon: "success",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 4000,
         timerProgressBar: true,
         showConfirmButton: false,
@@ -101,6 +105,8 @@ const SalesManagement = () => {
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
@@ -115,6 +121,9 @@ const SalesManagement = () => {
             title: "Deleted!",
             text: "The Sale has been deleted.",
             icon: "success",
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             timer: 4000,
             timerProgressBar: true,
             showConfirmButton: false,
@@ -151,6 +160,9 @@ const SalesManagement = () => {
         title: "Updated!",
         text: "Sale has been updated successfully.",
         icon: "success",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 4000,
         timerProgressBar: true,
         showConfirmButton: false,
@@ -267,13 +279,12 @@ const SalesManagement = () => {
                 <TableCell align="center">₹ {sale.amount}</TableCell>
                 <TableCell align="center">
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                      sale.status === "Completed"
-                        ? "bg-green-500 text-white"
-                        : sale.status === "Pending"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${sale.status === "Completed"
+                      ? "bg-green-500 text-white"
+                      : sale.status === "Pending"
                         ? "bg-yellow-500 text-white"
                         : "bg-red-500 text-white"
-                    }`}
+                      }`}
                   >
                     {sale.status}
                   </span>

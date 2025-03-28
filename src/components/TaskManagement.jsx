@@ -33,6 +33,7 @@ const TaskManagement = () => {
   const [filter, setFilter] = useState("All");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const currentTheme = localStorage.getItem("theme") || "light";
 
   // Fetch Tasks from Backend
   const fetchTasks = async () => {
@@ -74,6 +75,9 @@ const TaskManagement = () => {
 
       Swal.fire({
         icon: "success",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         title: "Task Added",
         text: "Your new task has been successfully added!",
         timer: 2000,
@@ -86,6 +90,9 @@ const TaskManagement = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
+        iconColor: currentTheme === "dark" ? "#f87171" : "red",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         text: "Failed to add task",
       });
 
@@ -100,6 +107,8 @@ const TaskManagement = () => {
     if (!editingTask.title || !editingTask.dueDate || !editingTask.company) {
       Swal.fire({
         icon: "warning",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         title: "Invalid Input",
         text: "All fields are required to update the task.",
       });
@@ -126,6 +135,9 @@ const TaskManagement = () => {
       Swal.fire({
         icon: "success",
         title: "Task Updated",
+        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         text: "Task details have been successfully updated!",
         timer: 2000,
         showConfirmButton: false,
@@ -137,6 +149,9 @@ const TaskManagement = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
+        iconColor: currentTheme === "dark" ? "#f87171" : "red",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
         text: errorMessage,
       });
     }
@@ -148,6 +163,8 @@ const TaskManagement = () => {
       title: completed ? "Mark as Incomplete?" : "Mark as Complete?",
       text: `Are you sure you want to ${completed ? "undo" : "complete"} this task?`,
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
@@ -159,27 +176,33 @@ const TaskManagement = () => {
           const { data } = await axios.patch(`${API_URL}/toggle/${id}`, {
             completed: !completed,
           });
-  
+
           setTasks((prevTasks) =>
             prevTasks.map((task) => (task._id === id ? data.task : task))
           );
-  
+
           Swal.fire({
             icon: "success",
             title: "Updated!",
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             text: `Task has been ${completed ? "marked incomplete" : "completed"}.`,
           });
         } catch (error) {
           Swal.fire({
             icon: "error",
             title: "Error",
+            iconColor: currentTheme === "dark" ? "#f87171" : "red",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             text: "Failed to toggle task completion",
           });
         }
       }
     });
   };
-  
+
 
   // Delete Task
   const deleteTask = async (id) => {
@@ -187,6 +210,8 @@ const TaskManagement = () => {
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
@@ -200,6 +225,9 @@ const TaskManagement = () => {
           Swal.fire({
             icon: "success",
             title: "Deleted!",
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             text: "Your task has been deleted.",
             timer: 2000,
             showConfirmButton: false,
@@ -207,6 +235,9 @@ const TaskManagement = () => {
         } catch (error) {
           Swal.fire({
             icon: "error",
+            iconColor: currentTheme === "dark" ? "#f87171" : "red",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             title: "Error",
             text: "Failed to delete task",
           });
@@ -308,9 +339,8 @@ const TaskManagement = () => {
           <button
             key={status}
             onClick={() => setFilter(status)}
-            className={`px-5 py-2 rounded text-white text-lg transition ${
-              filter === status ? "bg-blue-500" : "bg-gray-400"
-            }`}
+            className={`px-5 py-2 rounded text-white text-lg transition ${filter === status ? "bg-blue-500" : "bg-gray-400"
+              }`}
           >
             {status}
           </button>
@@ -329,13 +359,12 @@ const TaskManagement = () => {
             {filteredTasks.map((task) => (
               <Card
                 key={task._id}
-                className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${
-                  task.priority === "High"
-                    ? "border-red-400"
-                    : task.priority === "Medium"
+                className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${task.priority === "High"
+                  ? "border-red-400"
+                  : task.priority === "Medium"
                     ? "border-yellow-400"
                     : "border-green-400"
-                } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
+                  } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
               >
                 {editingTask && editingTask._id === task._id ? (
                   <div className="w-full">
@@ -359,8 +388,8 @@ const TaskManagement = () => {
                       value={
                         editingTask.dueDate
                           ? new Date(editingTask.dueDate)
-                              .toISOString()
-                              .split("T")[0]
+                            .toISOString()
+                            .split("T")[0]
                           : "" // Ensures date is shown in "yyyy-MM-dd"
                       }
                       onChange={(e) =>
@@ -421,8 +450,8 @@ const TaskManagement = () => {
                         <BiCalendar className="mr-1 mb-1" size={18} />{" "}
                         {task.dueDate
                           ? new Date(task.dueDate)
-                              .toLocaleDateString("en-GB") // Formats date as "dd/MM/yyyy"
-                              .replace(/\//g, "-") // Replaces slashes with dashes
+                            .toLocaleDateString("en-GB") // Formats date as "dd/MM/yyyy"
+                            .replace(/\//g, "-") // Replaces slashes with dashes
                           : ""}
                       </p>
                       <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">

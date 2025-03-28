@@ -44,6 +44,7 @@ const LeadManagement = () => {
     status: "new",
   });
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const currentTheme = localStorage.getItem('theme') || 'light'
 
   useEffect(() => {
     fetchLeads();
@@ -139,17 +140,23 @@ const LeadManagement = () => {
             title: "Updated!",
             text: "Lead has been updated successfully.",
             icon: "success",
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             timer: 4000,
             timerProgressBar: true,
             showConfirmButton: false,
           });
         } else {
           console.error("Invalid response data:", response.data);
-          Swal.fire(
-            "Error",
-            "Failed to update lead. Please try again.",
-            "error"
-          );
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to update...",
+            icon: "error",
+            iconColor: currentTheme === "dark" ? "#f87171" : "red",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
+          });
         }
       } else {
         // Add new lead using POST request
@@ -177,6 +184,9 @@ const LeadManagement = () => {
             title: "Added!",
             text: "New lead has been added successfully.",
             icon: "success",
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             timer: 4000,
             timerProgressBar: true,
             showConfirmButton: false,
@@ -201,6 +211,9 @@ const LeadManagement = () => {
         title: "Error!",
         text: "Please check the entered details.",
         icon: "error",
+        iconColor: currentTheme === "dark" ? "#f87171" : "red",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
+        color: currentTheme === "dark" ? "#f8fafc" : "#000",
       });
     }
   };
@@ -215,6 +228,8 @@ const LeadManagement = () => {
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
@@ -230,12 +245,22 @@ const LeadManagement = () => {
             text: "The lead has been deleted.",
             icon: "success",
             timer: 4000,
+            iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
             timerProgressBar: true,
             showConfirmButton: false,
           });
         } catch (error) {
           console.error("Error deleting lead:", error);
-          Swal.fire("Error!", "Could not delete the lead.", "error");
+          Swal.fire({
+            title: "Error!",
+            text: "Could not delete.",
+            icon: "error",
+            iconColor: currentTheme === "dark" ? "#f87171" : "red",
+            background: currentTheme === "dark" ? "#1e293b" : "#fff",
+            color: currentTheme === "dark" ? "#f8fafc" : "#000",
+          });
         }
       }
     });
@@ -246,6 +271,8 @@ const LeadManagement = () => {
       title: "Export Leads?",
       text: "Do you want to export the leads to an Excel file?",
       icon: "warning",
+      background: currentTheme === "dark" ? "#1e293b" : "#fff",
+      color: currentTheme === "dark" ? "#f8fafc" : "#000",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
@@ -261,6 +288,9 @@ const LeadManagement = () => {
           title: "Exported!",
           text: "Your leads have been exported.",
           icon: "success",
+          iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
           timer: 3000,
           timerProgressBar: true,
           showConfirmButton: false,
@@ -389,13 +419,12 @@ const LeadManagement = () => {
                 <TableCell align="center">
                   {" "}
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalized ${
-                      lead.status === "converted"
-                        ? "bg-green-500 text-white"
-                        : lead.status === "new"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium capitalized ${lead.status === "converted"
+                      ? "bg-green-500 text-white"
+                      : lead.status === "new"
                         ? "bg-blue-500 text-white"
                         : "bg-yellow-500 text-white"
-                    }`}
+                      }`}
                   >
                     {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
                   </span>
