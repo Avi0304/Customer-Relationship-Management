@@ -75,7 +75,7 @@ const Login = () => {
         allowOutsideClick: false,
       });
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 1500);
     } catch (error) {
       console.error("Login Errors: ", error);
