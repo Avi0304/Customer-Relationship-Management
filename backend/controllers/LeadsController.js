@@ -1,4 +1,4 @@
-const Lead = require("../models/Leads"); // Ensure correct import
+const Lead = require("../models/Leads");
 const Customer = require("../models/Customer");
 
 // Create a new lead and link it to a customer
@@ -12,12 +12,10 @@ exports.createLead = async (req, res) => {
       !contactInfo.email ||
       !contactInfo.phone
     ) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Invalid contactInfo format. It should contain email and phone.",
-        });
+      return res.status(400).json({
+        message:
+          "Invalid contactInfo format. It should contain email and phone.",
+      });
     }
 
     let newLead;
@@ -83,7 +81,6 @@ exports.updateLead = async (req, res) => {
     const { name, contactInfo, status } = req.body;
     const { id } = req.params;
 
-    // Ensure status is lowercase and valid
     const validStatuses = ["new", "contacted", "converted"];
     if (!validStatuses.includes(status.toLowerCase())) {
       return res.status(400).json({ message: "Invalid lead status value." });
