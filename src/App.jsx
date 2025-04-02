@@ -18,6 +18,7 @@ import PublicRoute from "./components/PublicRoute";
 import MarketingPage from "./pages/MarketingPage";
 import ProfilePage from "./pages/ProfilePage"; // Fixed import issue
 import SettingsPage from "./pages/SettingsPage";
+import Page from "./components/Website/Page";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -27,6 +28,7 @@ function AppContent() {
       <Router>
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={ <Page />} />
           <Route path="/login" element={<PublicRoute element={<Login />} />} />
           <Route
             path="/signup"
@@ -42,7 +44,7 @@ function AppContent() {
           />
 
           {/* Private Routes */}
-          <Route path="/" element={<PrivateRoute element={<DashBoard />} />} />
+          <Route path="/dashboard" element={<PrivateRoute element={<DashBoard />} />} />
           <Route
             path="/profile"
             element={<PrivateRoute element={<ProfilePage />} />}
