@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import hero from './assets/hero.png';
+import { LuArrowRight } from "react-icons/lu";
 
 const HeroSection = () => {
     return (
@@ -20,21 +21,19 @@ const HeroSection = () => {
                         </div>
                         <div className="flex flex-col gap-2 min-[400px]:flex-row">
                             <Link
-                                href="#signup"
+                               to="/login"
                                 className="flex items-center gap-2 bg-black text-white text-lg font-medium px-6 py-3 rounded-lg shadow-md hover:bg-black hover:transition"
                             >
                                 Get Started
-                                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"></path>
-                                </svg>
+                               <LuArrowRight size={23}/>
                             </Link>
 
-                            <Link
+                            {/* <Link
                                 href="#demo"
                                 className="border border-gray-300 text-gray-700 text-lg font-medium px-6 py-3 rounded-lg shadow-md hover:bg-gray-200 transition"
                             >
                                 Request Demo
-                            </Link>
+                            </Link> */}
                         </div>
                     </div>
                    

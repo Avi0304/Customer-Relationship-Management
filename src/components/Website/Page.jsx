@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import HeroSection from './HeroSection';
 import FeatureSection from './FeatureSection';
@@ -7,35 +7,46 @@ import SolutionSection from './SolutionSection';
 import PowerfulDash from './PowerfulDash';
 import { TestimonialSection } from './TestimonialSection';
 import Footer from './Footer';
-// import { LineChart } from '@mui/icons-material'; // Importing Line Chart Icon
+import ContactSection from './ContactSection';
+// import { BiLineChart } from "react-icons/bi";
 
 const Page = () => {
+
+    const navigate = useNavigate();
+
+    const handleScroll = (sectionID) => {
+        const section = document.getElementById(sectionID);
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' })
+        }
+    };
+
     return (
         <div className="flex min-h-screen flex-col">
             {/* Header Section */}
             <header className="sticky top-0 z-50 w-full border-b border-gray-300 bg-white/95 backdrop-blur">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-                    
+
                     {/* Logo with LineChart Icon */}
                     <div className="flex items-center gap-2">
-                        {/* <LineChart className="h-6 w-6 text-black" /> */}
-                        <span className="text-2xl font-bold">GrowCRM</span>
+                        {/* <BiLineChart className="h-6 w-6 text-black" /> */}
+                        <span className="text-2xl font-bold text-black">GrowCRM</span>
                     </div>
 
                     {/* Navigation Links */}
                     <nav className="hidden md:flex items-center gap-6">
-                        <Link to="#features" className="text-sm font-medium text-gray-700 hover:underline">
+                        <button className="text-sm font-medium text-gray-700 hover:underline" onClick={() => handleScroll('features')}>
                             Features
-                        </Link>
-                        <Link to="#testimonials" className="text-sm font-medium text-gray-700 hover:underline">
+                        </button>
+                        <button className="text-sm font-medium text-gray-700 hover:underline" onClick={() => handleScroll('Solutions')}>
+                            Solutions
+                        </button>
+                        <button className="text-sm font-medium text-gray-700 hover:underline" onClick={() => handleScroll('Testimonials')}>
                             Testimonials
-                        </Link>
-                        <Link to="#pricing" className="text-sm font-medium text-gray-700 hover:underline">
-                            Pricing
-                        </Link>
-                        <Link to="#contact" className="text-sm font-medium text-gray-700 hover:underline">
+                        </button>
+                        <button className="text-sm font-medium text-gray-700 hover:underline" onClick={() => handleScroll('Contact')}>
                             Contact
-                        </Link>
+                        </button>
                     </nav>
 
                     {/* Buttons */}
@@ -47,7 +58,7 @@ const Page = () => {
                                 color: 'black',
                                 borderColor: 'lightgray',
                                 '&:hover': { borderColor: 'black', color: 'black' },
-                                  textTransform: 'capitalize'
+                                textTransform: 'capitalize'
                             }}
                         >
                             <Link to="/login" className="text-black">Log in</Link>
@@ -69,15 +80,16 @@ const Page = () => {
 
             {/* Main Content */}
             <main className="flex-1">
-                <HeroSection/>
-                <FeatureSection/>
-                <SolutionSection/>
-                <PowerfulDash/>
-                <TestimonialSection/>
+                <HeroSection />
+                <div id="features"><FeatureSection /></div>
+                <div id="Solutions"><SolutionSection /></div>
+                <div><PowerfulDash /></div>
+                <div id="Testimonials"><TestimonialSection /></div>
+                <div id="Contact"><ContactSection /></div>
             </main>
 
             <footer>
-                <Footer/>
+                <Footer />
             </footer>
         </div>
     );

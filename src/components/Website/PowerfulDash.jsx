@@ -90,16 +90,16 @@ function PowerfulDash() {
         { customer: "TCS", contact: "John Smith", type: "Sales Demos", date: "2025-03-10", time: "4:28 AM", duration: "20 min", status: "Pending" },
         { customer: "Mahindra IT", contact: "Anjali Desai", type: "Technical Review", date: "2025-02-25", time: "1:30 PM", duration: "45 min", status: "Confirmed" },
         { customer: "Wipro Tech", contact: "Sandeep Menon", type: "Business Meeting", date: "2025-02-28", time: "9:00 AM", duration: "60 min", status: "Confirmed" },
-      ];
+    ];
 
     const filteredAppointments = appointments.filter((appt) => {
         const appointmentDate = new Date(appt.date);
         const today = new Date();
-    
-        if ( tabValue === 1) return appointmentDate < today; // Past appointments
+
+        if (tabValue === 1) return appointmentDate < today; // Past appointments
         if (tabValue === 2) return appointmentDate >= today; // Upcoming appointments
         return true; // "All" appointments
-      });
+    });
 
 
     return (
@@ -115,20 +115,22 @@ function PowerfulDash() {
 
             {/* Tabs Navigation */}
             <div className="mx-auto max-w-4xl mt-12">
-                <div className="grid grid-cols-4 bg-white shadow-md rounded-lg">
+                <div className="grid grid-cols-4 bg-white shadow-md rounded-lg overflow-hidden">
                     {["dashboard", "tasks", "leads", "appointments"].map((tab) => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`py-3 text-center font-medium transition ${activeTab === tab
-                                ? "bg-white text-black"
-                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                            className={`py-3 text-center font-medium transition-all duration-300 ${activeTab === tab
+                                    ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
+                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                 }`}
                         >
                             {tab.charAt(0).toUpperCase() + tab.slice(1)}
                         </button>
                     ))}
                 </div>
+
+
 
                 {/* Dashboard Tab */}
                 {activeTab === "dashboard" && (
@@ -341,20 +343,20 @@ function PowerfulDash() {
                     <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
                         {/* Search and Add Button */}
                         <div className="flex justify-between items-center mb-4">
-                        <TextField
-                                    variant="outlined"
-                                    placeholder="Search Appointments"
-                                    size="small"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <FaSearch className="text-gray-500" />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
+                            <TextField
+                                variant="outlined"
+                                placeholder="Search Appointments"
+                                size="small"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <FaSearch className="text-gray-500" />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
                             <Button variant="contained"
                                 color="primary"
                                 size="medium" startIcon={<BiPlus />}>
@@ -396,8 +398,8 @@ function PowerfulDash() {
                                             <td className="py-3 px-4">
                                                 <span
                                                     className={`px-2 py-1 rounded-full text-white text-xs ${appt.status === "Confirmed"
-                                                            ? "bg-green-500"
-                                                            : "bg-yellow-500"
+                                                        ? "bg-green-500"
+                                                        : "bg-yellow-500"
                                                         }`}
                                                 >
                                                     {appt.status}
