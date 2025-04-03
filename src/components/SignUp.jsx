@@ -10,41 +10,47 @@ const SignUp = () => {
 
   const handleSignup = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/user/register",
-        {
-          name: values.username,
-          email: values.email,
-          password: values.password,
-        }
-      );
-
-      Swal.fire({
-        title: "Register Successfully...",
-        text: "Redirecting to login...",
-        icon: "success",
-        iconColor: currentTheme === "dark" ? "#4ade80" : "green",
-        background: currentTheme === "dark" ? "#1e293b" : "#fff",
-        color: currentTheme === "dark" ? "#f8fafc" : "#000",
-        timer: 1500,
-        showConfirmButton: false,
-        allowOutsideClick: false,
+      const response = await axios.post("http://localhost:8080/api/user/register", {
+        name: values.username,
+        email: values.email,
+        password: values.password,
       });
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+  
+      // Check if registration was successful
+      if (response.status === 201 || response.status === 200) {
+        // Show success alert
+        Swal.fire({
+          title: "Registered Successfully!",
+          text: "Redirecting to login...",
+          icon: "success",
+          iconColor: "green", // Removed `currentTheme` for safety
+          background: "#fff",
+          color: "#000",
+          timer: 1500,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+  
+        // Navigate to login page after a delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        // If response is not success
+        throw new Error("Unexpected response from server.");
+      }
     } catch (error) {
       console.error("Signup Error:", error);
-
+  
+      // Handle API error response
       if (error.response && error.response.data.message) {
         setErrors({ email: error.response.data.message });
-
+  
         Swal.fire({
           title: "Error!",
           text: error.response.data.message,
           icon: "error",
-          iconColor: 'red',
+          iconColor: "red",
           confirmButtonText: "OK",
         });
       } else {
@@ -52,9 +58,9 @@ const SignUp = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
-          iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
-          background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
-          color: currentTheme === "dark" ? "#f8fafc" : "#000",
+          iconColor: "red",
+          background: "#fff",
+          color: "#000",
           confirmButtonText: "OK",
         });
       }
@@ -62,6 +68,7 @@ const SignUp = () => {
       setSubmitting(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center light:bg-gray-100 px-4 dark:bg-slate-950">

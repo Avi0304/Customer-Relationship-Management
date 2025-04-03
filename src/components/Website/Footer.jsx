@@ -1,5 +1,6 @@
 import React from "react";
 import { FaTwitter, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -20,18 +21,18 @@ const Footer = () => {
           {/* Footer Navigation */}
           <div className="grid flex-1 grid-cols-2 gap-10 sm:grid-cols-4">
             {[
-              { title: "Product", links: ["Features", "Pricing", "Integrations", "Updates"] },
-              { title: "Company", links: ["About", "Blog", "Careers", "Press"] },
-              { title: "Resources", links: ["Documentation", "Help Center", "Guides", "API"] },
-              { title: "Legal", links: ["Privacy", "Terms", "Security", "Cookies"] },
+              { title: "Product", links: ["features", "pricing", "integrations", "updates"] },
+              { title: "Company", links: ["about", "blog", "careers", "press"] },
+              { title: "Resources", links: ["documentation", "help-center", "guides", "api"] },
+              { title: "Legal", links: ["privacy", "terms", "security", "cookies"] },
             ].map((section, index) => (
               <div key={index} className="flex flex-col gap-2">
                 <h3 className="text-lg font-medium text-gray-900">{section.title}</h3>
                 <nav className="flex flex-col gap-2">
                   {section.links.map((link, idx) => (
-                    <a key={idx} href="#" className="text-sm text-gray-600 hover:underline">
-                      {link}
-                    </a>
+                    <Link key={idx} to={`/${link}`} className="text-sm text-gray-600 hover:underline">
+                      {link.charAt(0).toUpperCase() + link.slice(1)}
+                    </Link>
                   ))}
                 </nav>
               </div>
@@ -41,17 +42,17 @@ const Footer = () => {
 
         {/* Footer Bottom Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-gray-600">&copy; {new Date().getFullYear()} CRMPro. All rights reserved.</p>
+          <p className="text-sm text-gray-600">&copy; {new Date().getFullYear()} GrowCRM. All rights reserved.</p>
           <div className="flex gap-4">
             {[
-              { name: "Twitter", href: "#", icon: <FaTwitter className="h-6 w-6" /> },
-              { name: "LinkedIn", href: "#", icon: <FaLinkedin className="h-6 w-6" /> },
-              { name: "Facebook", href: "#", icon: <FaFacebook className="h-6 w-6" /> },
+              { name: "Twitter", to: "/twitter", icon: <FaTwitter className="h-6 w-6" /> },
+              { name: "LinkedIn", to: "/linkedin", icon: <FaLinkedin className="h-6 w-6" /> },
+              { name: "Facebook", to: "/facebook", icon: <FaFacebook className="h-6 w-6" /> },
             ].map((social, idx) => (
-              <a key={idx} href={social.href} className="text-gray-600 hover:text-gray-900 transition">
+              <Link key={idx} to={social.to} className="text-gray-600 hover:text-gray-900 transition">
                 <span className="sr-only">{social.name}</span>
                 {social.icon}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

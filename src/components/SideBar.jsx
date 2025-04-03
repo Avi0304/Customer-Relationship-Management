@@ -73,8 +73,8 @@ const Sidebar = () => {
         {!isSettingsPage && (
           <>
             <Link
-              to="/"
-              className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/"
+              to="/dashboard"
+              className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/dashboard"
                 ? "bg-blue-700 text-white"
                 : "hover:bg-gray-700/50 hover:text-blue-400"
                 }`}
@@ -243,8 +243,8 @@ const Sidebar = () => {
             </Link>
 
             <Link
-              to="/"
-              className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/"
+              to="/dashboard"
+              className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/dashboard"
                 ? "bg-blue-700 text-white"
                 : "hover:bg-gray-700/50 hover:text-blue-400"
                 }`}
