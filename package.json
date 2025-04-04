@@ -32,6 +32,7 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.2.0",
     "react-toastify": "^11.0.5",
+    "react-tooltip": "^5.28.0",
     "recharts": "^2.15.1",
     "sweetalert2": "^11.17.2",
     "toastify": "^2.0.1",
