@@ -36,8 +36,9 @@ const sendContactMsg = async (req, res) => {
                 <p style="margin-top: 15px;">We appreciate your patience and will respond as soon as possible.</p>
                 <hr>
                 <p style="font-size: 14px; text-align: center; color: #555;">
-                    Best Regards,<br>
-                    <strong>Support Team</strong> <br>
+                   Thank you for your attention.<br>
+                    <strong>Best Regards,</strong><br>
+                    <em>GrowCRM Support Team</em>
                     📧 <a href="mailto:${process.env.EMAIL_USER}" style="color: #007bff; text-decoration: none;">${process.env.EMAIL_USER}</a>
                 </p>
             </div>
@@ -50,27 +51,33 @@ const sendContactMsg = async (req, res) => {
             to: process.env.ADMIN_EMAIL,
             subject: `📥 New Contact Form Submission from ${name}`,
             html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #f8f9fa; color: #333;">
-                <div style="background: #dc3545; color: #fff; padding: 10px 15px; text-align: center; border-radius: 5px;">
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #ffffff; color: #333333; border: 1px solid #ddd;">
+                <div style="background:#0056b3; color: #ffffff; padding: 15px; text-align: center; border-radius: 5px;">
                     <h2 style="margin: 0;">📥 New Contact Form Submission</h2>
                 </div>
                 <p style="font-size: 16px;">Hello Admin,</p>
-                <p>A new message has been submitted via the contact form:</p>
-                <div style="background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
+                <p>You have received a new message via the contact form:</p>
+                
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
                     <p><strong>👤 Name:</strong> ${name}</p>
-                    <p><strong>📧 Email:</strong> <a href="mailto:${email}" style="color: #007bff; text-decoration: none;">${email}</a></p>
+                    <p><strong>📧 Email:</strong> <a href="mailto:${email}" style="color: #0056b3; text-decoration: none;">${email}</a></p>
                     <p><strong>📌 Subject:</strong> ${subject}</p>
                     <p><strong>📝 Message:</strong> ${message}</p>
                 </div>
+                
                 <p style="margin-top: 15px;">Please review and respond as needed.</p>
-                <hr>
+                <hr style="border-top: 1px solid #ffcc00;">
+                
                 <p style="font-size: 14px; text-align: center; color: #555;">
-                    Regards,<br>
-                    <strong>Automated Notification System</strong>
+                    Thank you for your attention.<br>
+                    <strong>Best Regards,</strong><br>
+                    <em>GrowCRM Support Team</em>
                 </p>
+
             </div>
             `,
         };
+        
         
 
         // Send emails
