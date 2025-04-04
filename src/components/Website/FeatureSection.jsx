@@ -6,7 +6,7 @@ import Appointment from './assets/appointment.png';
 
 const FeatureSection = () => {
     return (
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32  xl:py-15 bg-gray-50">
             <div className="container mx-auto px-4 md:px-6">
                 {/* Section Header */}
                 <div className="text-center space-y-4">
