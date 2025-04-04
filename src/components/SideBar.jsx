@@ -10,6 +10,7 @@ import {
   FiShield,
   FiBell,
   FiDatabase,
+  FiHelpCircle,
 } from "react-icons/fi";
 import {
   FaUserPlus,
@@ -45,7 +46,7 @@ const Sidebar = () => {
 
   // Check if the user is on the settings page
   const isSettingsPage = location.pathname.startsWith("/settings");
-  const currentTheme = localStorage.getItem('theme') || 'light';
+  const currentTheme = localStorage.getItem("theme") || "light";
 
   return (
     <div
@@ -174,6 +175,23 @@ const Sidebar = () => {
               </div>
               <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
                 Marketing
+              </span>
+            </Link>
+
+            <Link
+              to="/support"
+              className={`flex items-center p-2 rounded-lg transition-all duration-200 ${
+                location.pathname === "/support"
+                  ? "bg-blue-700 text-white"
+                  : "hover:bg-gray-700/50 hover:text-green-400"
+              }`}
+            >
+              <div className="flex items-center justify-center w-10">
+                <FiHelpCircle size={24} />
+              </div>{" "}
+              {/* ✅ FIXED: Changed icon */}
+              <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                Customer Support
               </span>
             </Link>
           </>
