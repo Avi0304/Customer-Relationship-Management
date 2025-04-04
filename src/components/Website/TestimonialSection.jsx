@@ -3,7 +3,7 @@ import { FaQuoteRight } from "react-icons/fa";
 
 export function TestimonialSection() {
   return (
-    <section id="testimonials" className="w-full py-12 md:py-24 lg:py-25">
+    <section id="testimonials" className="w-full py-12 md:py-24 lg:py-25  xl:py-15">
       <div className="container mx-auto px-4 md:px-6">
         {/* Heading Section */}
         <div className="text-center space-y-4">
