@@ -10,7 +10,7 @@ function SupportPage() {
         <Sidebar />
 
         <div className="flex-1">
-          <TopNav title="Admin Support Panel" />
+          <TopNav title="Customer Support Panel" />
 
           <main className="p-6 space-y-4">
             <Support />
