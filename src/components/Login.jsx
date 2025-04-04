@@ -47,7 +47,9 @@ const Login = () => {
       }
 
       const token = response.data.token;
+      const expiresAt = response.data.expiresAt;
       localStorage.setItem("token", token);
+      localStorage.setItem("expiresAt", expiresAt);
 
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", values.email);
@@ -74,6 +76,12 @@ const Login = () => {
         showConfirmButton: false,
         allowOutsideClick: false,
       });
+
+      const timeLeft = expiresAt - Date.now();
+      setTimeout(() => {
+        logoutUser();
+      }, timeLeft);
+
       setTimeout(() => {
         navigate("/dashboard");
       }, 1500);
@@ -106,6 +114,20 @@ const Login = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("expiresAt");
+    setUser(null);
+    navigate("/login");
+  
+    Swal.fire({
+      title: "Session Expired!",
+      text: "You have been logged out.",
+      icon: "warning",
+      confirmButtonText: "OK",
+    });
   };
 
   const handleOtpSubmit = async () => {
