@@ -1,7 +1,54 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import { LuMapPin, LuMail, LuPhone } from "react-icons/lu";
+import Swal from 'sweetalert2';
 
 function ContactSection() {
+
+  const [formData, setformData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setformData({...formData, [e.target.id]: e.target.value});
+  };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:8080/api/Contact/sendContact', formData);
+
+      Swal.fire({
+        title: "Message Sent!",
+        text: "Your message has been send successfully...",
+        icon: "success",
+        iconColor: 'green',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+
+      setformData({name: "", email: "", subject: "", message: ""});
+    } catch (error) {
+      console.error("error in sunbmitting the contact message: ", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to send message. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }finally {
+      setLoading(false);
+    }
+  }
+
+
   return (
     <section className="w-full py-12 md:py-24 lg:py-30 bg-gray-50">
     <div className="container mx-auto px-4 md:px-6">
@@ -26,7 +73,7 @@ function ContactSection() {
           <p className="text-gray-500 text-sm mt-1">
             Fill out the form below and we'll get back to you as soon as possible.
           </p>
-          <form className="grid gap-4 mt-4">
+          <form className="grid gap-4 mt-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
               <label htmlFor="name" className="text-sm font-medium text-black">
                 Name
@@ -35,6 +82,8 @@ function ContactSection() {
                 id="name"
                 type="text"
                 placeholder="Enter your name"
+                value={formData.name}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
             </div>
@@ -45,6 +94,8 @@ function ContactSection() {
               <input
                 id="email"
                 type="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
@@ -56,6 +107,8 @@ function ContactSection() {
               <input
                 id="subject"
                 type="text"
+                value={formData.subject}
+                onChange={handleChange}
                 placeholder="Enter the subject"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
               />
@@ -67,15 +120,18 @@ function ContactSection() {
               <textarea
                 id="message"
                 placeholder="Enter your message"
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black min-h-[140px]"
               ></textarea>
             </div>
             <button
-              type="submit"
-              className="w-full bg-black text-white py-2 rounded-md text-lg font-medium hover:bg-gray-900 transition"
-            >
-              Send Message
-            </button>
+                type="submit"
+                className="w-full bg-black text-white py-2 rounded-md text-lg font-medium hover:bg-gray-900 transition"
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Send Message"}
+              </button>
           </form>
         </div>
 
