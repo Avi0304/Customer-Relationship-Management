@@ -6,6 +6,9 @@ const CLIENT_ID =
 const API_KEY = "AIzaSyDhCX4zzrbsMr-c3Ot92ywLNv-IhUDBLsY";
 const SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
+const CALENDAR_ID = "primary"; // Your personal calendar
+const HOLIDAY_CALENDAR_ID = "en.indian#holiday@group.v.calendar.google.com";
+
 export const useGoogleCalendar = () => {
   const [events, setEvents] = useState([]);
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -38,40 +41,55 @@ export const useGoogleCalendar = () => {
   const signIn = () => gapi.auth2.getAuthInstance().signIn();
   const signOut = () => gapi.auth2.getAuthInstance().signOut();
 
- const listEvents = () => {
-  gapi.client.calendar.events
-    .list({
-      calendarId: "primary",
-      timeMin: new Date().toISOString(),
-      showDeleted: false,
-      singleEvents: true,
-      maxResults: 10,
-      orderBy: "startTime",
-    })
-    .then((res) => {
-      const items = res.result.items || [];
-
-      // Convert UTC to local time
-      const convertedEvents = items.map(event => ({
+  const listEvents = async () => {
+    try {
+      // Fetch personal events
+      const personalEventsResponse = await gapi.client.calendar.events.list({
+        calendarId: "primary",
+        timeMin: new Date().toISOString(),
+        showDeleted: false,
+        singleEvents: true,
+        maxResults: 100, // Increased limit
+        orderBy: "startTime",
+      });
+  
+      const personalEvents = personalEventsResponse.result.items || [];
+  
+      // Fetch holiday events (Replace HOLIDAY_CALENDAR_ID with your country's public holiday calendar ID)
+      const HOLIDAY_CALENDAR_ID = "en.indian#holiday@group.v.calendar.google.com"; // Example: Indian Holidays
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString(); // January 1st
+      const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59).toISOString(); // December 31st
+  
+      const holidayEventsResponse = await gapi.client.calendar.events.list({
+        calendarId: HOLIDAY_CALENDAR_ID,
+        timeMin: startOfYear,
+        timeMax: endOfYear,
+        showDeleted: false,
+        singleEvents: true,
+        maxResults: 100,
+        orderBy: "startTime",
+      });
+  
+      const holidayEvents = (holidayEventsResponse.result.items || []).map(event => ({
         ...event,
+        isHoliday: true, // Mark holiday events
         start: {
           ...event.start,
-          dateTime: event.start.dateTime ? new Date(event.start.dateTime).toLocaleString() : event.start.date
+          dateTime: event.start.dateTime
+            ? new Date(event.start.dateTime).toLocaleString()
+            : event.start.date,
         },
-        end: {
-          ...event.end,
-          dateTime: event.end.dateTime ? new Date(event.end.dateTime).toLocaleString() : event.end.date
-        }
       }));
-
-      setEvents(convertedEvents);
-      console.log("Fetched events:", convertedEvents);
-    })
-    .catch((err) => {
+  
+      // Combine personal and holiday events
+      const allEvents = [...personalEvents, ...holidayEvents];
+  
+      setEvents(allEvents);
+      console.log("Fetched events:", allEvents);
+    } catch (err) {
       console.error("Error fetching events", err);
-    });
-};
-
+    }
+  };
   
   
 

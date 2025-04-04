@@ -12,17 +12,17 @@ const CalendarWidget = () => {
 
   // Group events by date
   const eventsByDate = events.reduce((acc, event) => {
-    const eventDate = event.start.dateTime 
+    const eventDate = event.start.dateTime
       ? new Date(event.start.dateTime).toLocaleDateString("en-CA") // Converts to "YYYY-MM-DD" in local time
       : event.start.date; // All-day events use `date` directly
 
-      console.log("Processing event:", event.summary, "on", eventDate);
-  
+    console.log("Processing event:", event.summary, "on", eventDate);
+
     if (!acc[eventDate]) acc[eventDate] = [];
     acc[eventDate].push(event);
     return acc;
   }, {});
-  
+
 
 
   const openPopup = (events) => {
@@ -37,16 +37,20 @@ const CalendarWidget = () => {
 
   const renderTileContent = ({ date, view }) => {
     if (view === "month") {
-      const dateKey = date.toLocaleDateString("en-CA"); 
-      const dayEvents = eventsByDate[dateKey]; 
-  
+      const dateKey = date.toLocaleDateString("en-CA");
+      const dayEvents = eventsByDate[dateKey];
   
       if (dayEvents && dayEvents.length > 0) {
+        const hasHoliday = dayEvents.some(event => event.isHoliday);
+        const hasEvent = dayEvents.some(event => !event.isHoliday);
+  
+        let dotColor = hasHoliday && hasEvent ? "bg-yellow-500" : hasHoliday ? "bg-red-500" : "bg-green-500";
+  
         return (
           <div className="relative flex justify-center">
             <div
               onClick={() => openPopup(dayEvents)}
-              className="mt-1 w-3 h-3 rounded-full bg-green-500 cursor-pointer"
+              className={`mt-1 w-3 h-3 rounded-full cursor-pointer ${dotColor}`}
             />
           </div>
         );
@@ -55,6 +59,8 @@ const CalendarWidget = () => {
     return null;
   };
   
+
+
 
 
   return (
@@ -83,6 +89,7 @@ const CalendarWidget = () => {
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-8 z-50">
           <div className="bg-white dark:bg-[#1B222D] p-6 rounded-lg shadow-lg w-96 border border-gray-300">
             <h2 className="text-xl font-semibold mb-4">Events</h2>
+
             <ul className="space-y-2">
               {popupEvents.map((event, index) => {
                 const startTime = event.start.dateTime
@@ -94,18 +101,23 @@ const CalendarWidget = () => {
                   : "All Day";
 
                 return (
-                  <li key={index} className="flex flex-col p-3 bg-gray-100 dark:bg-gray-800 rounded-md shadow">
+                  <li key={index}
+                    className={`flex flex-col p-3 rounded-md shadow 
+                           ${event.isHoliday ? "bg-red-100 dark:bg-red-800" : "bg-gray-100 dark:bg-gray-800"}`}>
+
                     <span className="text-md font-semibold text-black dark:text-white">
-                      📌 {event.summary}
+                      {event.isHoliday ? " Holiday: " : " Appointment: "}
+                      {event.summary}
                     </span>
+
                     <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                       🕒 {startTime}
                     </span>
                   </li>
-
                 );
               })}
             </ul>
+
             <button
               onClick={closePopup}
               className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
@@ -115,6 +127,8 @@ const CalendarWidget = () => {
           </div>
         </div>
       )}
+
+
     </Card>
   );
 };
