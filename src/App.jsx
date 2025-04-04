@@ -18,6 +18,8 @@ import PublicRoute from "./components/PublicRoute";
 import MarketingPage from "./pages/MarketingPage";
 import ProfilePage from "./pages/ProfilePage"; // Fixed import issue
 import SettingsPage from "./pages/SettingsPage";
+import { Support } from "@mui/icons-material";
+import SupportPage from "./pages/SupportPage";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -76,6 +78,10 @@ function AppContent() {
             element={<PrivateRoute element={<SalesPage />} />}
           />
           <Route path="/marketing" element={<MarketingPage />} />
+          <Route
+            path="/support"
+            element={<PrivateRoute element={<SupportPage />} />}
+          />
         </Routes>
       </Router>
     </div>

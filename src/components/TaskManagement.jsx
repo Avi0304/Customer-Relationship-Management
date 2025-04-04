@@ -161,7 +161,9 @@ const TaskManagement = () => {
   const toggleComplete = async (id, completed) => {
     Swal.fire({
       title: completed ? "Mark as Incomplete?" : "Mark as Complete?",
-      text: `Are you sure you want to ${completed ? "undo" : "complete"} this task?`,
+      text: `Are you sure you want to ${
+        completed ? "undo" : "complete"
+      } this task?`,
       icon: "warning",
       background: currentTheme === "dark" ? "#1e293b" : "#fff",
       color: currentTheme === "dark" ? "#f8fafc" : "#000",
@@ -187,7 +189,9 @@ const TaskManagement = () => {
             iconColor: currentTheme === "dark" ? "#4ade80" : "green",
             background: currentTheme === "dark" ? "#1e293b" : "#fff",
             color: currentTheme === "dark" ? "#f8fafc" : "#000",
-            text: `Task has been ${completed ? "marked incomplete" : "completed"}.`,
+            text: `Task has been ${
+              completed ? "marked incomplete" : "completed"
+            }.`,
           });
         } catch (error) {
           Swal.fire({
@@ -202,7 +206,6 @@ const TaskManagement = () => {
       }
     });
   };
-
 
   // Delete Task
   const deleteTask = async (id) => {
@@ -339,8 +342,9 @@ const TaskManagement = () => {
           <button
             key={status}
             onClick={() => setFilter(status)}
-            className={`px-5 py-2 rounded text-white text-lg transition ${filter === status ? "bg-blue-500" : "bg-gray-400"
-              }`}
+            className={`px-5 py-2 rounded text-white text-lg transition ${
+              filter === status ? "bg-blue-500" : "bg-gray-400"
+            }`}
           >
             {status}
           </button>
@@ -359,12 +363,13 @@ const TaskManagement = () => {
             {filteredTasks.map((task) => (
               <Card
                 key={task._id}
-                className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${task.priority === "High"
-                  ? "border-red-400"
-                  : task.priority === "Medium"
+                className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${
+                  task.priority === "High"
+                    ? "border-red-400"
+                    : task.priority === "Medium"
                     ? "border-yellow-400"
                     : "border-green-400"
-                  } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
+                } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
               >
                 {editingTask && editingTask._id === task._id ? (
                   <div className="w-full">
@@ -388,8 +393,8 @@ const TaskManagement = () => {
                       value={
                         editingTask.dueDate
                           ? new Date(editingTask.dueDate)
-                            .toISOString()
-                            .split("T")[0]
+                              .toISOString()
+                              .split("T")[0]
                           : "" // Ensures date is shown in "yyyy-MM-dd"
                       }
                       onChange={(e) =>
@@ -450,8 +455,8 @@ const TaskManagement = () => {
                         <BiCalendar className="mr-1 mb-1" size={18} />{" "}
                         {task.dueDate
                           ? new Date(task.dueDate)
-                            .toLocaleDateString("en-GB") // Formats date as "dd/MM/yyyy"
-                            .replace(/\//g, "-") // Replaces slashes with dashes
+                              .toLocaleDateString("en-GB") // Formats date as "dd/MM/yyyy"
+                              .replace(/\//g, "-") // Replaces slashes with dashes
                           : ""}
                       </p>
                       <p className="text-sm  light:text-gray-600 dark:text-gray-300 flex items-center">
