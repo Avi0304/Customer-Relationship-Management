@@ -29,7 +29,7 @@ function SolutionSection() {
       {/* Features Grid */}
       <div className="mx-auto grid justify-items-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3 lg:gap-8 mt-12">
         {/* Feature Cards */}
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium text-gray-800">
               Dashboard
@@ -44,7 +44,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Task Management
@@ -57,7 +57,7 @@ function SolutionSection() {
           <CardContent>Create, update, and track tasks with ease.</CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Lead Management
@@ -72,7 +72,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">Marketing</h3>
             <span className="text-2xl text-green-500">
@@ -85,7 +85,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Sales Management
@@ -100,7 +100,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Authentication
@@ -113,7 +113,7 @@ function SolutionSection() {
           <CardContent>Secure login and user management system.</CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Customer Management
@@ -128,7 +128,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Appointment Scheduling
@@ -143,7 +143,7 @@ function SolutionSection() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium">
               Customization
