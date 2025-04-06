@@ -38,7 +38,14 @@ export const useGoogleCalendar = () => {
     gapi.load("client:auth2", initClient);
   }, []);
 
-  const signIn = () => gapi.auth2.getAuthInstance().signIn();
+  const signIn = () => {
+    if (gapi.auth2) {
+      gapi.auth2.getAuthInstance().signIn();
+    } else {
+      console.error("gapi.auth2 not initialized yet");
+    }
+  };
+  
   const signOut = () => gapi.auth2.getAuthInstance().signOut();
 
   const listEvents = async () => {
