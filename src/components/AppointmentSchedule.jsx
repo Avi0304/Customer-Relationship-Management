@@ -46,6 +46,7 @@ const AppointmentSchedule = () => {
     contact: "",
     date: "",
     time: "",
+    email: "",
     duration: "",
     status: "Pending",
     type: "",
@@ -123,6 +124,7 @@ const AppointmentSchedule = () => {
       !newAppointment.date ||
       !newAppointment.time ||
       !newAppointment.duration ||
+      !newAppointment.type ||
       !newAppointment.type
     ) {
       Swal.fire(
@@ -141,6 +143,7 @@ const AppointmentSchedule = () => {
           customer: newAppointment.customer,
           contact: newAppointment.contact,
           date: newAppointment.date,
+          email: newAppointment.email,
           time: newAppointment.time,
           duration: newAppointment.duration,
           status: "Pending",
@@ -158,6 +161,7 @@ const AppointmentSchedule = () => {
         customer: "",
         contact: "",
         date: "",
+        email: "",
         time: "",
         duration: "",
         status: "Pending",
@@ -425,7 +429,7 @@ const AppointmentSchedule = () => {
             dateTime: endDateTime,
             timeZone: "Asia/Kolkata",
           },
-          attendees: [{ email: "client@example.com" }],
+          attendees: [{ email: appointment.email }],
           conferenceData: {
             createRequest: {
               requestId: `${appointment._id}-meet`,
@@ -439,6 +443,19 @@ const AppointmentSchedule = () => {
       // Extract and open the Google Meet link
       const meetLink = response.result?.hangoutLink;
       if (meetLink) {
+
+        await axios.post("http://localhost:8080/api/Appointment/send-meeting", {
+          email: appointment.email,
+          customer: appointment.customer,
+          contact: appointment.contact,
+          type: appointment.type,
+          date: appointment.date,
+          time: appointment.time,
+          duration: appointment.duration,
+          meetLink: meetLink,
+        });
+
+
         Swal.fire({
           title: "Google Meet Scheduled!",
           text: `Meeting link: ${meetLink}`,
@@ -1056,6 +1073,14 @@ const AppointmentSchedule = () => {
           />
           <TextField
             fullWidth
+            label="Email"
+            name="email"
+            value={newAppointment.email}
+            onChange={handleInputChange}
+            margin="dense"
+          />
+          <TextField
+            fullWidth
             type="date"
             name="date"
             value={newAppointment.date}
@@ -1142,6 +1167,14 @@ const AppointmentSchedule = () => {
                 label="Contact"
                 name="contact"
                 value={editAppointment.contact}
+                onChange={handleEditInputChange}
+                margin="dense"
+              />
+                <TextField
+                fullWidth
+                label="email"
+                name="email"
+                value={editAppointment.email}
                 onChange={handleEditInputChange}
                 margin="dense"
               />
