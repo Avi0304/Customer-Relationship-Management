@@ -11,6 +11,7 @@ import {
   CardContent,
   CardActions,
   Typography,
+  InputAdornment,
   Box,
   IconButton,
   Snackbar,
@@ -22,6 +23,7 @@ import {
 import { BiPlus, BiSupport } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { Search } from "@mui/icons-material";
 import Swal from "sweetalert2";
 
 const dummyRequests = [
@@ -231,13 +233,32 @@ const Support = () => {
         </Typography>
 
         <Box display="flex" gap={2}>
-          <TextField
+          {/* <TextField
             variant="outlined"
             size="small"
             placeholder="🔍 Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+          /> */}
+
+          <TextField
+            label="Search Support Requests"
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            fullWidth
+            size="small"
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              },
+            }}
           />
+
           <Button
             variant="contained"
             color="primary"
@@ -250,6 +271,14 @@ const Support = () => {
               });
               setOpenDialog(true);
             }}
+            sx={{
+              minWidth: 'unset',   
+              width: 'auto',       
+              whiteSpace: 'nowrap', 
+              paddingX: 2,         
+              height: '40px'        
+            }}
+            
           >
             New Request
           </Button>
@@ -361,8 +390,8 @@ const Support = () => {
                       req.status === "Open"
                         ? "success.main"
                         : req.status === "In Progress"
-                        ? "warning.main"
-                        : "text.disabled",
+                          ? "warning.main"
+                          : "text.disabled",
                     color: "white",
                     fontSize: "0.75rem",
                     fontWeight: "500",
