@@ -78,9 +78,19 @@ const Login = () => {
       });
 
       const timeLeft = expiresAt - Date.now();
-      setTimeout(() => {
+
+      console.log("expiresAt from backend:", response.data.expiresAt);
+      console.log("Current time:", Date.now());
+      console.log("timeLeft:", timeLeft);
+      
+
+      if (timeLeft <= 0) {
         logoutUser();
-      }, timeLeft);
+      } else {
+        setTimeout(() => {
+          logoutUser();
+        }, timeLeft);
+      }
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -121,7 +131,7 @@ const Login = () => {
     localStorage.removeItem("expiresAt");
     setUser(null);
     navigate("/login");
-  
+
     Swal.fire({
       title: "Session Expired!",
       text: "You have been logged out.",

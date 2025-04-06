@@ -28,22 +28,40 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
     Swal.fire({
-      title: "Logout Successfully...",
-      text: "Redirecting to login page",
-      iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+      title: "Are you sure?",
+      text: "You will be logged out.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout",
+      cancelButtonText: "Cancel",
       background: currentTheme === "dark" ? "#1e293b" : "#fff",
       color: currentTheme === "dark" ? "#f8fafc" : "#000",
-      timer: 1500,
-      icon: "success",
-      showConfirmButton: false,
-      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token");
+  
+        Swal.fire({
+          title: "Logout Successful!",
+          text: "Redirecting to login page",
+          icon: "success",
+          iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
+          color: currentTheme === "dark" ? "#f8fafc" : "#000",
+          timer: 1500,
+          showConfirmButton: false,
+          allowOutsideClick: false,
+        });
+  
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
     });
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
   };
+  
 
   // Check if the user is on the settings page
   const isSettingsPage = location.pathname.startsWith("/settings");
