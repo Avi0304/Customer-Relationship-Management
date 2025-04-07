@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 const Customer = require("../models/Customer");
 const Lead = require("../models/Leads"); // Ensure correct import
 
+const { createNotification } = require('../utils/notificationService');
+
+// Helper function for lead status change notifications
+const maybeSendLeadStatusChangeNotification = async (leadId, previousStatus, newStatus) => {
+  if (previousStatus !== newStatus) {
+    await createNotification({
+      title: 'Lead Status Updated',
+      message: `Lead status changed from "${previousStatus}" to "${newStatus}"`,
+      type: 'status'
+    });
+  }
+};
 // Get all customers
 const getAllCustomer = async (req, res) => {
   try {
@@ -67,6 +79,15 @@ const addCustomer = async (req, res) => {
     });
 
     await newCustomer.save();
+
+    await createNotification({
+      title: 'New Customer Added',
+      message: `Customer "${name}" has been successfully added.`,
+      type: 'customer',
+      // userId: newCustomer._id, 
+    });
+
+
     res
       .status(201)
       .json({ message: "Customer added successfully", customer: newCustomer });
@@ -80,17 +101,28 @@ const addCustomer = async (req, res) => {
 const updateCustomer = async (req, res) => {
   try {
     const { id } = req.params;
+    const updateData = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid customer ID" });
     }
 
+
     const updatedCustomer = await Customer.findByIdAndUpdate(id, req.body, {
       new: true,
     });
+    
     if (!updatedCustomer) {
       return res.status(404).json({ message: "Customer not found" });
     }
+
+    await createNotification({
+      title: 'Update Customer Added',
+      message: `Customer "${updatedCustomer.name}" has been successfully added.`,
+      type: 'customer',
+      // userId: newCustomer._id, 
+    });
+
 
     res.status(200).json({
       message: "Customer updated successfully",

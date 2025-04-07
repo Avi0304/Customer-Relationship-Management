@@ -1,4 +1,25 @@
 const Sale = require("../models/Sales");
+const { createNotification } = require('../utils/notificationService');
+
+// Update notification helper function
+const notifySaleAdded = async (sale) => {
+  await createNotification({
+    title: 'New Sale Added',
+    message: `New sale added: ${sale.customer} - $${sale.amount}`,
+    type: 'sale',
+    userId: sale.userId,
+  });
+};
+
+// Update status change notification
+const notifySaleStatusUpdated = async (sale, previousStatus, newStatus) => {
+  await createNotification({
+    title: 'Sale Status Updated',
+    message: `Sale status updated from ${previousStatus} to ${newStatus}`,
+    type: 'sale',
+    userId: sale.userId,
+  });
+};
 
 // ➤ Get All Sales
 const getAllSales = async (req, res) => {
@@ -21,8 +42,9 @@ const addSale = async (req, res) => {
       status: status || "Pending",
     });
 
-    await newSale.save();
-    res.status(201).json({ message: "Sale added successfully", sale: newSale });
+    const savedSale = await newSale.save();
+    await notifySaleAdded(savedSale);
+    res.status(201).json({ message: "Sale added successfully", sale: savedSale });
   } catch (error) {
     res.status(500).json({ message: "Error adding sale", error });
   }
@@ -31,9 +53,21 @@ const addSale = async (req, res) => {
 // ➤ Update Sale
 const updateSale = async (req, res) => {
   try {
+    const existingSale = await Sale.findById(req.params.id);
+    if (!existingSale) {
+      return res.status(404).json({ message: "Sale not found" });
+    }
+
+    const previousStatus = existingSale.status;
+    const newStatus = req.body.status;
+
     const updatedSale = await Sale.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+
+    if (newStatus && previousStatus !== newStatus) {
+      await notifySaleStatusUpdated(updatedSale, previousStatus, newStatus);
+    }
 
     if (!updatedSale) {
       return res.status(404).json({ message: "Sale not found" });

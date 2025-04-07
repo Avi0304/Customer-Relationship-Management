@@ -5,6 +5,8 @@ const connectDB = require("./config/db");
 const morgan = require("morgan");
 const path = require("path");
 
+const { initializeSocket } = require('./socket');
+
 dotenv.config();
 const app = express();
 
@@ -27,13 +29,21 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/data", require("./routes/Data"));
 app.use("/api/leads", require("./routes/Leads"));
 app.use("/api/Contact",require("./routes/contactRoute"));
+app.use('/api/notifications', require("./routes/notificationRoute"));
 
 if (!process.env.PORT) {
   console.error("Missing environment variables. Check .env file.");
   process.exit(1);
 }
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
+
+const server = app.listen(process.env.PORT || 8080, () => {
+  console.log(`Server running on port ${process.env.PORT || 8080}`);
+});
+
+// Initialize Socket.IO
+initializeSocket(server);
 
 const startServer = async () => {
   try {
@@ -42,9 +52,10 @@ const startServer = async () => {
     await connectDB();
     console.log("Database Connected Successfully".bgMagenta);
 
-    app.listen(PORT, () => {
-      console.log(`Server is Running on ${PORT}`.bgCyan);
-    });
+    // app.listen(PORT, () => {
+    //   console.log(`Server is Running on ${PORT}`.bgCyan);
+    // });
+    require('./agendaService');
   } catch (error) {
     console.error("Error Starting Server:", error.message.red);
     process.exit(1);
