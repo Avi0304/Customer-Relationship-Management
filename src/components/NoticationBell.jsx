@@ -108,6 +108,9 @@ const NotificationBell = () => {
   const [socket, setSocket] = useState(null);
   const { mode } = useContext(ThemeContext);
 
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  const isDark = currentTheme === 'dark';
+
   // Socket Connection
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -190,7 +193,7 @@ const NotificationBell = () => {
     }
   };
 
-  const handleClearAll = async() => {
+  const handleClearAll = async () => {
     try {
       await axios.delete("http://localhost:8080/api/notifications/clear-all");
       setNotifications([]);
@@ -229,8 +232,8 @@ const NotificationBell = () => {
         <NotificationBox>
           <Box
             className={`p-4 flex justify-between items-center border-b ${mode === "dark"
-                ? "border-gray-700 bg-gradient-to-r from-purple-900/10 to-blue-900/10"
-                : "border-gray-100 bg-gradient-to-r from-blue-50/10 to-indigo-50/10"
+              ? "border-gray-700 bg-gradient-to-r from-purple-900/10 to-blue-900/10"
+              : "border-gray-100 bg-gradient-to-r from-blue-50/10 to-indigo-50/10"
               }`}
           >
             {/* Left side: Notifications + badge */}
@@ -240,7 +243,8 @@ const NotificationBell = () => {
               </Typography>
               <Box
                 sx={{
-                  backgroundColor: '#f1f3f4',
+                  backgroundColor: isDark ? '#424242' : '#f1f3f4',
+                  color: isDark ? '#e0e0e0' : '#000',
                   ml: 1,
                   px: 1.2,
                   py: 0.2,
@@ -342,9 +346,11 @@ const NotificationBell = () => {
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center h-[200px] text-center p-4">
-                <FaRegBell  className="h-10 w-10 text-gray-300 mb-2" />
-                <p className="text-gray-500 text-sm">No new notifications</p>
-              </div>
+                  <FaRegBell className={`h-10 w-10 mb-2 ${isDark ? 'text-gray-500' : 'text-gray-300'}`} />
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    No new notifications
+                  </p>
+                </div>
               )}
             </List>
           )}
