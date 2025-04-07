@@ -175,7 +175,7 @@ function PowerfulDash() {
   });
 
   return (
-    <section className="w-full mx-auto py-12 md:py-24 lg:py-25  xl:py-15 bg-gray-50">
+    <section className="w-full mx-auto py-12 md:py-24 lg:py-25  xl:py-15  2xl:py-40 bg-gray-50">
       <div className="mx-auto flex max-w-2xl flex-col items-center justify-center gap-4 text-center">
         <h2 className="text-3xl font-bold leading-[1.1] text-black sm:text-3xl md:text-5xl">
           Powerful Dashboard

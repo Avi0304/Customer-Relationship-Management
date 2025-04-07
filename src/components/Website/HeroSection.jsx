@@ -5,16 +5,16 @@ import { LuArrowRight } from "react-icons/lu";
 
 const HeroSection = () => {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-25 xl:py-25">
+    <section className="w-full min-h-screen py-12 md:py-24 lg:py-15 xl:py-15 2xl:py-40">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
+        <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px] 2xl:grid-cols-[1fr_800px]">
           {/* Text Content */}
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
-              <h1 className="text-3xl text-black font-black tracking-tighter sm:text-5xl xl:text-6xl">
+              <h1 className="text-3xl text-black font-black tracking-tighter sm:text-5xl xl:text-6xl 2xl:text-7xl">
                 Streamline Your Business with Our Powerful CRM Solution
               </h1>
-              <p className="max-w-[600px] text-gray-600 md:text-xl">
+              <p className="max-w-[600px] text-gray-600 md:text-xl xl:text-2xl 2xl:text-3xl">
                 Manage customers, track sales, and grow your business with our
                 all-in-one CRM platform. Designed for businesses of all sizes.
               </p>
