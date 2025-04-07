@@ -1,5 +1,6 @@
 const Appointment = require('../models/Appointment');
 const nodemailer = require("nodemailer");
+const { createNotification } = require('../utils/notificationService');
 
 // Get All Appointment
 const getAllAppointment = async (req, res) => {
@@ -50,6 +51,13 @@ const addAppointment = async (req, res) => {
     });
 
     const savedAppointment = await newAppointment.save();
+
+    await createNotification({
+      title: 'New Appointment Scheduled',
+      message: `Appointment scheduled for ${savedAppointment.customer} on ${savedAppointment.date} at ${savedAppointment.time}`,
+      type: 'appointment',
+    });
+    
     res.status(201).json({
       message: "Appointment Added Successfully...",
       savedAppointment,
@@ -64,19 +72,64 @@ const addAppointment = async (req, res) => {
 
 
 // update Appointmetn
+// const updateAppointment = async (req, res) => {
+//   try {
+//     const { time } = req.body;
+
+//     // Convert 24-hour format to 12-hour format with AM/PM if time is provided
+//     const convertTo12HourFormat = (time) => {
+//       if (!time) return null; // If no time is provided, return null
+
+//       let [hours, minutes] = time.split(":");
+//       let period = "AM";
+
+//       hours = parseInt(hours, 10);
+
+//       if (hours >= 12) {
+//         period = "PM";
+//         if (hours > 12) hours -= 12;
+//       } else if (hours === 0) {
+//         hours = 12;
+//       }
+
+//       return `${hours}:${minutes} ${period}`;
+//     };
+
+//     if (time) {
+//       req.body.time = convertTo12HourFormat(time);
+//     }
+
+//     // Update appointment
+//     const updatedAppointment = await Appointment.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true, runValidators: true }
+//     );
+
+//     if (!updatedAppointment) {
+//       return res.status(404).json({ message: "Appointment not found" });
+//     }
+
+//     res.status(200).json({
+//       message: "Appointment updated successfully",
+//       appointment: updatedAppointment,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error updating appointment", error });
+//   }
+// };
+
 const updateAppointment = async (req, res) => {
   try {
-    const { time } = req.body;
+    const { time, status } = req.body;
 
     // Convert 24-hour format to 12-hour format with AM/PM if time is provided
     const convertTo12HourFormat = (time) => {
-      if (!time) return null; // If no time is provided, return null
-
+      if (!time) return null;
       let [hours, minutes] = time.split(":");
       let period = "AM";
 
       hours = parseInt(hours, 10);
-
       if (hours >= 12) {
         period = "PM";
         if (hours > 12) hours -= 12;
@@ -91,6 +144,15 @@ const updateAppointment = async (req, res) => {
       req.body.time = convertTo12HourFormat(time);
     }
 
+    // Fetch original appointment before update
+    const originalAppointment = await Appointment.findById(req.params.id);
+    if (!originalAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    const oldStatus = originalAppointment.status;
+    const oldTime = originalAppointment.time;
+
     // Update appointment
     const updatedAppointment = await Appointment.findByIdAndUpdate(
       req.params.id,
@@ -98,8 +160,22 @@ const updateAppointment = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    if (!updatedAppointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+    // Notification: Status changed
+    if (status && status !== oldStatus) {
+      await createNotification({
+        title: 'Appointment Status Updated',
+        message: `Appointment for ${updatedAppointment.customer} changed from ${oldStatus} to ${status}`,
+        type: 'appointment',
+      });
+    }
+
+    // Notification: Time changed
+    if (req.body.time && req.body.time !== oldTime) {
+      await createNotification({
+        title: 'Appointment Time Updated',
+        message: `Appointment for ${updatedAppointment.customer} moved from ${oldTime} to ${req.body.time}`,
+        type: 'appointment',
+      });
     }
 
     res.status(200).json({
@@ -107,9 +183,11 @@ const updateAppointment = async (req, res) => {
       appointment: updatedAppointment,
     });
   } catch (error) {
+    console.error("Error updating appointment:", error);
     res.status(500).json({ message: "Error updating appointment", error });
   }
 };
+
 
 
 // delete

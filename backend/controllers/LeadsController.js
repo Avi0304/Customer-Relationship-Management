@@ -1,5 +1,17 @@
 const Lead = require("../models/Leads");
 const Customer = require("../models/Customer");
+const { createNotification } = require('../utils/notificationService');
+
+// Helper function for lead status change notifications
+const maybeSendLeadStatusChangeNotification = async (leadId, previousStatus, newStatus) => {
+  if (previousStatus !== newStatus) {
+    await createNotification({
+      title: 'Lead Status Updated',
+      message: `Lead status changed from "${previousStatus}" to "${newStatus}"`,
+      type: 'status'
+    });
+  }
+};
 
 // Create a new lead and link it to a customer
 exports.createLead = async (req, res) => {
@@ -13,8 +25,7 @@ exports.createLead = async (req, res) => {
       !contactInfo.phone
     ) {
       return res.status(400).json({
-        message:
-          "Invalid contactInfo format. It should contain email and phone.",
+        message: "Invalid contactInfo format. It should contain email and phone.",
       });
     }
 
@@ -29,7 +40,14 @@ exports.createLead = async (req, res) => {
       newLead = new Lead({ name, contactInfo, status, customerId });
       await newLead.save();
 
-      // Update customer only if customerId is provided
+      // ✅ Notification
+      await createNotification({
+        title: ' New Lead Added',
+        message: `A new lead for ${newLead.name} has been added.`,
+        type: 'lead'
+      });
+
+      // ✅ Update the customer with lead info
       await Customer.findByIdAndUpdate(customerId, {
         leadstatus: status,
         leadId: newLead._id,
@@ -37,14 +55,23 @@ exports.createLead = async (req, res) => {
     } else {
       newLead = new Lead({ name, contactInfo, status });
       await newLead.save();
+
+      // ✅ Notification even when customerId is not provided
+      await createNotification({
+        title: ' New Lead Added',
+        message: `A new lead for ${newLead.name} has been added.`,
+        type: 'lead'
+      });
     }
 
+    // ✅ Final response
     res.status(201).json({ message: "Lead created successfully", newLead });
   } catch (error) {
     console.error("Error creating lead:", error);
     res.status(500).json({ message: "Error creating lead", error });
   }
 };
+
 
 // Get all leads with customer details
 exports.getAllLeads = async (req, res) => {
@@ -88,10 +115,11 @@ exports.updateLead = async (req, res) => {
 
     let lead = await Lead.findById(id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
-
+    const previousStatus = lead.status;
     // Update lead status
     lead.status = status.toLowerCase();
     await lead.save();
+    await maybeSendLeadStatusChangeNotification(lead._id, previousStatus, lead.status);
 
     let updatedCustomer = null; // Store customer details if created/updated
 

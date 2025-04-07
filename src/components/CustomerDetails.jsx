@@ -76,14 +76,19 @@ const CustomerDetails = () => {
       return;
     }
 
-    if (isNaN(formData.amount) || formData.amount.trim() === "") {
-      Swal.fire("Oops!", "Amount must be a valid number.", "error");
-      return;
+    // if (isNaN(formData.amount) || formData.amount.trim() === "") {
+    //   Swal.fire("Oops!", "Amount must be a valid number.", "error");
+    //   return;
+    // }
+
+    if (formData.amount !== undefined && formData.amount !== null) {
+      formData.amount = String(formData.amount).trim();
     }
 
     try {
       if (selectedCustomer) {
         // Update customer
+        console.log("Submitting updated formData:", formData);
         await axios.put(`http://localhost:8080/api/Customer/update/${selectedCustomer._id}`, formData);
         await fetchCustomer();
         Swal.fire({
