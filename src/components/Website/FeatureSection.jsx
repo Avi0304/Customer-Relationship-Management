@@ -17,7 +17,7 @@ const FeatureSection = () => {
   return (
     <section
       id="features"
-      className="w-full py-12 md:py-24 lg:py-32  xl:py-25 bg-gray-50"
+      className="w-full py-12 md:py-24 lg:py-32 xl:py-25  2xl:py-40 bg-gray-50"
     >
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
@@ -25,18 +25,18 @@ const FeatureSection = () => {
           <span className="inline-block bg-black text-white px-3 py-1 text-sm rounded-lg">
             Key Features
           </span>
-          <h2 className="text-3xl font-bold tracking-tight text-black md:text-4xl lg:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight text-black md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl">
             Everything You Need to Manage Your Business
           </h2>
 
-          <p className="mx-auto max-w-2xl text-gray-600 md:text-lg">
+          <p className="mx-auto max-w-2xl text-gray-600 md:text-lg xl:text-xl 2xl:text-2xl">
             Our CRM solution provides all the tools you need to manage
             customers, track sales, and grow your business.
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2">
+        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
           <img
             src={Dashborad}
@@ -46,7 +46,7 @@ const FeatureSection = () => {
 
           {/* Right Side (Features List) */}
           <div className="space-y-6">
-            {[
+            {[ 
               {
                 icon: <FiBarChart2 />,
                 title: "Comprehensive Dashboard",
@@ -66,9 +66,7 @@ const FeatureSection = () => {
               <div key={index} className="flex items-start gap-4">
                 <div className="text-black text-2xl">{feature.icon}</div>
                 <div>
-                  <h3 className="text-xl font-bold text-black">
-                    {feature.title}
-                  </h3>
+                  <h3 className="text-xl font-bold text-black">{feature.title}</h3>
                   <p className="text-gray-600">{feature.desc}</p>
                 </div>
               </div>
@@ -77,10 +75,10 @@ const FeatureSection = () => {
         </div>
 
         {/* Second Features Row */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2">
+        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Text) */}
           <div className="space-y-6">
-            {[
+            {[ 
               {
                 icon: <FiMail />,
                 title: "Marketing Tools",
@@ -100,9 +98,7 @@ const FeatureSection = () => {
               <div key={index} className="flex items-start gap-4">
                 <div className="text-black text-2xl">{feature.icon}</div>
                 <div>
-                  <h3 className="text-xl font-bold text-black">
-                    {feature.title}
-                  </h3>
+                  <h3 className="text-xl font-bold text-black">{feature.title}</h3>
                   <p className="text-gray-600">{feature.desc}</p>
                 </div>
               </div>
@@ -118,7 +114,7 @@ const FeatureSection = () => {
         </div>
 
         {/* Third Features Row */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2">
+        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
           <img
             src={Appointment}
@@ -128,7 +124,7 @@ const FeatureSection = () => {
 
           {/* Right Side (Text) */}
           <div className="space-y-6">
-            {[
+            {[ 
               {
                 icon: <FiCalendar />,
                 title: "Appointment Scheduling",
@@ -148,9 +144,7 @@ const FeatureSection = () => {
               <div key={index} className="flex items-start gap-4">
                 <div className="text-black text-2xl">{feature.icon}</div>
                 <div>
-                  <h3 className="text-xl font-bold text-black">
-                    {feature.title}
-                  </h3>
+                  <h3 className="text-xl font-bold text-black">{feature.title}</h3>
                   <p className="text-gray-600">{feature.desc}</p>
                 </div>
               </div>

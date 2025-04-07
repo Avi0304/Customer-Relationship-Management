@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { LuMapPin, LuMail, LuPhone } from "react-icons/lu";
+import { LuMapPin, LuMail, LuPhone, LuStar } from "react-icons/lu";
 import Swal from "sweetalert2";
 
 function ContactSection() {
@@ -51,7 +51,7 @@ function ContactSection() {
   };
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-30 bg-gray-50  xl:py-25">
+    <section className="w-full py-12 md:py-24 lg:py-30 bg-gray-50  xl:py-25  2xl:py-40">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center text-center space-y-4">
           <div className="space-y-2">
@@ -188,6 +188,30 @@ function ContactSection() {
                   +91 8849286008
                   <br />
                   Mon-Fri, 9 AM - 5 PM
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white shadow-md rounded-lg p-6 flex items-start gap-4">
+              {/* Customer Rating Information */}
+                <LuStar className="h-6 w-6 text-black" /> {/* Star Icon next to the title */}
+              <div>
+                <h3 className="font-medium text-lg text-black">Customer Rating</h3>
+                <div className="flex items-center gap-2">
+
+                <div className="flex">
+                  {/* You can replace this with actual star icons or images */}
+                  {[...Array(5)].map((_, index) => (
+                    <span key={index} className="text-yellow-500">
+                      &#9733; {/* Star Icon (Unicode) */}
+                    </span>
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600">(4.5/5)</span>
+              </div>
+
+                <p className="text-gray-600 text-sm mt-1">
+                  Our customers have rated us 4.5/5 based on 120 reviews.
                 </p>
               </div>
             </div>

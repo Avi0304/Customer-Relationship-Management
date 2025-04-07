@@ -14,7 +14,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../ui/card"; // Import
 
 function SolutionSection() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-25  xl:py-25">
+    <section className="w-full py-12 md:py-24 lg:py-25  xl:py-25  2xl:py-40">
       {/* Header Section */}
       <div className="mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center">
         <h2 className="text-3xl font-bold leading-[1.1] text-black sm:text-3xl md:text-5xl">
