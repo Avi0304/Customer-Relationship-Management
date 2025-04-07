@@ -116,9 +116,14 @@ exports.updateLead = async (req, res) => {
     let lead = await Lead.findById(id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
     const previousStatus = lead.status;
+
     // Update lead status
+    lead.name = name || lead.name;
+    lead.contactInfo.email = contactInfo?.email || lead.contactInfo.email;
+    lead.contactInfo.phone = contactInfo?.phone || lead.contactInfo.phone;
     lead.status = status.toLowerCase();
     await lead.save();
+    
     await maybeSendLeadStatusChangeNotification(lead._id, previousStatus, lead.status);
 
     let updatedCustomer = null; // Store customer details if created/updated
