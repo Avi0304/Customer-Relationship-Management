@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const morgan = require("morgan");
 const path = require("path");
 
-const { initializeSocket } = require('./socket');
+const { initializeSocket } = require("./socket");
 
 dotenv.config();
 const app = express();
@@ -28,8 +28,10 @@ app.use("/api/Profile", require("./routes/ProfileRoute"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/data", require("./routes/Data"));
 app.use("/api/leads", require("./routes/Leads"));
-app.use("/api/Contact",require("./routes/contactRoute"));
-app.use('/api/notifications', require("./routes/notificationRoute"));
+app.use("/api/Contact", require("./routes/contactRoute"));
+app.use("/api/notifications", require("./routes/notificationRoute"));
+app.use("/api/Contact", require("./routes/contactRoute"));
+app.use("/api/support", require("./routes/Support"));
 
 if (!process.env.PORT) {
   console.error("Missing environment variables. Check .env file.");
@@ -55,7 +57,7 @@ const startServer = async () => {
     // app.listen(PORT, () => {
     //   console.log(`Server is Running on ${PORT}`.bgCyan);
     // });
-    require('./agendaService');
+    require("./agendaService");
   } catch (error) {
     console.error("Error Starting Server:", error.message.red);
     process.exit(1);
