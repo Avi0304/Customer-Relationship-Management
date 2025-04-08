@@ -74,7 +74,7 @@ const loginController = async (req, res) => {
 
 const registerController = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, adminKey } = req.body;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -83,11 +83,21 @@ const registerController = async (req, res) => {
 
         const hashedpassword = await bcrypt.hash(password, 10);
 
+        let isAdmin = false;
+        if (adminKey) {
+            if (adminKey === process.env.ADMIN_REGISTRATION_KEY) {
+                isAdmin = true;
+            } else {
+                return res.status(401).json({ message: 'Invalid Admin Registration Key' });
+            }
+        }
+
         const newUser = new User({
             name,
             email,
             password: hashedpassword,
             verified: true,
+            isAdmin,
         })
         await newUser.save();
 
@@ -95,7 +105,7 @@ const registerController = async (req, res) => {
             expiresIn: '1h'
         });
 
-        res.status(200).json({ token, userId: newUser._id });
+        res.status(200).json({ token, userId: newUser._id, isAdmin});
 
     } catch (error) {
         console.error(error);
