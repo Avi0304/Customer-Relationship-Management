@@ -9,9 +9,9 @@ const {
   deleteSupportRequest,
 } = require("../controllers/SupportController");
 
-// Routes
 router.get("/all", getAllSupportRequests);
 router.get("/:id", getSupportRequestById);
+
 router.post(
   "/add",
   [
@@ -20,7 +20,19 @@ router.post(
   ],
   createSupportRequest
 );
-router.put("/update/:id", updateSupportRequest);
+
+router.put(
+  "/update/:id",
+  [
+    body("subject").notEmpty().withMessage("Subject is required"),
+    body("description").notEmpty().withMessage("Description is required"),
+    body("status")
+      .isIn(["Open", "In Progress", "Closed"])
+      .withMessage("Invalid status"),
+  ],
+  updateSupportRequest
+);
+
 router.delete("/delete/:id", deleteSupportRequest);
 
 module.exports = router;

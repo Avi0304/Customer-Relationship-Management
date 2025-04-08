@@ -1,19 +1,25 @@
 const Support = require("../models/Support");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
-// Get all support requests with optional pagination
+// Get all support requests with search, filter & pagination
 exports.getAllSupportRequests = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const { status, search } = req.query;
 
-    const requests = await Support.find()
+    let filter = {};
+    if (status) filter.status = status;
+    if (search) filter.subject = { $regex: search, $options: "i" };
+
+    const requests = await Support.find(filter)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
 
-    const total = await Support.countDocuments();
+    const total = await Support.countDocuments(filter);
 
     res.status(200).json({ data: requests, total });
   } catch (error) {
@@ -26,6 +32,10 @@ exports.getAllSupportRequests = async (req, res) => {
 // Get single support request by ID
 exports.getSupportRequestById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid request ID format" });
+    }
+
     const support = await Support.findById(req.params.id).lean();
     if (!support)
       return res.status(404).json({ message: "Support request not found" });
@@ -53,25 +63,29 @@ exports.createSupportRequest = async (req, res) => {
   }
 };
 
-// Update support request (status only for safety)
+// Update support request
 exports.updateSupportRequest = async (req, res) => {
-  const { id } = req.params;
-  const { status } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ errors: errors.array() });
 
-  if (!["Open", "In Progress", "Closed"].includes(status)) {
-    return res.status(400).json({ message: "Invalid status value" });
+  const { id } = req.params;
+  const { subject, description, status } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid request ID format" });
   }
 
   try {
-    const updated = await Support.findByIdAndUpdate(
-      id,
-      { status },
-      {
-        new: true,
-      }
-    );
+    const updates = { subject, description, status };
 
-    if (!updated) return res.status(404).json({ message: "Request not found" });
+    const updated = await Support.findByIdAndUpdate(id, updates, {
+      new: true,
+    });
+
+    if (!updated) {
+      return res.status(404).json({ message: "Request not found" });
+    }
 
     res.status(200).json(updated);
   } catch (error) {
@@ -82,6 +96,10 @@ exports.updateSupportRequest = async (req, res) => {
 // Delete support request
 exports.deleteSupportRequest = async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid request ID format" });
+  }
 
   try {
     const deleted = await Support.findByIdAndDelete(id);
