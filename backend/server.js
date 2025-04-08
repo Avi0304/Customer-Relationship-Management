@@ -26,7 +26,8 @@ app.use("/api/Profile", require("./routes/ProfileRoute"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/data", require("./routes/Data"));
 app.use("/api/leads", require("./routes/Leads"));
-app.use("/api/Contact",require("./routes/contactRoute"));
+app.use("/api/Contact", require("./routes/contactRoute"));
+app.use("/api/support", require("./routes/Support"));
 
 if (!process.env.PORT) {
   console.error("Missing environment variables. Check .env file.");
