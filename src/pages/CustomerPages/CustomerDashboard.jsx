@@ -1,8 +1,9 @@
 import React from "react";
-import Sidebar from "../components/SideBar";
-import TopNav from "../components/TopNav";
-import CustomerTopNav from "../components/Customer/CustomerTopNav";
-import CustomerSidebar from "../components/Customer/CustomerSidebar";
+import Sidebar from "../../components/SideBar";
+import TopNav from "../../components/TopNav";
+import CustomerTopNav from "../../components/Customer/CustomerTopNav";
+import CustomerSidebar from "../../components/Customer/CustomerSidebar";
+import CustomerDashBoard from "../../components/Customer/CustomerDashBoard";
 
 
 function CustomerDashboard() {
@@ -15,7 +16,7 @@ function CustomerDashboard() {
           <CustomerTopNav title={"Customer Dashboard"} />
 
           <main className="p-6 space-y-4">
-          <h2>Customer Dashboard</h2>
+            <CustomerDashBoard />
           </main>
         </div>
       </div>

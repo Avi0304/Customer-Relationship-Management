@@ -77,8 +77,8 @@ const CustomerSidebar = () => {
 
             <nav className="flex-1 overflow-y-auto mt-6 space-y-3 px-2">
                 <Link
-                    to="/support/tickets"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/support/tickets"
+                    to="/customer-dashboard"
+                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-dashboard"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-blue-400"
                         }`}
@@ -92,8 +92,8 @@ const CustomerSidebar = () => {
                 </Link>
 
                 <Link
-                    to="/support/livechat"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/support/livechat"
+                    to="/customer-ticket"
+                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-ticket"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-green-400"
                         }`}
@@ -107,8 +107,8 @@ const CustomerSidebar = () => {
                 </Link>
 
                 <Link
-                    to="/support/message"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/support/agents"
+                    to="/customer-message"
+                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-message"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-purple-400"
                         }`}
@@ -122,8 +122,8 @@ const CustomerSidebar = () => {
                 </Link>
 
                 <Link
-                    to="/support/settings"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/support/faq"
+                    to="/customer-settings"
+                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-settings"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-yellow-400"
                         }`}

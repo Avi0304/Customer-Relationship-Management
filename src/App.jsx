@@ -22,8 +22,10 @@ import SettingsPage from "./pages/SettingsPage";
 import Page from "./components/Website/Page";
 import { Support } from "@mui/icons-material";
 import SupportPage from "./pages/SupportPage";
-import CustomerDashboard from "./pages/CustomerDashboard";
+import CustomerDashboard from "./pages/CustomerPages/CustomerDashboard";
 import CustomerRoute from "./components/CustomerRoute";
+import TicketPAge from "./pages/CustomerPages/TicketPage";
+
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -94,6 +96,11 @@ function AppContent() {
           <Route
             path="/customer-dashboard"
             element={<CustomerRoute element={<CustomerDashboard />} />}
+          />
+
+          <Route
+            path="/customer-ticket"
+            element={<CustomerRoute element={<TicketPAge />} />}
           />
         </Routes>
       </Router>
