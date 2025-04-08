@@ -54,6 +54,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         default: "/uploads/1742536102867-img (1).jpeg"
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     verified: {
         type: Boolean
     }

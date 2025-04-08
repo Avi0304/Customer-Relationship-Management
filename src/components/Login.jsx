@@ -48,7 +48,9 @@ const Login = () => {
 
       const token = response.data.token;
       const expiresAt = response.data.expiresAt;
+      const isAdmin = response.data.isAdmin;
       localStorage.setItem("token", token);
+      localStorage.setItem("isAdmin", isAdmin);
       localStorage.setItem("expiresAt", expiresAt);
 
       if (rememberMe) {
@@ -92,9 +94,19 @@ const Login = () => {
         }, timeLeft);
       }
 
+      // setTimeout(() => {
+      //   navigate("/dashboard");
+      // }, 1500);
+
+      const isUserAdmin = localStorage.getItem("isAdmin") === "true";
       setTimeout(() => {
-        navigate("/dashboard");
+        if(isUserAdmin){
+          navigate("/dashboard");
+        }else{
+          navigate("/customer-dashboard")
+        }
       }, 1500);
+
     } catch (error) {
       console.error("Login Errors: ", error);
 
