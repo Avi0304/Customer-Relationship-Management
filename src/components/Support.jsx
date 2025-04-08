@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   Dialog,
@@ -24,109 +25,47 @@ import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
-const dummyRequests = [
-  {
-    id: 1,
-    subject: "Login Issue",
-    description: "Unable to log in",
-    status: "Open",
-    createdAt: "2025-03-28T09:15:00Z",
-  },
-  {
-    id: 2,
-    subject: "Bug Report",
-    description: "App crashes on load",
-    status: "In Progress",
-    createdAt: "2025-03-29T11:30:00Z",
-  },
-  {
-    id: 3,
-    subject: "Feature Request",
-    description: "Add dark mode",
-    status: "Closed",
-    createdAt: "2025-03-30T14:05:00Z",
-  },
-  {
-    id: 4,
-    subject: "Payment Failure",
-    description: "Transaction failed during checkout",
-    status: "Open",
-    createdAt: "2025-03-31T08:45:00Z",
-  },
-  {
-    id: 5,
-    subject: "Slow Performance",
-    description: "Dashboard takes too long to load",
-    status: "In Progress",
-    createdAt: "2025-04-01T10:20:00Z",
-  },
-  {
-    id: 6,
-    subject: "Email Not Received",
-    description: "Verification email not arriving",
-    status: "Open",
-    createdAt: "2025-04-01T17:40:00Z",
-  },
-  {
-    id: 7,
-    subject: "Data Sync Problem",
-    description: "Leads are not syncing from the CRM",
-    status: "Closed",
-    createdAt: "2025-04-02T13:10:00Z",
-  },
-  {
-    id: 8,
-    subject: "Broken Link",
-    description: "Support link on the homepage leads to 404",
-    status: "Open",
-    createdAt: "2025-04-03T15:55:00Z",
-  },
-  {
-    id: 9,
-    subject: "Mobile App Crash",
-    description: "iOS app crashes after login",
-    status: "In Progress",
-    createdAt: "2025-04-04T10:00:00Z",
-  },
-  {
-    id: 10,
-    subject: "Report Generation Error",
-    description: "Sales report PDF is not generating correctly",
-    status: "Closed",
-    createdAt: "2025-04-04T18:25:00Z",
-  },
-];
-
 const Support = () => {
-  const [requests, setRequests] = useState(dummyRequests);
-  const [filteredRequests, setFilteredRequests] = useState(dummyRequests);
+  const [requests, setRequests] = useState([]);
+  const [filteredRequests, setFilteredRequests] = useState([]);
   const [currentRequest, setCurrentRequest] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("Newest");
 
   useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  useEffect(() => {
     filterRequests();
   }, [requests, searchQuery, statusFilter, sortOrder]);
+
+  const fetchRequests = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/support/all");
+      setRequests(res.data.data);
+    } catch (error) {
+      console.error("Error fetching support requests:", error);
+      Swal.fire("Error", "Failed to fetch requests", "error");
+      setRequests([]);
+    }
+  };
 
   const filterRequests = () => {
     let updated = [...requests];
 
-    // Filter by status
     if (statusFilter !== "All") {
       updated = updated.filter((req) => req.status === statusFilter);
     }
 
-    // Search by subject
     if (searchQuery) {
       updated = updated.filter((req) =>
         req.subject.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Sort
     updated.sort((a, b) => {
       const dateA = new Date(a.createdAt);
       const dateB = new Date(b.createdAt);
@@ -135,8 +74,6 @@ const Support = () => {
 
     setFilteredRequests(updated);
   };
-
-  const showSnackbar = (message) => setSnackbar({ open: true, message });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -152,32 +89,38 @@ const Support = () => {
     setOpenDialog(false);
 
     const { isConfirmed } = await Swal.fire({
-      title: currentRequest.id ? "Confirm Edit" : "Confirm Creation",
-      text: currentRequest.id ? "Update this request?" : "Create new request?",
+      title: currentRequest._id ? "Confirm Edit" : "Confirm Creation",
+      text: currentRequest._id ? "Update this request?" : "Create new request?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes",
       cancelButtonText: "No",
     });
 
-    if (isConfirmed) {
-      if (currentRequest.id) {
-        setRequests((prev) =>
-          prev.map((req) =>
-            req.id === currentRequest.id ? { ...currentRequest } : req
-          )
+    if (!isConfirmed) return;
+
+    try {
+      if (currentRequest._id) {
+        await axios.put(
+          `http://localhost:8080/api/support/update/${currentRequest._id}`,
+          currentRequest
         );
-        await Swal.fire("Success", "Request Updated!", "success");
+        Swal.fire("Success", "Request updated successfully!", "success");
       } else {
-        const newRequest = {
-          ...currentRequest,
-          id: requests.length + 1,
-          createdAt: new Date().toISOString(),
-        };
-        setRequests([...requests, newRequest]);
-        await Swal.fire("Success", "Request Created!", "success");
+        await axios.post(
+          "http://localhost:8080/api/support/add",
+          currentRequest
+        );
+        Swal.fire("Success", "Request created successfully!", "success");
       }
 
+      setOpenDialog(false);
+      setCurrentRequest(null);
+      await fetchRequests();
+    } catch (error) {
+      console.error("Error saving request:", error);
+      Swal.fire("Success", "Failed to save request", "success");
+      setOpenDialog(false);
       setCurrentRequest(null);
     }
   };
@@ -193,8 +136,18 @@ const Support = () => {
     });
 
     if (isConfirmed) {
-      setRequests(requests.filter((req) => req.id !== id));
-      await Swal.fire("Deleted!", "Request has been removed.", "success");
+      try {
+        await axios.delete(`http://localhost:8080/api/support/delete/${id}`);
+        Swal.fire("Deleted!", "Your request has been deleted.", "success");
+        setCurrentRequest(null);
+        setOpenDialog(false);
+        fetchRequests();
+      } catch (error) {
+        console.error("Error deleting request:", error);
+        Swal.fire("Error", "Failed to delete request", "error");
+        setCurrentRequest(null);
+        setOpenDialog(false);
+      }
     }
   };
 
@@ -222,9 +175,7 @@ const Support = () => {
           alignItems="center"
           gap={1}
         >
-          <span
-            style={{ display: "flex", alignItems: "center", color: "#1976d2" }}
-          >
+          <span style={{ color: "#1976d2" }}>
             <BiSupport size={26} />
           </span>
           Support Requests
@@ -262,7 +213,6 @@ const Support = () => {
         alignItems="center"
         mb={2}
       >
-        {/* Status Filter */}
         <Box display="flex" gap={1} flexWrap="wrap">
           {["All", "Open", "In Progress", "Closed"].map((status) => (
             <Button
@@ -288,7 +238,6 @@ const Support = () => {
           ))}
         </Box>
 
-        {/* Sort Dropdown */}
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <Select
             value={sortOrder}
@@ -310,8 +259,14 @@ const Support = () => {
       </Box>
 
       <Grid container spacing={3}>
-        {filteredRequests.map((req) => (
-          <Grid item xs={12} sm={6} md={3} key={req.id}>
+        {filteredRequests.map((req, index) => (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={3}
+            key={req._id || `${req.subject}-${index}`}
+          >
             <Card
               sx={{
                 borderRadius: 3,
@@ -323,12 +278,10 @@ const Support = () => {
                 p: 2,
               }}
             >
-              {/* Subject */}
               <Typography variant="h6" fontWeight="bold" gutterBottom noWrap>
                 {req.subject}
               </Typography>
 
-              {/* Description */}
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -345,13 +298,11 @@ const Support = () => {
                 {req.description}
               </Typography>
 
-              {/* Status + Buttons Row */}
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
               >
-                {/* Status Badge */}
                 <Box
                   sx={{
                     px: 1.5,
@@ -373,7 +324,6 @@ const Support = () => {
                   {req.status}
                 </Box>
 
-                {/* Edit / Delete */}
                 <Box display="flex" gap={1}>
                   <IconButton
                     onClick={() => {
@@ -387,7 +337,7 @@ const Support = () => {
                     <FaEdit size={16} />
                   </IconButton>
                   <IconButton
-                    onClick={() => handleDelete(req.id)}
+                    onClick={() => handleDelete(req._id)}
                     color="error"
                     size="small"
                     sx={{ p: 0.5 }}
@@ -396,6 +346,7 @@ const Support = () => {
                   </IconButton>
                 </Box>
               </Box>
+
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -408,10 +359,9 @@ const Support = () => {
         ))}
       </Grid>
 
-      {/* Dialog for Adding/Editing */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>
-          {currentRequest?.id ? "Edit Request" : "New Support Request"}
+          {currentRequest?._id ? "Edit Request" : "New Support Request"}
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -448,18 +398,10 @@ const Support = () => {
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
           <Button onClick={handleSave} color="primary" variant="contained">
-            {currentRequest?.id ? "Save" : "Add"}
+            {currentRequest?._id ? "Save" : "Add"}
           </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        autoHideDuration={3000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      />
     </Box>
   );
 };
