@@ -62,10 +62,10 @@ const loginController = async (req, res) => {
             return res.status(200).json({ message: "OTP sent to your email. Please verify." });
         }
         const expiresInMs = 60 * 60 * 1000;
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         })
-        res.status(200).json({ token, userId: user._id, expiresAt: Date.now() + expiresInMs  });
+        res.status(200).json({ token, userId: user._id,  isAdmin: user.isAdmin, expiresAt: Date.now() + expiresInMs  });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal Server Error' })

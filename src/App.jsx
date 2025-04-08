@@ -15,12 +15,15 @@ import ResetPassword from "./components/ResetPassword";
 import ForgetPassword from "./components/ForgetPassword";
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
+import AdminRoute from "./components/AdminRoute";
 import MarketingPage from "./pages/MarketingPage";
 import ProfilePage from "./pages/ProfilePage"; // Fixed import issue
 import SettingsPage from "./pages/SettingsPage";
 import Page from "./components/Website/Page";
 import { Support } from "@mui/icons-material";
 import SupportPage from "./pages/SupportPage";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import CustomerRoute from "./components/CustomerRoute";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -48,7 +51,7 @@ function AppContent() {
           {/* Private Routes */}
           <Route
             path="/dashboard"
-            element={<PrivateRoute element={<DashBoard />} />}
+            element={<AdminRoute element={<DashBoard />} />}
           />
           <Route
             path="/profile"
@@ -86,6 +89,11 @@ function AppContent() {
           <Route
             path="/support"
             element={<PrivateRoute element={<SupportPage />} />}
+          />
+
+          <Route
+            path="/customer-dashboard"
+            element={<CustomerRoute element={<CustomerDashboard />} />}
           />
         </Routes>
       </Router>
