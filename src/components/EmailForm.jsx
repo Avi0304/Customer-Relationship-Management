@@ -79,7 +79,7 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
         const response = await fetch(
           formData.id
             ? `http://localhost:8080/api/campaigns/${formData.id}`
-            : "http://localhost:8080/api/campaigns",
+            : "http://localhost:8080/api/campaign/add",
           {
             method: formData.id ? "PUT" : "POST",
             headers: {
