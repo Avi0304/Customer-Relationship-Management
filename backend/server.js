@@ -32,7 +32,6 @@ app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/support", require("./routes/Support"));
-app.use('/api/campaigns', require("./routes/Campaign"));
 
 if (!process.env.PORT) {
   console.error("Missing environment variables. Check .env file.");
