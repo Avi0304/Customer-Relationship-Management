@@ -1,6 +1,27 @@
 const Support = require("../models/Support");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
+const { createNotification } = require('../utils/notificationService')
+
+const notifySupportAdded = async (support) => {
+  await createNotification({
+    title: 'New Support Added',
+    message: `New Support added: ${support.customer} - $${support.amount}`,
+    type: 'support',
+    userId: support.userId,
+  });
+};
+
+// Update status change notification
+const notifySupportStatusUpdated = async (support, previousStatus, newStatus) => {
+  await createNotification({
+    title: 'Support Status Updated',
+    message: `Support status updated from ${previousStatus} to ${newStatus}`,
+    type: 'support',
+    userId: support.userId,
+  });
+};
+
 
 // Get all support requests with search, filter & pagination
 exports.getAllSupportRequests = async (req, res) => {
@@ -52,16 +73,26 @@ exports.createSupportRequest = async (req, res) => {
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
-  const { subject, description, status } = req.body;
+  const { subject, description, status, userId } = req.body;
 
   try {
-    const newRequest = new Support({ subject, description, status });
+    const newRequest = new Support({ subject, description, status, userId });
     await newRequest.save();
+
+    // 🔔 Notify about new support request
+    await createNotification({
+      title: 'New Support Request',
+      message: `A new support request was created: ${subject}`,
+      type: 'support',
+      userId,
+    });
+
     res.status(201).json(newRequest);
   } catch (error) {
     res.status(500).json({ message: "Failed to create request", error });
   }
 };
+
 
 // Update support request
 exports.updateSupportRequest = async (req, res) => {
@@ -77,14 +108,22 @@ exports.updateSupportRequest = async (req, res) => {
   }
 
   try {
+    const existing = await Support.findById(id);
+    if (!existing) return res.status(404).json({ message: "Request not found" });
+
+    const previousStatus = existing.status;
+
     const updates = { subject, description, status };
+    const updated = await Support.findByIdAndUpdate(id, updates, { new: true });
 
-    const updated = await Support.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
-
-    if (!updated) {
-      return res.status(404).json({ message: "Request not found" });
+    // 🔔 Notify if status changed
+    if (previousStatus !== status) {
+      await createNotification({
+        title: 'Support Status Updated',
+        message: `Status changed from ${previousStatus} to ${status}`,
+        type: 'support',
+        userId: existing.userId,
+      });
     }
 
     res.status(200).json(updated);
@@ -92,6 +131,7 @@ exports.updateSupportRequest = async (req, res) => {
     res.status(500).json({ message: "Failed to update request", error });
   }
 };
+
 
 // Delete support request
 exports.deleteSupportRequest = async (req, res) => {

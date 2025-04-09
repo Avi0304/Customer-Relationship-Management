@@ -22,8 +22,9 @@ import {
   FiDollarSign,
   FiCheckCircle,
   FiClock,
-  FiMapPin
+  FiMapPin,
 } from "react-icons/fi";
+import { BiSupport } from "react-icons/bi";
 import { FaRegBell } from "react-icons/fa";
 import { ThemeContext } from "../context/ThemeContext";
 import axios from "axios";
@@ -86,7 +87,7 @@ const getNotificationIcon = (type = "") => {
     lead: <FiUsers />,
     meeting: <FiCalendar />,
     status: <FiBarChart2 />,
-    support: <FiTool />,
+    support: <BiSupport />,
     sale: <FiDollarSign />,
     task: <FiCheckCircle />,
     appointment: <FiClock />,
