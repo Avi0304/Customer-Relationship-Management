@@ -88,6 +88,11 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
+const client2 = twilio(
+  process.env.TWILIO_ACCOUNT_SID2,
+  process.env.TWILIO_AUTH_TOKEN2
+);
+
 const formatNumber = (number) =>
   number.startsWith("+") ? number : `+91${number}`;
 
@@ -172,7 +177,7 @@ const sendWhatsapp = async (message) => {
     const from = `${process.env.TWILIO_WHATSAPP_NUMBER}`;
 
     for (const to of formattedRecipients) {
-      await client.messages.create({
+      await client2.messages.create({
         body: message,
         from,
         to,
