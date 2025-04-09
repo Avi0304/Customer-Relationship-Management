@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const twilio = require("twilio");
 require("dotenv").config();
-const formatEmailFromPost = require("../utils/formatEmailFromPost")
+const formatEmailFromPost = require("../utils/formatEmailFromPost");
 
 // 📧 Email Transporter
 const transporter = nodemailer.createTransport({
@@ -118,13 +118,13 @@ const sendSms = async (message, recipients) => {
 
       // Format message neatly
       let formatted = msg
-        .replace(/\r?\n|\r/g, '\n') // Normalize line breaks
-        .replace(/\n{2,}/g, '\n')   // Collapse multiple newlines
+        .replace(/\r?\n|\r/g, "\n") // Normalize line breaks
+        .replace(/\n{2,}/g, "\n") // Collapse multiple newlines
         .trim();
 
       // Ensure it's within the character limit
       if (formatted.length > maxLength) {
-        formatted = formatted.slice(0, maxLength - 3) + '...';
+        formatted = formatted.slice(0, maxLength - 3) + "...";
       }
 
       return formatted;
@@ -149,9 +149,32 @@ const sendSms = async (message, recipients) => {
   }
 };
 
+const sendWhatsapp = async (message, recipients) => {
+  try {
+    const formatWhatsappNumber = (number) =>
+      number.startsWith("+") ? `whatsapp:${number}` : `whatsapp:+91${number}`;
+
+    const formattedRecipients = recipients.map(formatWhatsappNumber);
+
+    for (const to of formattedRecipients) {
+      await client.messages.create({
+        body: message,
+        from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER, // e.g., whatsapp:+14155238886
+        to,
+      });
+      console.log("✅ WhatsApp sent to:", to);
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Failed to send WhatsApp:", err.message);
+    throw err;
+  }
+};
 
 module.exports = {
   sendEmail,
   sendEmailWithPost,
   sendSms,
+  sendWhatsapp,
 };

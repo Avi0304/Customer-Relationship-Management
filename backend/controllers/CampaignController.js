@@ -5,6 +5,8 @@ const {
   sendSms,
 } = require("../services/messaging");
 const formatEmailFromPost = require("../utils/formatEmailFromPost");
+const User = require("../models/User");
+const { sendWhatsapp } = require("../services/messaging");
 
 // Create a new email campaign
 // const createCampaign = async (req, res) => {
@@ -176,10 +178,43 @@ const deleteCampaign = async (req, res) => {
   }
 };
 
+const sendWhatsappCampaign = async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ message: "Message content is required." });
+    }
+
+    // 📞 Get users with phone numbers
+    const users = await User.find({}, "phone");
+    const phoneNumbers = users.map((user) => user.phone).filter(Boolean);
+
+    if (phoneNumbers.length === 0) {
+      return res.status(400).json({ message: "No phone numbers found." });
+    }
+
+    // 📲 Send WhatsApp messages
+    await sendWhatsapp(message, phoneNumbers);
+
+    res
+      .status(200)
+      .json({ message: "✅ WhatsApp campaign sent successfully!" });
+  } catch (error) {
+    console.error("❌ Error sending WhatsApp campaign:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  sendWhatsappCampaign,
+};
+
 module.exports = {
   createCampaign,
   getCampaigns,
   getCampaignById,
   updateCampaign,
   deleteCampaign,
+  sendWhatsappCampaign,
 };
