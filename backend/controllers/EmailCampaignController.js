@@ -1,6 +1,11 @@
 const EmailCampaign = require("../models/EmailCampaign");
 const User = require("../models/Customer");
-const sendEmailWithPost = require("../services/messaging");
+// const sendEmailWithPost = require("../services/messaging");
+const {
+  sendEmail,
+  sendEmailWithPost,
+  sendSms,
+} = require("../services/messaging.js");
 
 const createEmailCampaign = async (req, res) => {
   try {
