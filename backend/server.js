@@ -32,6 +32,7 @@ app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/support", require("./routes/Support"));
+app.use("/api/campaign", require("./routes/Campaign"));
 app.use("/api/email-campaigns", require("./routes/emailCampaignRoutes"));
 
 if (!process.env.PORT) {
