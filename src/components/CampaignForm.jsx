@@ -8,6 +8,10 @@ import { FaEnvelope, FaSms, FaPhone } from "react-icons/fa";
 const CampaignForm = ({ campaignType = "email", handleChannelChange, togglePanel }) => {
   const [audience, setAudience] = useState("");
   const [sendToSelected, setSendToSelected] = useState(false);
+  const [campaignName, setCampaignName] = useState("");
+  const [sender, setSender] = useState("");
+  const [message, setMessage] = useState("");
+
 
   // Map campaign types to corresponding labels and icons
   const campaignDetails = {
@@ -17,6 +21,15 @@ const CampaignForm = ({ campaignType = "email", handleChannelChange, togglePanel
   };
 
   const { title, placeholder, icon } = campaignDetails[campaignType] || campaignDetails.email;
+
+  const handleSubmit = async() => {
+    try {
+      
+    } catch (error) {
+      console.error("❌ Failed to send campaign:", error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || "Something went wrong."}`);
+    }
+  }
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-50">
