@@ -48,7 +48,7 @@ const EmailPost = ({ togglePanel }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/campaigns/",
+        "http://localhost:8080/api/campaign/add",
         promotedPostData,
         {
           headers: {

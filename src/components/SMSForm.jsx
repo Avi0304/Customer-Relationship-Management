@@ -51,7 +51,7 @@ const SMSForm = ({ togglePanel }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/campaigns/",
+        "http://localhost:8080/api/campaigns/add",
         newCampaign,
         {
           headers: {

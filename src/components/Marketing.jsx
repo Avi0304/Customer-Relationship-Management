@@ -27,7 +27,7 @@ const Marketing = () => {
     const fetchCampaigns = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:8080/api/campaigns/");
+        const res = await axios.get("http://localhost:8080/api/campaign/all");
         const campaigns = res.data || [];
 
 
@@ -91,7 +91,7 @@ const Marketing = () => {
 
   const handleDeleteCampaign = async (campaignId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/campaigns/${campaignId}`);
+      await axios.delete(`http://localhost:8080/api/campaign/delete/${campaignId}`);
       setTableData(tableData.filter((campaign) => campaign._id !== campaignId)); // Remove from table without re-fetching
     } catch (err) {
       console.error("Error deleting campaign:", err);
@@ -111,7 +111,7 @@ const Marketing = () => {
       const updatedData = {
         ...editingCampaign, // retain other fields
       };
-      const res = await axios.put(`http://localhost:8080/api/campaigns/${editingCampaign._id}`, updatedData);
+      const res = await axios.put(`http://localhost:8080/api/campaign/update/${editingCampaign._id}`, updatedData);
       setTableData(tableData.map((campaign) => (campaign._id === editingCampaign._id ? res.data : campaign))); // Update in state
       setEditModalOpen(false); // Close modal after update
     } catch (err) {
