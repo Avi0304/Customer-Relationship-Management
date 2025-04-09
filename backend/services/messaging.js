@@ -2,6 +2,7 @@ const nodemailer = require("nodemailer");
 const twilio = require("twilio");
 require("dotenv").config();
 const formatEmailFromPost = require("../utils/formatEmailFromPost");
+const User = require("../models/User");
 
 // 📧 Email Transporter
 const transporter = nodemailer.createTransport({
@@ -149,17 +150,31 @@ const sendSms = async (message, recipients) => {
   }
 };
 
-const sendWhatsapp = async (message, recipients) => {
+const sendWhatsapp = async (message) => {
   try {
+    // 1. Get all users with phone numbers
+    const users = await User.find({ phone: { $exists: true, $ne: "" } });
+
+    if (users.length === 0) {
+      console.log("⚠️ No users with phone numbers found.");
+      return { success: false, message: "No recipients found." };
+    }
+
+    // 2. Format numbers
     const formatWhatsappNumber = (number) =>
       number.startsWith("+") ? `whatsapp:${number}` : `whatsapp:+91${number}`;
 
-    const formattedRecipients = recipients.map(formatWhatsappNumber);
+    const formattedRecipients = users.map((user) =>
+      formatWhatsappNumber(user.phone)
+    );
+
+    // 3. Send messages
+    const from = `${process.env.TWILIO_WHATSAPP_NUMBER}`;
 
     for (const to of formattedRecipients) {
       await client.messages.create({
         body: message,
-        from: "whatsapp:" + process.env.TWILIO_WHATSAPP_NUMBER, // e.g., whatsapp:+14155238886
+        from,
         to,
       });
       console.log("✅ WhatsApp sent to:", to);
