@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 const path = require("path");
+require("colors"); // <== Add this for colored logs
 
 const { initializeSocket } = require("./socket");
 
@@ -15,7 +16,6 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
-// app.use("/uploads", express.static("uploads"));
 
 // Routes
 app.use("/api/user", require("./routes/Auth"));
@@ -30,20 +30,19 @@ app.use("/api/data", require("./routes/Data"));
 app.use("/api/leads", require("./routes/Leads"));
 app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/notifications", require("./routes/notificationRoute"));
-app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/support", require("./routes/Support"));
 app.use("/api/campaign", require("./routes/Campaign"));
 app.use("/api/email-campaigns", require("./routes/emailCampaignRoutes"));
 
 if (!process.env.PORT) {
-  console.error("Missing environment variables. Check .env file.");
+  console.error("❌ Missing environment variables. Check .env file.".red.bold);
   process.exit(1);
 }
 
-// const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
-const server = app.listen(process.env.PORT || 8080, () => {
-  console.log(`Server running on port ${process.env.PORT || 8080}`);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server is Running on Port ${PORT}`.bgCyan.white.bold);
 });
 
 // Initialize Socket.IO
@@ -51,17 +50,15 @@ initializeSocket(server);
 
 const startServer = async () => {
   try {
-    console.log("Connecting to MongoDB...");
+    console.log("🔁 Connecting to MongoDB...".yellow);
 
     await connectDB();
-    console.log("Database Connected Successfully".bgMagenta);
+    console.log("✅ Database Connected Successfully".bgMagenta.white.bold);
 
-    // app.listen(PORT, () => {
-    //   console.log(`Server is Running on ${PORT}`.bgCyan);
-    // });
+    // Load Agenda jobs
     require("./agendaService");
   } catch (error) {
-    console.error("Error Starting Server:", error.message.red);
+    console.error("❌ Error Starting Server:".red, error.message.red.bold);
     process.exit(1);
   }
 };
