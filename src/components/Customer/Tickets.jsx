@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
     Box,
     Button,
@@ -25,8 +25,7 @@ import { LuPlus } from "react-icons/lu";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-
-
+import { UserContext } from "../../context/UserContext";
 
 
 const Badge = ({ label, type }) => {
@@ -61,12 +60,13 @@ const Tickets = () => {
     const [category, setCategory] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [currentRequest, setCurrentRequest] = useState(null);
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
         fetchTicket();
-    },[])
+    }, [])
 
-    const fetchTicket = async() => {
+    const fetchTicket = async () => {
         try {
             const response = await axios.get("http://localhost:8080/api/support/all");
             setTickets(response.data.data)
@@ -88,19 +88,70 @@ const Tickets = () => {
         return matchesSearch && matchesStatus && matchesPriority;
     });
 
-      const handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setCurrentRequest((prev) => ({ ...prev, [name]: value }));
-      };
-    
-      const handleSave = async () => {
+    };
+
+    // const handleSave = async () => {
+    //     if (!currentRequest.subject || !currentRequest.description) {
+    //         await Swal.fire("Error", "All fields are required!", "error");
+    //         return;
+    //     }
+
+    //     setOpenDialog(false);
+
+    //     const { isConfirmed } = await Swal.fire({
+    //         title: currentRequest._id ? "Confirm Edit" : "Confirm Creation",
+    //         text: currentRequest._id ? "Update this request?" : "Create new request?",
+    //         icon: "question",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Yes",
+    //         cancelButtonText: "No",
+    //     });
+
+    //     if (!isConfirmed) return;
+
+    //     try {
+    //         if (currentRequest._id) {
+    //             await axios.put(
+    //                 `http://localhost:8080/api/support/update/${currentRequest._id}`,
+    //                 currentRequest
+    //             );
+    //             Swal.fire("Success", "Request updated successfully!", "success");
+    //         } else {
+    //             await axios.post(
+    //                 "http://localhost:8080/api/support/add",
+    //                 currentRequest
+    //             );
+    //             Swal.fire("Success", "Request created successfully!", "success");
+    //         }
+
+    //         setOpenDialog(false);
+    //         setCurrentRequest(null);
+    //         await fetchTicket();
+    //     } catch (error) {
+    //         console.error("Error saving request:", error);
+    //         Swal.fire("Success", "Failed to save request", "success");
+    //         setOpenDialog(false);
+    //         setCurrentRequest(null);
+    //     }
+    // };
+
+    const handleSave = async () => {
         if (!currentRequest.subject || !currentRequest.description) {
           await Swal.fire("Error", "All fields are required!", "error");
           return;
         }
-    
+      
+        // Include userId from context
+        const requestData = {
+          ...currentRequest,
+          userId: user._id,
+        };
+      
         setOpenDialog(false);
-    
+      
         const { isConfirmed } = await Swal.fire({
           title: currentRequest._id ? "Confirm Edit" : "Confirm Creation",
           text: currentRequest._id ? "Update this request?" : "Create new request?",
@@ -109,35 +160,35 @@ const Tickets = () => {
           confirmButtonText: "Yes",
           cancelButtonText: "No",
         });
-    
+      
         if (!isConfirmed) return;
-    
+      
         try {
           if (currentRequest._id) {
             await axios.put(
               `http://localhost:8080/api/support/update/${currentRequest._id}`,
-              currentRequest
+              requestData
             );
             Swal.fire("Success", "Request updated successfully!", "success");
           } else {
             await axios.post(
               "http://localhost:8080/api/support/add",
-              currentRequest
+              requestData
             );
             Swal.fire("Success", "Request created successfully!", "success");
           }
-    
+      
           setOpenDialog(false);
           setCurrentRequest(null);
           await fetchTicket();
         } catch (error) {
           console.error("Error saving request:", error);
-          Swal.fire("Success", "Failed to save request", "success");
+          Swal.fire("Error", "Failed to save request", "error");
           setOpenDialog(false);
           setCurrentRequest(null);
         }
       };
-
+      
     return (
         <div className="container mx-auto py-6 space-y-8">
             <div className="flex justify-between items-end flex-wrap gap-y-3 mb-6">
@@ -210,12 +261,12 @@ const Tickets = () => {
                     sx={{ minWidth: 150 }}
                     onClick={() => {
                         setCurrentRequest({
-                          subject: "",
-                          description: "",
-                          status: "Open",
+                            subject: "",
+                            description: "",
+                            status: "Open",
                         });
                         setOpenDialog(true);
-                      }}
+                    }}
                 >
                     New Ticket
                 </Button>
@@ -242,7 +293,7 @@ const Tickets = () => {
                     <TableBody>
                         {filteredTickets.map((ticket) => (
                             <TableRow key={ticket._id} hover>
-                              <TableCell align="center">TICKET-{ticket._id.slice(-4).toUpperCase()}</TableCell>
+                                <TableCell align="center">TICKET-{ticket._id.slice(-4).toUpperCase()}</TableCell>
                                 <TableCell align="center">
                                     <Link
                                         to={`/tickets/${ticket.id}`}

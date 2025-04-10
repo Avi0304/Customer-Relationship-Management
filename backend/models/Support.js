@@ -12,7 +12,7 @@ const SupportSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Open", "In Progress", "Closed"],
+      enum: ["Open", "In Progress", "Closed","Withdrawn"],
       default: "Open",
     },
     priority: {
@@ -20,6 +20,8 @@ const SupportSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       default: "Low",
     },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    userName: { type: String }, 
   },
   { timestamps: true } // Adds createdAt & updatedAt
 );
