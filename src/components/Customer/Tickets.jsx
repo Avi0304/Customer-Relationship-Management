@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     TextField,
     MenuItem,
     Select,
@@ -19,66 +23,23 @@ import {
 import { Search } from "@mui/icons-material";
 import { LuPlus } from "react-icons/lu";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
 
-const tickets = [
-    {
-        id: "TICKET-1001",
-        title: "Unable to deploy my Next.js application",
-        category: "Deployment",
-        priority: "high",
-        status: "open",
-        created: "2025-04-05T10:30:00Z",
-        updated: "2025-04-05T14:45:00Z",
-    },
-    {
-        id: "TICKET-1002",
-        title: "Billing issue with my Pro subscription",
-        category: "Billing",
-        priority: "medium",
-        status: "in-progress",
-        created: "2025-04-03T08:15:00Z",
-        updated: "2025-04-07T09:20:00Z",
-    },
-    {
-        id: "TICKET-1003",
-        title: "Need help with environment variables",
-        category: "Configuration",
-        priority: "low",
-        status: "closed",
-        created: "2025-04-01T16:45:00Z",
-        updated: "2025-04-02T11:30:00Z",
-    },
-    {
-        id: "TICKET-1004",
-        title: "Website performance issues after latest deployment",
-        category: "Performance",
-        priority: "high",
-        status: "open",
-        created: "2025-04-06T09:10:00Z",
-        updated: "2025-04-06T11:25:00Z",
-    },
-    {
-        id: "TICKET-1005",
-        title: "Need to update payment method",
-        category: "Billing",
-        priority: "medium",
-        status: "closed",
-        created: "2025-03-28T14:20:00Z",
-        updated: "2025-03-29T10:15:00Z",
-    },
-];
+
+
 
 const Badge = ({ label, type }) => {
     const colorMap = {
         priority: {
-            low: "bg-green-500 text-white",
-            medium: "bg-yellow-500 text-white",
-            high: "bg-red-500 text-white",
+            Low: "bg-green-500 text-white",
+            Medium: "bg-yellow-500 text-white",
+            High: "bg-red-500 text-white",
         },
         status: {
-            open: "bg-blue-500 text-white",
-            "in-progress": "bg-purple-500 text-white",
-            closed: "bg-gray-500 text-white",
+            Open: "bg-blue-500 text-white",
+            "In Progress": "bg-purple-500 text-white",
+            Closed: "bg-gray-500 text-white",
         },
     };
 
@@ -92,22 +53,90 @@ const Badge = ({ label, type }) => {
 };
 
 const Tickets = () => {
+
+    const [tickets, setTickets] = useState([]);
     const [search, setSearch] = useState("");
-    const [status, setStatus] =useState("");
+    const [status, setStatus] = useState("");
     const [priority, setPriority] = useState("");
     const [category, setCategory] = useState("");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [currentRequest, setCurrentRequest] = useState(null);
+
+    useEffect(() => {
+        fetchTicket();
+    },[])
+
+    const fetchTicket = async() => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/support/all");
+            setTickets(response.data.data)
+        } catch (error) {
+            console.error("Error in Fetching Tickets: ", error);
+        }
+    }
+
 
     const filteredTickets = tickets.filter((ticket) => {
         const matchesSearch =
-            ticket.title.toLowerCase().includes(search.toLowerCase()) ||
-            ticket.id.toLowerCase().includes(search.toLowerCase());
+            ticket.subject.toLowerCase().includes(search.toLowerCase()) ||
+            ticket._id.toLowerCase().includes(search.toLowerCase());
 
         const matchesStatus = status ? ticket.status === status : true;
         const matchesPriority = priority ? ticket.priority === priority : true;
-        const matchesCategory = category ? ticket.category === category : true;
+        // const matchesCategory = category ? ticket.category === category : true;
 
-        return matchesSearch && matchesStatus && matchesPriority && matchesCategory;
+        return matchesSearch && matchesStatus && matchesPriority;
     });
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentRequest((prev) => ({ ...prev, [name]: value }));
+      };
+    
+      const handleSave = async () => {
+        if (!currentRequest.subject || !currentRequest.description) {
+          await Swal.fire("Error", "All fields are required!", "error");
+          return;
+        }
+    
+        setOpenDialog(false);
+    
+        const { isConfirmed } = await Swal.fire({
+          title: currentRequest._id ? "Confirm Edit" : "Confirm Creation",
+          text: currentRequest._id ? "Update this request?" : "Create new request?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+        });
+    
+        if (!isConfirmed) return;
+    
+        try {
+          if (currentRequest._id) {
+            await axios.put(
+              `http://localhost:8080/api/support/update/${currentRequest._id}`,
+              currentRequest
+            );
+            Swal.fire("Success", "Request updated successfully!", "success");
+          } else {
+            await axios.post(
+              "http://localhost:8080/api/support/add",
+              currentRequest
+            );
+            Swal.fire("Success", "Request created successfully!", "success");
+          }
+    
+          setOpenDialog(false);
+          setCurrentRequest(null);
+          await fetchTicket();
+        } catch (error) {
+          console.error("Error saving request:", error);
+          Swal.fire("Success", "Failed to save request", "success");
+          setOpenDialog(false);
+          setCurrentRequest(null);
+        }
+      };
 
     return (
         <div className="container mx-auto py-6 space-y-8">
@@ -137,9 +166,9 @@ const Tickets = () => {
                             onChange={(e) => setStatus(e.target.value)}
                         >
                             <MenuItem value="">All</MenuItem>
-                            <MenuItem value="open">Open</MenuItem>
-                            <MenuItem value="in-progress">In Progress</MenuItem>
-                            <MenuItem value="closed">Closed</MenuItem>
+                            <MenuItem value="Open">Open</MenuItem>
+                            <MenuItem value="In Progress">In Progress</MenuItem>
+                            <MenuItem value="Closed">Closed</MenuItem>
                         </Select>
                     </FormControl>
 
@@ -151,13 +180,13 @@ const Tickets = () => {
                             onChange={(e) => setPriority(e.target.value)}
                         >
                             <MenuItem value="">All</MenuItem>
-                            <MenuItem value="low">Low</MenuItem>
-                            <MenuItem value="medium">Medium</MenuItem>
-                            <MenuItem value="high">High</MenuItem>
+                            <MenuItem value="Low">Low</MenuItem>
+                            <MenuItem value="Medium">Medium</MenuItem>
+                            <MenuItem value="High">High</MenuItem>
                         </Select>
                     </FormControl>
 
-                    <FormControl size="small" sx={{ minWidth: 160 }}>
+                    {/* <FormControl size="small" sx={{ minWidth: 160 }}>
                         <InputLabel>Category</InputLabel>
                         <Select
                             label="Category"
@@ -170,16 +199,23 @@ const Tickets = () => {
                             <MenuItem value="Configuration">Configuration</MenuItem>
                             <MenuItem value="Performance">Performance</MenuItem>
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
                 </div>
 
                 <Button
                     component={Link}
-                    to="/tickets/new"
                     variant="contained"
                     color="primary"
                     startIcon={<LuPlus />}
                     sx={{ minWidth: 150 }}
+                    onClick={() => {
+                        setCurrentRequest({
+                          subject: "",
+                          description: "",
+                          status: "Open",
+                        });
+                        setOpenDialog(true);
+                      }}
                 >
                     New Ticket
                 </Button>
@@ -196,7 +232,7 @@ const Tickets = () => {
                         >
                             <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Ticket ID</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Title</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Category</TableCell>
+                            {/* <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Category</TableCell> */}
                             <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Priority</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Status</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "1rem" }}>Created</TableCell>
@@ -205,17 +241,17 @@ const Tickets = () => {
                     </TableHead>
                     <TableBody>
                         {filteredTickets.map((ticket) => (
-                            <TableRow key={ticket.id} hover>
-                                <TableCell align="center">{ticket.id}</TableCell>
+                            <TableRow key={ticket._id} hover>
+                              <TableCell align="center">TICKET-{ticket._id.slice(-4).toUpperCase()}</TableCell>
                                 <TableCell align="center">
                                     <Link
                                         to={`/tickets/${ticket.id}`}
                                         style={{ color: "#1976d2", textDecoration: "none" }}
                                     >
-                                        {ticket.title}
+                                        {ticket.subject}
                                     </Link>
                                 </TableCell>
-                                <TableCell align="center">{ticket.category}</TableCell>
+                                {/* <TableCell align="center">{ticket.category}</TableCell> */}
                                 <TableCell align="center">
                                     <Badge label={ticket.priority} type="priority" />
                                 </TableCell>
@@ -223,16 +259,75 @@ const Tickets = () => {
                                     <Badge label={ticket.status} type="status" />
                                 </TableCell>
                                 <TableCell align="center">
-                                    {new Date(ticket.created).toLocaleDateString()}
+                                    {new Date(ticket.createdAt).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell align="center">
-                                    {new Date(ticket.updated).toLocaleDateString()}
+                                    {new Date(ticket.updatedAt).toLocaleDateString()}
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                <DialogTitle>
+                    {currentRequest?._id ? "Edit Request" : "New Support Request"}
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Subject"
+                        name="subject"
+                        value={currentRequest?.subject || ""}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="dense"
+                    />
+                    <TextField
+                        label="Description"
+                        name="description"
+                        value={currentRequest?.description || ""}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="dense"
+                        multiline
+                    />
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                            label="Status"
+                            name="status"
+                            value={currentRequest?.status || "Open"}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="Open">Open</MenuItem>
+                            <MenuItem value="In Progress">In Progress</MenuItem>
+                            <MenuItem value="Closed">Closed</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <FormControl fullWidth margin="dense">
+                        <InputLabel>Priority</InputLabel>
+                        <Select
+                            label="Priority"
+                            name="priority"
+                            value={currentRequest?.priority || "Low"}
+                            onChange={handleChange}
+                        >
+                            <MenuItem value="Low">Low</MenuItem>
+                            <MenuItem value="Medium">Medium</MenuItem>
+                            <MenuItem value="High">High</MenuItem>
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button onClick={handleSave} color="primary" variant="contained">
+                        {currentRequest?._id ? "Save" : "Add"}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </div>
     );
 };

@@ -15,6 +15,11 @@ const SupportSchema = new mongoose.Schema(
       enum: ["Open", "In Progress", "Closed"],
       default: "Open",
     },
+    priority: {
+      type: String,
+      enum: ["Low", "Medium", "High"],
+      default: "Low",
+    },
   },
   { timestamps: true } // Adds createdAt & updatedAt
 );
