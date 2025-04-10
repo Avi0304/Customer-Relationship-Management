@@ -7,6 +7,8 @@ const {
   createSupportRequest,
   updateSupportRequest,
   deleteSupportRequest,
+  updateSupportStatus,
+  withdrawSupportRequest,
 } = require("../controllers/SupportController");
 
 router.get("/all", getAllSupportRequests);
@@ -20,6 +22,10 @@ router.post(
   ],
   createSupportRequest
 );
+
+router.put("/:id/status", updateSupportStatus);
+router.put("/:id/Withdrawstatus", withdrawSupportRequest);
+
 
 router.put(
   "/update/:id",

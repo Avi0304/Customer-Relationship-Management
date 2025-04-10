@@ -2,6 +2,7 @@ const Support = require("../models/Support");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const { createNotification } = require('../utils/notificationService')
+const User = require("../models/User");
 
 const notifySupportAdded = async (support) => {
   await createNotification({
@@ -76,13 +77,23 @@ exports.createSupportRequest = async (req, res) => {
   const { subject, description, status, userId, priority } = req.body;
 
   try {
-    const newRequest = new Support({ subject, description, status, userId });
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const newRequest = new Support({
+      subject,
+      description,
+      status,
+      userId,
+      userName: user.name,
+      priority,
+    });
+
     await newRequest.save();
 
-    // 🔔 Notify about new support request
     await createNotification({
       title: 'New Support Request',
-      message: `A new support request was created: ${subject}`,
+      message: `${user.name} created a new support request: ${subject}`,
       type: 'support',
       userId,
     });
@@ -92,6 +103,7 @@ exports.createSupportRequest = async (req, res) => {
     res.status(500).json({ message: "Failed to create request", error });
   }
 };
+
 
 
 // Update support request
@@ -143,6 +155,48 @@ exports.updateSupportRequest = async (req, res) => {
 };
 
 
+exports.updateSupportStatus = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ errors: errors.array() });
+
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid request ID format" });
+  }
+
+  try {
+    const existing = await Support.findById(id);
+    if (!existing) return res.status(404).json({ message: "Request not found" });
+
+    const previousStatus = existing.status;
+
+    // Only update if changed
+    if (previousStatus === status) {
+      return res.status(200).json({ message: "Status already set", support: existing });
+    }
+
+    existing.status = status;
+    await existing.save();
+
+    // 🔔 Notify status change
+    await createNotification({
+      title: "Support Status Updated",
+      message: `Status changed from ${previousStatus} to ${status}`,
+      type: "support",
+      userId: existing.userId,
+    });
+
+    res.status(200).json({ message: "Status updated", support: existing });
+  } catch (error) {
+    console.error("Status update error:", error);
+    res.status(500).json({ message: "Failed to update status", error });
+  }
+};
+
+
 // Delete support request
 exports.deleteSupportRequest = async (req, res) => {
   const { id } = req.params;
@@ -160,3 +214,26 @@ exports.deleteSupportRequest = async (req, res) => {
     res.status(500).json({ message: "Failed to delete request", error });
   }
 };
+
+exports.withdrawSupportRequest = async(req, res) => {
+  try {
+    const { id } = req.params;
+
+    const supportRequest = await Support.findById(id);
+
+    if (!supportRequest) {
+      return res.status(404).json({ message: "supportRequest not found" });
+    }
+
+    if (supportRequest.status === "Withdrawn") {
+      return res.status(400).json({ message: "Ticket already withdrawn" });
+    }
+
+    supportRequest.status = "Withdrawn";
+    await supportRequest.save();
+
+    res.json({ message: "Ticket withdrawn successfully", support: supportRequest });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to withdraw request", error });
+  }
+}

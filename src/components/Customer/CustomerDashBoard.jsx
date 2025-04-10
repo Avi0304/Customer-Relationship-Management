@@ -59,36 +59,45 @@ export default function CustomerDashBoard() {
                         const updatedAt = ticket.updatedAt?.$date || ticket.updatedAt;
 
                         return (
-                            <Card key={ticketId} className="dark:bg-[#1B222D] bg-white shadow-md rounded-xl p-4 space-y-3">
-                                <div className="flex justify-between items-center">
-                                    <CardTitle className="text-base text-lg font-semibold dark:text-white">
+                            <Card
+                                key={ticketId}
+                                className="dark:bg-[#1B222D] bg-white shadow-md dark:shadow=lg rounded-xl p-4 space-y-3 min-h-[180px] flex flex-col transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-xl"
+                            >
+
+                                <div className="flex justify-between items-start">
+                                    {/* Fixed height for consistent subject alignment */}
+                                    <CardTitle className="text-base text-lg font-semibold dark:text-white truncate h-[30px]">
                                         {ticket.subject}
                                     </CardTitle>
+
                                     {getPriorityBadge(ticket.priority)}
                                 </div>
 
-                                <CardContent className="p-0 space-y-2 text-sm dark:text-gray-300">
-                                    <div className="text-gray-700 text-xs dark:text-gray-400 break-all">
+                                <CardContent className="p-0 text-sm dark:text-gray-300 flex-1 flex flex-col">
+                                    {/* Ticket ID */}
+                                    <div className="text-gray-700 text-xs dark:text-gray-400">
                                         TICKET-{ticket._id.slice(-4).toUpperCase()}
                                     </div>
 
-                                    <div className="text-sm text-gray-800 dark:text-gray-300">
-                                        {ticket.description}
+                                    {/* Description + Date block */}
+                                    <div className="flex flex-col justify-between min-h-[48px]">
+                                        <div className="text-sm text-gray-800 dark:text-gray-300 truncate">
+                                            {ticket.description}
+                                        </div>
+                                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                                            {new Date(ticket.updatedAt).toLocaleDateString()}
+                                        </div>
                                     </div>
 
-                                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                                        {new Date(ticket.updatedAt).toLocaleDateString()}
-                                    </div>
-
+                                    {/* View Ticket pinned to bottom */}
                                     <Link
-                                        to={`/tickets/${ticketId}`}
-                                        className="text-sm font-medium text-blue-600 hover:underline"
+                                        to={`/ticket-detail/${ticket._id}`}
+                                        className="text-sm font-medium text-blue-600 hover:underline mt-auto"
                                     >
                                         View Ticket →
                                     </Link>
                                 </CardContent>
                             </Card>
-
                         );
                     })}
                 </div>
