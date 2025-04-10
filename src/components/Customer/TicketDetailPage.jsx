@@ -106,20 +106,34 @@ const TicketDetailPage = () => {
       <div className="w-[140px] mb-6">
         <Link
           to="/customer-dashboard"
-          className="relative group flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-100 shadow-sm transition-all duration-300 ease-in-out h-[40px]"
+          className="relative group flex items-center gap-3 px-5 py-3 rounded-full 
+               bg-gradient-to-r from-blue-50 to-indigo-50 
+               hover:from-blue-100 hover:to-indigo-100 
+               dark:from-blue-900 dark:to-indigo-900 
+               dark:hover:from-blue-800 dark:hover:to-indigo-800 
+               border border-blue-100 dark:border-blue-800 
+               shadow-sm dark:shadow-md 
+               transition-all duration-300 ease-in-out h-[40px]"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <div className="relative">
             <div
-              className={`absolute inset-0 bg-blue-500 rounded-full animate-ping ${isHovered ? "opacity-20" : "opacity-0"} transition-opacity duration-300`}
+              className={`absolute inset-0 bg-blue-500 rounded-full animate-ping 
+                    ${isHovered ? "opacity-20" : "opacity-0"} 
+                    transition-opacity duration-300`}
             ></div>
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md transform group-hover:-translate-x-1 transition-all duration-300">
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full 
+                      bg-gradient-to-r from-blue-500 to-indigo-600 
+                      shadow-md transform group-hover:-translate-x-1 
+                      transition-all duration-300">
               <LuArrowLeft className="h-4 w-4 text-white" />
             </div>
           </div>
 
-          <span className="font-medium text-slate-700 group-hover:text-slate-900 transition-colors duration-300">
+          <span className="font-medium text-slate-700 group-hover:text-slate-900 
+                     dark:text-slate-200 dark:group-hover:text-white 
+                     transition-colors duration-300">
             Back
           </span>
 
@@ -128,8 +142,10 @@ const TicketDetailPage = () => {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className={`w-1 h-1 rounded-full bg-blue-400 transition-all duration-300 ${isHovered ? "opacity-100" : "opacity-0"
-                  } ${isHovered ? `delay-${i * 100}` : ""}`}
+                className={`w-1 h-1 rounded-full bg-blue-400 
+                      transition-all duration-300 
+                      ${isHovered ? "opacity-100" : "opacity-0"} 
+                      ${isHovered ? `delay-${i * 100}` : ""}`}
                 style={{
                   transitionDelay: isHovered ? `${i * 100}ms` : "0ms",
                   transform: isHovered ? "scale(1)" : "scale(0)",
@@ -140,14 +156,15 @@ const TicketDetailPage = () => {
         </Link>
       </div>
 
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Section */}
         <div className="lg:col-span-2 space-y-6">
           {/* Ticket Info */}
-          <Card>
+          <Card className="dark:bg-[#1B222D] bg-white shadow-md dark:shadow=lg rounded-xl p-4 space-y-3 min-h-[180px] flex flex-col hover:shadow-lg dark:hover:shadow-xl">
             <CardHeader>
               <div>
-                <p className="text-sm text-gray-500 mb-1">
+                <p className="text-sm text-gray-500 dark:text-gray-300 mb-1">
                   TICKET-{ticket._id?.slice(-4).toUpperCase()}
                 </p>
                 <CardTitle>{ticket.subject}</CardTitle>
@@ -159,22 +176,22 @@ const TicketDetailPage = () => {
             </CardHeader>
 
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4 dark:text-gray-300 ">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500">Description</h3>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Description</h3>
                   <p className="mt-1 font-semibold">{ticket.description}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Created</h3>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Created</h3>
                     <p className="mt-1 font-semibold">{new Date(ticket.createdAt).toLocaleString()}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Last Updated</h3>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Last Updated</h3>
                     <p className="mt-1 font-semibold">{new Date(ticket.updatedAt).toLocaleString()}</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500">Submitted By</h3>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Submitted By</h3>
                     <p className="mt-1 font-semibold">{ticket.userName || "N/A"}</p>
                   </div>
                 </div>
@@ -183,40 +200,41 @@ const TicketDetailPage = () => {
           </Card>
 
           {/* Withdraw or Reopen */}
-          <Card className="min-h-[235px] ">
+          <Card className="min-h-[235px] bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl p-4 space-y-3 flex flex-col hover:shadow-lg dark:hover:shadow-xl">
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">
                 {ticket.status === "Withdrawn" ? "Ticket Already Withdrawn" : "Withdraw Ticket"}
               </CardTitle>
             </CardHeader>
+
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4 text-gray-700 dark:text-gray-300">
                 {ticket.status === "Withdrawn" ? (
                   <>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm">
                       This ticket has already been withdrawn. If your issue persists, you can reopen it.
                     </p>
-                    <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm rounded-md p-3">
+                    <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 text-yellow-700 dark:text-yellow-200 text-sm rounded-md p-3">
                       🔄 Reopening will allow you to receive support again.
                     </div>
                     <button
                       onClick={() => handleStatusUpdate("Open")}
-                      className="w-full text-green-600 border border-green-500 hover:bg-green-100 font-medium py-2 px-4 rounded transition-colors"
+                      className="w-full text-green-600 dark:text-green-400 border border-green-500 dark:border-green-600 hover:bg-green-100 dark:hover:bg-green-800 font-medium py-2 px-4 rounded transition-colors"
                     >
                       Reopen Ticket
                     </button>
                   </>
                 ) : (
                   <>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm">
                       If your issue is resolved or no longer relevant, you can withdraw this ticket.
                     </p>
-                    <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-md p-3">
+                    <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-200 text-sm rounded-md p-3">
                       ⚠️ Withdrawing a ticket means no further support will be provided unless reopened.
                     </div>
                     <button
                       onClick={handleWithdraw}
-                      className="w-full text-red-600 border border-red-500 hover:bg-red-100 font-medium py-2 px-4 rounded transition-colors"
+                      className="w-full text-red-600 dark:text-red-400 border border-red-500 dark:border-red-600 hover:bg-red-100 dark:hover:bg-red-800 font-medium py-2 px-4 rounded transition-colors"
                     >
                       Withdraw Ticket
                     </button>
@@ -229,57 +247,88 @@ const TicketDetailPage = () => {
 
         {/* Right Section */}
         <div className="space-y-6">
-          <Card className="h-auto flex flex-col">
+          {/* Ticket Status Card */}
+          <Card className="h-auto flex flex-col bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl">
             <CardHeader>
-              <CardTitle>Ticket Status</CardTitle>
+              <CardTitle className="text-black dark:text-white">Ticket Status</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-black">Current status:</span>
+                  <span className="font-semibold text-black dark:text-gray-200">Current status:</span>
                   <Badge label={ticket.status} type={ticket.status} />
                 </div>
 
                 <FormControl component="fieldset" sx={{ marginTop: 3 }}>
-                  <FormLabel component="legend" sx={{ color: 'black', fontWeight: 400 }}>
+                  <FormLabel
+                    component="legend"
+                    sx={{
+                      fontWeight: 400,
+                      color: '#000',
+                      '&.Mui-focused': { color: '#000' },
+                      '.dark &': {
+                        color: '#E5E7EB', // Tailwind's gray-200 equivalent
+                      },
+                    }}
+                  >
                     Update Status
                   </FormLabel>
+
                   <RadioGroup
                     name="status"
                     value={currentRequest.status}
                     onChange={(e) => setCurrentRequest({ ...currentRequest, status: e.target.value })}
                   >
-                    <FormControlLabel value="Open" control={<Radio color="primary" />} label="Open" />
-                    <FormControlLabel value="In Progress" control={<Radio color="warning" />} label="In Progress" />
-                    <FormControlLabel value="Closed" control={<Radio color="success" />} label="Closed" />
+                    {["Open", "In Progress", "Closed"].map((label) => (
+                      <FormControlLabel
+                        key={label}
+                        value={label}
+                        control={
+                          <Radio
+                            color={
+                              label === "Open"
+                                ? "primary"
+                                : label === "In Progress"
+                                  ? "warning"
+                                  : "success"
+                            }
+                          />
+                        }
+                        label={
+                          <span className="text-black dark:text-gray-200">{label}</span>
+                        }
+                      />
+                    ))}
                   </RadioGroup>
                 </FormControl>
+
               </div>
 
               <button
                 onClick={() => handleStatusUpdate()}
                 disabled={loading}
-                className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm rounded disabled:opacity-50"
+                className="mt-6 bg-blue-600 text-white px-4 py-2 text-sm rounded disabled:opacity-50"
               >
                 {loading ? "Updating..." : "Update Status"}
               </button>
             </CardContent>
           </Card>
 
-          <Card>
+          {/* Related Resources Card */}
+          <Card className="bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl min-h-[182px]">
             <CardHeader>
-              <CardTitle>Related Resources</CardTitle>
+              <CardTitle className="text-black dark:text-white">Related Resources</CardTitle>
             </CardHeader>
             <CardContent>
               {resources.length > 0 ? (
-                <ul className="space-y-2 text-sm text-blue-600">
+                <ul className="space-y-2 text-sm text-blue-600 dark:text-blue-400">
                   {resources.map((resource) => (
                     <li key={resource._id}>
                       <a
                         href={resource.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:underline"
+                        className="underline-offset-2"
                       >
                         {resource.label}
                       </a>
@@ -287,75 +336,58 @@ const TicketDetailPage = () => {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500 text-sm">No related resources found.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">No related resources found.</p>
               )}
             </CardContent>
           </Card>
-
-          {/* <Card>
-            <CardHeader>
-              <CardTitle>Support Hours</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm space-y-1">
-                <li>Monday - Friday: 9am - 8pm ET</li>
-                <li>Saturday: 10am - 6pm ET</li>
-                <li>Sunday: Closed</li>
-              </ul>
-              <hr className="my-4" />
-              <p className="text-sm text-gray-600">
-                For urgent issues outside of these hours, please use the emergency contact form.
-              </p>
-            </CardContent>
-          </Card> */}
         </div>
+
 
         {/* Full Width Support Hours Card */}
         <div className="w-full mt-1 col-span-1 lg:col-span-3">
-          <Card className="w-full overflow-hidden border-0 shadow-lg rounded-xl">
+          <Card className="w-full overflow-hidden border-0 shadow-lg rounded-xl dark:bg-[#1B222D]">
             <CardHeader>
               <div className="flex items-center gap-2">
-                {/* <LuClock className="h-5 w-5" /> */}
-                <CardTitle className="text-xl font-bold">Support Hours</CardTitle>
+                <CardTitle className="text-xl font-bold dark:text-white">Support Hours</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
-                    <LuCalendar className="h-5 w-5 text-indigo-600" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
+                    <LuCalendar className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
                     <div>
-                      <p className="font-medium text-gray-800">Monday - Friday</p>
-                      <p className="text-indigo-600 font-semibold">9am - 8pm </p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">Monday - Friday</p>
+                      <p className="text-indigo-600 dark:text-indigo-300 font-semibold">9am - 8pm</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
-                    <LuCalendar className="h-5 w-5 text-indigo-600" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
+                    <LuCalendar className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
                     <div>
-                      <p className="font-medium text-gray-800">Saturday</p>
-                      <p className="text-indigo-600 font-semibold">10am - 6pm </p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">Saturday</p>
+                      <p className="text-indigo-600 dark:text-indigo-300 font-semibold">10am - 6pm</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
-                    <LuCalendar className="h-5 w-5 text-gray-500" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                    <LuCalendar className="h-5 w-5 text-gray-500 dark:text-gray-400" />
                     <div>
-                      <p className="font-medium text-gray-800">Sunday</p>
-                      <p className="text-red-500 font-semibold">Closed</p>
+                      <p className="font-medium text-gray-800 dark:text-gray-200">Sunday</p>
+                      <p className="text-red-500 dark:text-red-400 font-semibold">Closed</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-5 border-t border-gray-100">
-                  <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-100">
-                    <LuCircleAlert className="h-5 w-5 text-amber-600 mt-0.5" />
+                <div className="mt-6 pt-5 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900 border border-amber-100 dark:border-amber-800">
+                    <LuCircleAlert className="h-5 w-5 text-amber-600 dark:text-amber-300 mt-0.5" />
                     <div>
-                      <p className="text-gray-700">
+                      <p className="text-gray-700 dark:text-gray-300">
                         For urgent issues outside of these hours, please use the{" "}
                         <Link
                           href="#"
-                          className="text-indigo-600 font-medium hover:text-indigo-800 hover:underline transition-colors"
+                          className="text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-800 dark:hover:text-indigo-300 hover:underline transition-colors"
                         >
                           emergency contact form
                         </Link>

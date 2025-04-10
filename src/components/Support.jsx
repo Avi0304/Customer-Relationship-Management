@@ -21,11 +21,13 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { BiPlus, BiSupport } from "react-icons/bi";
-import { FaEdit } from "react-icons/fa";
+import { BiPlus, BiSupport, } from "react-icons/bi";
+import { FaEdit, FaEye } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Search } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+
 
 const Support = () => {
   const [requests, setRequests] = useState([]);
@@ -35,6 +37,8 @@ const Support = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("Newest");
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchRequests();
@@ -223,13 +227,13 @@ const Support = () => {
               setOpenDialog(true);
             }}
             sx={{
-              minWidth: 'unset',   
-              width: 'auto',       
-              whiteSpace: 'nowrap', 
-              paddingX: 2,         
-              height: '40px'        
+              minWidth: 'unset',
+              width: 'auto',
+              whiteSpace: 'nowrap',
+              paddingX: 2,
+              height: '40px'
             }}
-            
+
           >
             New Request
           </Button>
@@ -311,6 +315,7 @@ const Support = () => {
                 {req.subject}
               </Typography>
 
+
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -373,6 +378,15 @@ const Support = () => {
                   >
                     <RiDeleteBin6Line size={16} />
                   </IconButton>
+                  <IconButton
+                    onClick={() => navigate(`/ticket/${req._id}`)}
+                    color="primary"
+                    size="small"
+                    sx={{ p: 0.5 }}
+                  >
+                    <FaEye size={16} />
+                  </IconButton>
+
                 </Box>
               </Box>
 

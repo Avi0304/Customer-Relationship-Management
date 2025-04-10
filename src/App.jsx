@@ -95,6 +95,7 @@ function AppContent() {
             path="/support"
             element={<PrivateRoute element={<SupportPage />} />}
           />
+          
 
           <Route
             path="/customer-dashboard"
