@@ -160,7 +160,9 @@ const Login = () => {
       });
 
       const token = response.data.token;
+      const isAdmin = response.data.isAdmin;
       localStorage.setItem("token", token);
+      localStorage.setItem("isAdmin", isAdmin);
 
       // Fetch user profile after successful OTP verification
       const userResponse = await axios.get("http://localhost:8080/api/Profile/get-profile", {
@@ -182,8 +184,16 @@ const Login = () => {
       });
 
       setTimeout(() => {
-        navigate("/");
+        if (isAdmin) {
+          navigate("/dashboard");
+        } else {
+          navigate("/customer-dashboard");
+        }
       }, 1500);
+
+      // setTimeout(() => {
+      //   navigate("/dashboard");
+      // }, 1500);
     } catch (error) {
       Swal.fire({
         title: "OTP Verification Failed!",

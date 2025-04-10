@@ -12,7 +12,7 @@ function TicketPAge() {
                 <CustomerSidebar />
 
                 <div className="flex-1">
-                    <CustomerTopNav title={"Customer Dashboard"} />
+                    <CustomerTopNav title={"Tickets"} />
 
                     <main className="p-6 space-y-4">
                         <Tickets />

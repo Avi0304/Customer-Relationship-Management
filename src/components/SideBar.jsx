@@ -42,6 +42,7 @@ const Sidebar = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
+        localStorage.removeItem("isAdmin");
   
         Swal.fire({
           title: "Logout Successful!",
