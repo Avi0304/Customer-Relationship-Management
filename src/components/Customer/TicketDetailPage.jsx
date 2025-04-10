@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
+import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft } from "react-icons/lu";
 
 const Badge = ({ label, type }) => {
   const colors = {
@@ -27,8 +28,10 @@ const Badge = ({ label, type }) => {
 const TicketDetailPage = () => {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
+  const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentRequest, setCurrentRequest] = useState({ status: "Open" });
+  const [isHovered, setIsHovered] = useState(false)
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
@@ -43,6 +46,19 @@ const TicketDetailPage = () => {
       }
     };
     fetchTicketDetails();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/support/resource/${id}`);
+        setResources(res.data);
+      } catch (error) {
+        console.error("Failed to fetch related resources:", error);
+      }
+    };
+
+    fetchResources();
   }, [id]);
 
   const handleStatusUpdate = async (newStatus = currentRequest.status) => {
@@ -86,12 +102,43 @@ const TicketDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <Link to="/customer-dashboard" className="text-blue-600 hover:underline inline-flex items-center mb-6">
-        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Dashboard
-      </Link>
+
+      <div className="w-[140px] mb-6">
+        <Link
+          to="/customer-dashboard"
+          className="relative group flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-100 shadow-sm transition-all duration-300 ease-in-out h-[40px]"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <div className="relative">
+            <div
+              className={`absolute inset-0 bg-blue-500 rounded-full animate-ping ${isHovered ? "opacity-20" : "opacity-0"} transition-opacity duration-300`}
+            ></div>
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md transform group-hover:-translate-x-1 transition-all duration-300">
+              <LuArrowLeft className="h-4 w-4 text-white" />
+            </div>
+          </div>
+
+          <span className="font-medium text-slate-700 group-hover:text-slate-900 transition-colors duration-300">
+            Back
+          </span>
+
+          {/* Animated indicator dots */}
+          <div className="hidden sm:flex items-center gap-1 ml-1">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className={`w-1 h-1 rounded-full bg-blue-400 transition-all duration-300 ${isHovered ? "opacity-100" : "opacity-0"
+                  } ${isHovered ? `delay-${i * 100}` : ""}`}
+                style={{
+                  transitionDelay: isHovered ? `${i * 100}ms` : "0ms",
+                  transform: isHovered ? "scale(1)" : "scale(0)",
+                }}
+              ></div>
+            ))}
+          </div>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Section */}
@@ -136,7 +183,7 @@ const TicketDetailPage = () => {
           </Card>
 
           {/* Withdraw or Reopen */}
-          <Card>
+          <Card className="min-h-[235px] ">
             <CardHeader>
               <CardTitle>
                 {ticket.status === "Withdrawn" ? "Ticket Already Withdrawn" : "Withdraw Ticket"}
@@ -224,15 +271,28 @@ const TicketDetailPage = () => {
               <CardTitle>Related Resources</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2 text-sm text-blue-600">
-                <li><a href="https://nextjs.org/docs/deployment" target="_blank" rel="noopener noreferrer" className="hover:underline">Next.js Deployment Docs</a></li>
-                <li><a href="https://vercel.com/docs/deployments/overview" target="_blank" rel="noopener noreferrer" className="hover:underline">Vercel Deployment Guide</a></li>
-                <li><a href="https://vercel.com/guides/deploying-nextjs-with-vercel" target="_blank" rel="noopener noreferrer" className="hover:underline">Deploying with Vercel</a></li>
-              </ul>
+              {resources.length > 0 ? (
+                <ul className="space-y-2 text-sm text-blue-600">
+                  {resources.map((resource) => (
+                    <li key={resource._id}>
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        {resource.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 text-sm">No related resources found.</p>
+              )}
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Support Hours</CardTitle>
             </CardHeader>
@@ -247,8 +307,68 @@ const TicketDetailPage = () => {
                 For urgent issues outside of these hours, please use the emergency contact form.
               </p>
             </CardContent>
+          </Card> */}
+        </div>
+
+        {/* Full Width Support Hours Card */}
+        <div className="w-full mt-1 col-span-1 lg:col-span-3">
+          <Card className="w-full overflow-hidden border-0 shadow-lg rounded-xl">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                {/* <LuClock className="h-5 w-5" /> */}
+                <CardTitle className="text-xl font-bold">Support Hours</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                    <LuCalendar className="h-5 w-5 text-indigo-600" />
+                    <div>
+                      <p className="font-medium text-gray-800">Monday - Friday</p>
+                      <p className="text-indigo-600 font-semibold">9am - 8pm </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 border border-indigo-100">
+                    <LuCalendar className="h-5 w-5 text-indigo-600" />
+                    <div>
+                      <p className="font-medium text-gray-800">Saturday</p>
+                      <p className="text-indigo-600 font-semibold">10am - 6pm </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100">
+                    <LuCalendar className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <p className="font-medium text-gray-800">Sunday</p>
+                      <p className="text-red-500 font-semibold">Closed</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-5 border-t border-gray-100">
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 border border-amber-100">
+                    <LuCircleAlert className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="text-gray-700">
+                        For urgent issues outside of these hours, please use the{" "}
+                        <Link
+                          href="#"
+                          className="text-indigo-600 font-medium hover:text-indigo-800 hover:underline transition-colors"
+                        >
+                          emergency contact form
+                        </Link>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
+
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ const {
   deleteSupportRequest,
   updateSupportStatus,
   withdrawSupportRequest,
+  addRelatedResource,
+  getRelatedResources,
+  updateRelatedResource,
+  deleteRelatedResource
 } = require("../controllers/SupportController");
 
 router.get("/all", getAllSupportRequests);
@@ -40,5 +44,16 @@ router.put(
 );
 
 router.delete("/delete/:id", deleteSupportRequest);
+
+
+router.post("/resource/add/:id", addRelatedResource);
+
+router.get("/resource/:id", getRelatedResources);
+
+router.put("/:ticketId/resource/update/:resourceId", updateRelatedResource)
+
+router.delete('/resource/delete/:id/:resourceId', deleteRelatedResource);
+
+
 
 module.exports = router;
