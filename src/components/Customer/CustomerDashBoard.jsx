@@ -1,61 +1,107 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { LuPlus } from "react-icons/lu";
-import { Link } from "react-router-dom"
-import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card"
+import { Link } from "react-router-dom";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+} from "../../components/ui/card";
 import { Button } from "@mui/material";
 
-
-const tickets = [
-    {
-        id: "TICKET-1001",
-        title: "Unable to deploy my Next.js application",
-        category: "Deployment",
-        priority: "high",
-        status: "open",
-        created: "2025-04-05T10:30:00Z",
-        updated: "2025-04-05T14:45:00Z",
-    },
-    {
-        id: "TICKET-1002",
-        title: "Billing issue with my Pro subscription",
-        category: "Billing",
-        priority: "medium",
-        status: "in-progress",
-        created: "2025-04-03T08:15:00Z",
-        updated: "2025-04-07T09:20:00Z",
-    },
-    {
-        id: "TICKET-1003",
-        title: "Need help with environment variables",
-        category: "Configuration",
-        priority: "low",
-        status: "closed",
-        created: "2025-04-01T16:45:00Z",
-        updated: "2025-04-02T11:30:00Z",
-    },
-]
-
+// Priority badge styling
 function getPriorityBadge(priority) {
-    const base = "text-xs font-medium px-2 py-0.5 rounded-full"
-    switch (priority) {
+    const base = "text-xs font-medium px-2 py-0.5 rounded-full";
+    switch (priority?.toLowerCase()) {
         case "high":
-            return <span className={`${base} bg-red-500 text-white`}>High</span>
+            return <span className={`${base} bg-red-500 text-white`}>High</span>;
         case "medium":
-            return <span className={`${base} bg-yellow-500 text-white`}>Medium</span>
+            return <span className={`${base} bg-yellow-500 text-white`}>Medium</span>;
         case "low":
-            return <span className={`${base} bg-green-500 text-white`}>Low</span>
+            return <span className={`${base} bg-green-500 text-white`}>Low</span>;
         default:
-            return null
+            return null;
     }
 }
 
 export default function CustomerDashBoard() {
+    const [tickets, setTickets] = useState([]);
+
+    useEffect(() => {
+        fetchTicket();
+    }, []);
+
+    const fetchTicket = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/api/support/all");
+            setTickets(response.data.data);
+        } catch (error) {
+            console.error("Error in Fetching Tickets: ", error);
+        }
+    };
+
+    const renderTicketCards = (status) => {
+        const filtered = tickets.filter(
+            (ticket) =>
+                ticket.status?.toLowerCase().replace(/\s+/g, "-") === status
+        );
+
+
+        return (
+            <>
+                <h2 className="text-lg font-bold capitalize text-black mb-2 dark:text-white">
+                    {status === "in-progress" ? "In Progress" : status}
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filtered.map((ticket) => {
+                        const ticketId = ticket._id?.$oid || ticket._id;
+                        const updatedAt = ticket.updatedAt?.$date || ticket.updatedAt;
+
+                        return (
+                            <Card key={ticketId} className="dark:bg-[#1B222D] bg-white shadow-md rounded-xl p-4 space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <CardTitle className="text-base text-lg font-semibold dark:text-white">
+                                        {ticket.subject}
+                                    </CardTitle>
+                                    {getPriorityBadge(ticket.priority)}
+                                </div>
+
+                                <CardContent className="p-0 space-y-2 text-sm dark:text-gray-300">
+                                    <div className="text-gray-700 text-xs dark:text-gray-400 break-all">
+                                        TICKET-{ticket._id.slice(-4).toUpperCase()}
+                                    </div>
+
+                                    <div className="text-sm text-gray-800 dark:text-gray-300">
+                                        {ticket.description}
+                                    </div>
+
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        {new Date(ticket.updatedAt).toLocaleDateString()}
+                                    </div>
+
+                                    <Link
+                                        to={`/tickets/${ticketId}`}
+                                        className="text-sm font-medium text-blue-600 hover:underline"
+                                    >
+                                        View Ticket →
+                                    </Link>
+                                </CardContent>
+                            </Card>
+
+                        );
+                    })}
+                </div>
+            </>
+        );
+    };
+
     return (
-        <div className="container mx-auto py-6 space-y-8">
+        <div className="container mx-auto  space-y-8">
             <div className="flex justify-end">
                 <Button
                     component={Link}
-                    to="/tickets/new"
+                    to="/customer-ticket"
                     variant="contained"
                     color="primary"
                     startIcon={<LuPlus />}
@@ -64,85 +110,10 @@ export default function CustomerDashBoard() {
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Open Tickets */}
-                <Card className="dark:bg-[#1B222D]">
-                    <CardHeader>
-                        <CardTitle>Open</CardTitle>
-                        {getPriorityBadge(
-                            tickets.find(ticket => ticket.status === "open")?.priority
-                        )}
-                    </CardHeader>
-                    <CardContent className="space-y-3 dark:text-gray-300">
-                        {tickets.filter(ticket => ticket.status === "open").map(ticket => (
-                            <Link key={ticket.id} href={`/tickets/${ticket.id}`} className="block p-3 rounded-md">
-                                <div className="flex justify-between items-start mb-1">
-                                    <span className="font-medium text-sm">{ticket.id}</span>
-                                    {/* {getPriorityBadge(ticket.priority)} */}
-                                </div>
-                                <h3 className="font-medium mb-1">{ticket.title}</h3>
-                                <div className="text-xs text-gray-500 dark:text-gray-300">{new Date(ticket.created).toLocaleDateString()}</div>
-                            </Link>
-                        ))}
-                    </CardContent>
-                </Card>
-
-                {/* In Progress Tickets */}
-                <Card className="dark:bg-[#1B222D]">
-                    <CardHeader>
-                        <CardTitle>In Progress</CardTitle>
-                        {getPriorityBadge(
-                            tickets.find(ticket => ticket.status === "in-progress")?.priority
-                        )}
-                    </CardHeader>
-                    <CardContent className="space-y-3 dark:text-gray-300">
-                        {tickets.filter(ticket => ticket.status === "in-progress").map(ticket => (
-                            <Link
-                                key={ticket.id}
-                                to={`/tickets/${ticket.id}`}
-                                className="block p-3  rounded-md"
-                            >
-                                <div className="flex justify-between items-start mb-1">
-                                    <span className="font-medium text-sm">{ticket.id}</span>
-                                </div>
-                                <h3 className="font-medium mb-1">{ticket.title}</h3>
-                                <div className="text-xs text-gray-500 dark:text-gray-300">
-                                    {new Date(ticket.updated).toLocaleDateString()}
-                                </div>
-                            </Link>
-                        ))}
-                    </CardContent>
-                </Card>
-
-                {/* Closed Tickets */}
-                <Card className="dark:bg-[#1B222D]">
-                    <CardHeader>
-                        <CardTitle>Closed</CardTitle>
-                        {getPriorityBadge(
-                            tickets.find(ticket => ticket.status === "closed")?.priority
-                        )}
-                    </CardHeader>
-                    <CardContent className="space-y-3 dark:text-gray-300">
-                        {tickets.filter(ticket => ticket.status === "closed").map(ticket => (
-                            <Link
-                                key={ticket.id}
-                                to={`/tickets/${ticket.id}`}
-                                className="block p-3 rounded-md "
-                            >
-                                <div className="flex justify-between items-start mb-1">
-                                    <span className="font-medium text-sm">{ticket.id}</span>
-                                   
-                                </div>
-                                <h3 className="font-medium mb-1">{ticket.title}</h3>
-                                <div className="text-xs text-gray-500 dark:text-gray-300">
-                                    {new Date(ticket.updated).toLocaleDateString()}
-                                </div>
-                            </Link>
-                        ))}
-                    </CardContent>
-                </Card>
-
-            </div>
+            {/* One section per status, each rendering multiple individual cards */}
+            {renderTicketCards("open")}
+            {renderTicketCards("in-progress")}
+            {renderTicketCards("closed")}
         </div>
-    )
+    );
 }

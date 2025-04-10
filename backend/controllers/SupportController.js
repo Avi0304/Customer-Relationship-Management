@@ -73,7 +73,7 @@ exports.createSupportRequest = async (req, res) => {
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
 
-  const { subject, description, status, userId } = req.body;
+  const { subject, description, status, userId, priority } = req.body;
 
   try {
     const newRequest = new Support({ subject, description, status, userId });
@@ -101,7 +101,7 @@ exports.updateSupportRequest = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
 
   const { id } = req.params;
-  const { subject, description, status } = req.body;
+  const { subject, description, status, priority } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid request ID format" });
@@ -112,6 +112,7 @@ exports.updateSupportRequest = async (req, res) => {
     if (!existing) return res.status(404).json({ message: "Request not found" });
 
     const previousStatus = existing.status;
+    const priorityStatus = existing.priority;
 
     const updates = { subject, description, status };
     const updated = await Support.findByIdAndUpdate(id, updates, { new: true });
@@ -121,6 +122,15 @@ exports.updateSupportRequest = async (req, res) => {
       await createNotification({
         title: 'Support Status Updated',
         message: `Status changed from ${previousStatus} to ${status}`,
+        type: 'support',
+        userId: existing.userId,
+      });
+    }
+
+    if (priorityStatus !== priority) {
+      await createNotification({
+        title: 'Support Priority Updated',
+        message: `Priority changed from ${priorityStatus} to ${priority}`,
         type: 'support',
         userId: existing.userId,
       });
