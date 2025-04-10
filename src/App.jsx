@@ -25,6 +25,8 @@ import SupportPage from "./pages/SupportPage";
 import CustomerDashboard from "./pages/CustomerPages/CustomerDashboard";
 import CustomerRoute from "./components/CustomerRoute";
 import TicketPAge from "./pages/CustomerPages/TicketPage";
+import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
+import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage"
 
 
 function AppContent() {
@@ -101,6 +103,16 @@ function AppContent() {
           <Route
             path="/customer-ticket"
             element={<CustomerRoute element={<TicketPAge />} />}
+          />
+
+          <Route
+            path="/customer-setting/:tab?"
+            element={<CustomerRoute element={<CustomerSetting />} />}
+          />
+
+          <Route
+            path="/customer-Profile"
+            element={<CustomerRoute element={<CustomerProfilePAge/>} />}
           />
         </Routes>
       </Router>

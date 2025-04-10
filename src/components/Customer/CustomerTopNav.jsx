@@ -6,7 +6,7 @@ import { UserContext } from "../../context/UserContext";
 import { Avatar } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
-const CustomerTopNav = () => {
+const CustomerTopNav = ({title}) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -16,7 +16,7 @@ const CustomerTopNav = () => {
   return (
     <div className="light:bg-white dark:bg-[#161B22] dark:backdrop-blur-xl shadow-lg flex items-center justify-between p-6 h-16 sticky top-0 z-50 dark:z-[60]">
       <h1 className="text-2xl font-bold text-gray-800 tracking-tight light:text-gray-800 dark:text-gray-200">
-        Customer Dashboard
+        {title}
       </h1>
 
       <div className="flex items-center gap-6">
@@ -43,7 +43,7 @@ const CustomerTopNav = () => {
             </span>
           </button>
 
-          {/* {isOpen && (
+          {isOpen && (
             <div
               className="absolute right-0 mt-3 w-48 
               light:bg-white dark:bg-gray-800 dark:backdrop-blur-xl 
@@ -57,12 +57,12 @@ const CustomerTopNav = () => {
                 light:text-gray-700 dark:text-gray-100 
                 light:hover:bg-blue-50 dark:hover:bg-gray-600/50 
                 hover:text-purple-500 rounded-md transition-colors duration-200"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/customer-Profile")}
               >
                 <FaUser /> Profile
               </button>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>

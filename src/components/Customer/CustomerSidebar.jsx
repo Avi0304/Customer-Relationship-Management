@@ -3,20 +3,31 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
     FiMenu,
     FiX,
-    FiMessageCircle,
-    FiPhoneCall,
-    FiUser,
+    FiHome,
+    FiUsers,
     FiLogOut,
+    FiUser,
+    FiShield,
+    FiBell,
+    FiDatabase,
     FiHelpCircle,
 } from "react-icons/fi";
+import {
+    FaUserPlus,
+    FaTasks,
+    FaCalendar,
+    FaChartLine,
+    FaBullseye,
+} from "react-icons/fa";
 import { MdSupportAgent } from "react-icons/md";
-import { LuLayoutDashboard, LuTicketCheck,LuMessageCircle, LuSettings } from "react-icons/lu";
+import { LuLayoutDashboard, LuTicketCheck, LuMessageCircle, LuSettings } from "react-icons/lu";
 import Swal from "sweetalert2";
 
 const CustomerSidebar = () => {
     const [isOpen, setIsOpen] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
+    const isSettingsPage = location.pathname.startsWith("/customer-setting");
     const currentTheme = localStorage.getItem("theme") || "light";
 
     const handleLogout = () => {
@@ -34,6 +45,7 @@ const CustomerSidebar = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 localStorage.removeItem("token");
+                localStorage.removeItem("isAdmin");
 
                 Swal.fire({
                     title: "Logout Successful!",
@@ -75,67 +87,149 @@ const CustomerSidebar = () => {
                 </button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto mt-6 space-y-3 px-2">
-                <Link
-                    to="/customer-dashboard"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-dashboard"
+            {!isSettingsPage && (
+
+                <nav className="flex-1 overflow-y-auto mt-6 space-y-3 px-2">
+                    <Link
+                        to="/customer-dashboard"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-dashboard"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-blue-400"
-                        }`}
-                >
-                    <div className="flex items-center justify-center w-10">
-                        <LuLayoutDashboard size={24} />
-                    </div>
-                    <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
-                        Dashboard
-                    </span>
-                </Link>
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <LuLayoutDashboard size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Dashboard
+                        </span>
+                    </Link>
 
-                <Link
-                    to="/customer-ticket"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-ticket"
+                    <Link
+                        to="/customer-ticket"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-ticket"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-green-400"
-                        }`}
-                >
-                    <div className="flex items-center justify-center w-10">
-                        <LuTicketCheck size={24} />
-                    </div>
-                    <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
-                        Tickets
-                    </span>
-                </Link>
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <LuTicketCheck size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Tickets
+                        </span>
+                    </Link>
 
-                <Link
-                    to="/customer-message"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-message"
+                    <Link
+                        to="/customer-message"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-message"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-purple-400"
-                        }`}
-                >
-                    <div className="flex items-center justify-center w-10">
-                        <LuMessageCircle size={24} />
-                    </div>
-                    <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
-                        Message
-                    </span>
-                </Link>
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <LuMessageCircle size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Message
+                        </span>
+                    </Link>
 
-                <Link
-                    to="/customer-settings"
-                    className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-settings"
+                    <Link
+                        to="/customer-setting"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-setting"
                             ? "bg-blue-700 text-white"
                             : "hover:bg-gray-700/50 hover:text-yellow-400"
-                        }`}
-                >
-                    <div className="flex items-center justify-center w-10">
-                        <LuSettings size={24} />
-                    </div>
-                    <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
-                        Settings
-                    </span>
-                </Link>
-            </nav>
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <LuSettings size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Settings
+                        </span>
+                    </Link>
+                </nav>
+            )}
+
+            {isSettingsPage && (
+                <nav className="flex-1 overflow-y-auto mt-6 space-y-3 px-2">
+                    <Link
+                        to="/customer-setting/profile"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-setting/profile"
+                            ? "bg-blue-700 text-white"
+                            : "hover:bg-gray-700/50 hover:text-blue-400"
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <FiUser size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Profile
+                        </span>
+                    </Link>
+
+                    <Link
+                        to="/customer-setting/security"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-setting/security"
+                            ? "bg-blue-700 text-white"
+                            : "hover:bg-gray-700/50 hover:text-purple-400"
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <FiShield size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Security
+                        </span>
+                    </Link>
+
+                    <Link
+                        to="/customer-setting/notifications"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-setting/notifications"
+                            ? "bg-blue-700 text-white"
+                            : "hover:bg-gray-700/50 hover:text-green-400"
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <FiBell size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Notifications
+                        </span>
+                    </Link>
+
+                    <Link
+                        to="/customer-setting/data"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-setting/data"
+                            ? "bg-blue-700 text-white"
+                            : "hover:bg-gray-700/50 hover:text-green-400"
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <FiDatabase size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Data Management
+                        </span>
+                    </Link>
+
+                    <Link
+                        to="/customer-dashboard"
+                        className={`flex items-center p-2 rounded-lg transition-all duration-200 ${location.pathname === "/customer-dashboard"
+                            ? "bg-blue-700 text-white"
+                            : "hover:bg-gray-700/50 hover:text-blue-400"
+                            }`}
+                    >
+                        <div className="flex items-center justify-center w-10">
+                            <FiHome size={24} />
+                        </div>
+                        <span className={`${isOpen ? "block" : "hidden"} font-medium`}>
+                            Home
+                        </span>
+                    </Link>
+                </nav>
+            )}
 
             <div className="p-2 mt-auto">
                 <hr className="border-t border-white/30 mb-2" />

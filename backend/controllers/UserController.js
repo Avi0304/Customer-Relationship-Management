@@ -244,7 +244,7 @@ const verifyOTP = async (req, res) => {
         // Generate JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        res.status(200).json({ token, userId: user._id });
+        res.status(200).json({ token, userId: user._id,  isAdmin: user.isAdmin });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
