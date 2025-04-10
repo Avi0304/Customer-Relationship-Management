@@ -296,7 +296,7 @@ const Tickets = () => {
                                 <TableCell align="center">TICKET-{ticket._id.slice(-4).toUpperCase()}</TableCell>
                                 <TableCell align="center">
                                     <Link
-                                        to={`/tickets/${ticket.id}`}
+                                        to={`/ticket-detail/${ticket._id}`}
                                         style={{ color: "#1976d2", textDecoration: "none" }}
                                     >
                                         {ticket.subject}

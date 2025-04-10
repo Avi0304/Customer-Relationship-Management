@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+const relatedResourceSchema = new mongoose.Schema({
+  label: String,
+  url: String
+});
+
+
 const SupportSchema = new mongoose.Schema(
   {
     subject: {
@@ -22,6 +28,7 @@ const SupportSchema = new mongoose.Schema(
     },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     userName: { type: String }, 
+    relatedResources: [relatedResourceSchema]
   },
   { timestamps: true } // Adds createdAt & updatedAt
 );

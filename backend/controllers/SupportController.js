@@ -237,3 +237,106 @@ exports.withdrawSupportRequest = async(req, res) => {
     res.status(500).json({ message: "Failed to withdraw request", error });
   }
 }
+
+
+exports.addRelatedResource = async (req, res) => {
+  try {
+    const { label, url } = req.body;
+    const { id } = req.params;
+    const supportTicket = await Support.findById(id);
+
+    if (!supportTicket) {
+      return res.status(404).json({ message: "Support ticket not found" });
+    }
+
+    supportTicket.relatedResources.push({ label, url });
+    await supportTicket.save();
+
+    res.status(200).json(supportTicket.relatedResources);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 📄 Get all related resources
+exports.getRelatedResources = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const supportTicket = await Support.findById(id);
+
+    if (!supportTicket) {
+      return res.status(404).json({ message: "Support ticket not found" });
+    }
+
+    res.status(200).json(supportTicket.relatedResources);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateRelatedResource = async (req, res) => {
+  try {
+    const { label, url } = req.body;
+    const { ticketId, resourceId } = req.params;
+
+    // Validate both IDs
+    if (!mongoose.Types.ObjectId.isValid(ticketId) || !mongoose.Types.ObjectId.isValid(resourceId)) {
+      return res.status(400).json({ message: "Invalid ticket or resource ID" });
+    }
+
+    const supportTicket = await Support.findById(ticketId);
+
+    if (!supportTicket) {
+      return res.status(404).json({ message: "Support ticket not found" });
+    }
+
+    const resource = supportTicket.relatedResources.id(resourceId);
+
+    if (!resource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    resource.label = label || resource.label;
+    resource.url = url || resource.url;
+
+    await supportTicket.save();
+
+    res.status(200).json({
+      message: "Resource updated successfully",
+      updatedResource: resource,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ❌ Delete a related resource
+exports.deleteRelatedResource = async (req, res) => {
+  try {
+    const { id, resourceId } = req.params;
+
+    const supportTicket = await Support.findById(id);
+
+    if (!supportTicket) {
+      return res.status(404).json({ message: "Support ticket not found" });
+    }
+
+    const initialLength = supportTicket.relatedResources.length;
+
+    supportTicket.relatedResources = supportTicket.relatedResources.filter(
+      (resource) => resource._id.toString() !== resourceId
+    );
+
+    // Check if any deletion actually happened
+    if (supportTicket.relatedResources.length === initialLength) {
+      return res.status(404).json({ message: "Related resource not found" });
+    }
+
+    await supportTicket.save();
+
+    res.status(200).json(supportTicket.relatedResources);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
