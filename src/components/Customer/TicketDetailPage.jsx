@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
 import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft } from "react-icons/lu";
+import CustomerSupportChat from "./CustomerSupportChat";
+
 
 const Badge = ({ label, type }) => {
   const colors = {
@@ -39,6 +41,7 @@ const TicketDetailPage = () => {
         const { data } = await axios.get(`http://localhost:8080/api/support/${id}`);
         setTicket(data);
         setCurrentRequest({ status: data.status });
+        console.log(data);
       } catch (err) {
         console.error("Failed to fetch ticket:", err);
       } finally {
@@ -342,6 +345,9 @@ const TicketDetailPage = () => {
           </Card>
         </div>
 
+        <div className="w-full mt-1 col-span-1 lg:col-span-3">
+          <CustomerSupportChat ticketId={ticket._id} customerId={ticket.userId}/>
+        </div>
 
         {/* Full Width Support Hours Card */}
         <div className="w-full mt-1 col-span-1 lg:col-span-3">
@@ -399,6 +405,7 @@ const TicketDetailPage = () => {
               </div>
             </CardContent>
           </Card>
+
         </div>
 
       </div>

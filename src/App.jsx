@@ -28,6 +28,7 @@ import TicketPAge from "./pages/CustomerPages/TicketPage";
 import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
 import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage"
 import TicketDetailPage from "./pages/CustomerPages/TicketDetailPage";
+import SocketTest from "./pages/SocketTest";
 
 
 function AppContent() {
@@ -38,6 +39,8 @@ function AppContent() {
       <Router>
         <Routes>
           {/* Public Routes */}
+          <Route path="/socket" element={<SocketTest />} />
+
           <Route path="/" element={<Page />} />
           <Route path="/login" element={<PublicRoute element={<Login />} />} />
           <Route
