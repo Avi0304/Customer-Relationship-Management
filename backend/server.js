@@ -4,12 +4,14 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 const path = require("path");
-require("colors"); // <== Add this for colored logs
+const http = require('http');
+require("colors");
 
 const { initializeSocket } = require("./socket");
 
 dotenv.config();
 const app = express();
+const server = http.createServer(app); // ✅ Use this server for Socket.IO and listening
 
 // Middlewares
 app.use(cors());
@@ -33,7 +35,9 @@ app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/support", require("./routes/Support"));
 app.use("/api/campaign", require("./routes/Campaign"));
 app.use("/api/email-campaigns", require("./routes/emailCampaignRoutes"));
+app.use("/api/messages", require("./routes/messageRoutes")); // ✅ Add message routes if not added
 
+// Check for PORT
 if (!process.env.PORT) {
   console.error("❌ Missing environment variables. Check .env file.".red.bold);
   process.exit(1);
@@ -41,21 +45,22 @@ if (!process.env.PORT) {
 
 const PORT = process.env.PORT || 8080;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server is Running on Port ${PORT}`.bgCyan.white.bold);
-});
-
-// Initialize Socket.IO
+// ✅ Initialize Socket.IO before listening
 initializeSocket(server);
 
+// ✅ Connect to MongoDB and Start Server
 const startServer = async () => {
   try {
     console.log("🔁 Connecting to MongoDB...".yellow);
-
     await connectDB();
     console.log("✅ Database Connected Successfully".bgMagenta.white.bold);
 
-    // Load Agenda jobs
+    // Start HTTP server
+    server.listen(PORT, () => {
+      console.log(`🚀 Server is Running on Port ${PORT}`.bgCyan.white.bold);
+    });
+
+    // Load background jobs if any
     require("./agendaService");
   } catch (error) {
     console.error("❌ Error Starting Server:".red, error.message.red.bold);

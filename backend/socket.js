@@ -7,7 +7,7 @@ let io;
 const initializeSocket = (server) => {
   io = socketIo(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      origin: process.env.FRONTEND_URL,
       methods: ['GET', 'POST'],
       credentials: true
     }
@@ -22,37 +22,52 @@ const initializeSocket = (server) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       socket.userId = decoded.userId;
+      socket.userRole = decoded.role;
       next();
-    } catch (error) {
+    } catch (err) {
       next(new Error('Authentication error'));
     }
   });
 
   io.on('connection', (socket) => {
-    console.log(`✅ User connected: ${socket.userId}`);
-    socket.join(socket.userId);
+    console.log(`✅ Connected: ${socket.userId}`);
+
+    // Join ticket chat room
+    socket.on('joinTicketRoom', (ticketId) => {
+      socket.join(ticketId);
+      console.log(`User ${socket.userId} joined ticket ${ticketId}`);
+    });
+
+    // Handle sending message
+    socket.on('sendMessage', (data) => {
+      const { ticketId, senderId, senderRole, message } = data;
+      const payload = {
+        ticketId,
+        senderId,
+        senderRole,
+        message,
+        timestamp: new Date()
+      };
+
+      // Emit to users in the same ticket room
+      io.to(ticketId).emit('receiveMessage', payload);
+    });
 
     socket.on('disconnect', () => {
-      console.log(`❌ User disconnected: ${socket.userId}`);
+      console.log(`❌ Disconnected: ${socket.userId}`);
     });
   });
 
   return io;
 };
 
-// ✅ Globally accessible after initialization
 const getIo = () => {
-  if (!io) {
-    throw new Error('Socket.io not initialized');
-  }
+  if (!io) throw new Error('Socket.io not initialized');
   return io;
 };
 
 const sendNotificationToUser = (userId, notification) => {
-  if (!io) {
-    console.error('Socket.io not initialized');
-    return;
-  }
+  if (!io) return;
   io.to(userId.toString()).emit('new_notification', notification);
 };
 
