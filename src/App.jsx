@@ -26,10 +26,10 @@ import CustomerDashboard from "./pages/CustomerPages/CustomerDashboard";
 import CustomerRoute from "./components/CustomerRoute";
 import TicketPAge from "./pages/CustomerPages/TicketPage";
 import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
-import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage"
+import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage";
 import TicketDetailPage from "./pages/CustomerPages/TicketDetailPage";
 import SocketTest from "./pages/SocketTest";
-
+import CustomerFeedback from "./pages/CustomerPages/CustomerFeedbackPage";
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -98,7 +98,6 @@ function AppContent() {
             path="/support"
             element={<PrivateRoute element={<SupportPage />} />}
           />
-          
 
           <Route
             path="/customer-dashboard"
@@ -123,6 +122,11 @@ function AppContent() {
           <Route
             path="/ticket-detail/:id"
             element={<CustomerRoute element={<TicketDetailPage />} />}
+          />
+
+          <Route
+            path="/feedback"
+            element={<CustomerRoute element={<CustomerFeedback />} />}
           />
         </Routes>
       </Router>

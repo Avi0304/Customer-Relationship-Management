@@ -7,12 +7,23 @@ import EmailAudience from "./EmailAudience";
 // import SmsAudience from "./SmsAudience";
 import EmailPost from "./EmailPost";
 // import Smspost from "./Smspost";
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, TextField, ButtonGroup } from "@mui/material";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  TextField,
+  ButtonGroup,
+} from "@mui/material";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
-
 
 const Marketing = () => {
   const [activeForm, setActiveForm] = useState(null);
@@ -30,7 +41,6 @@ const Marketing = () => {
         const res = await axios.get("http://localhost:8080/api/campaign/all");
         const campaigns = res.data || [];
 
-
         // Filter campaigns based on the selected tab (campaignType)
         const filteredCampaigns = campaigns.filter(
           (campaign) =>
@@ -41,7 +51,10 @@ const Marketing = () => {
         // Additional filter for email posts
         if (showTable === "emailPostTable") {
           setTableData(
-            campaigns.filter((campaign) => campaign.campaignType === "email" && campaign.emailPost)
+            campaigns.filter(
+              (campaign) =>
+                campaign.campaignType === "email" && campaign.emailPost
+            )
           );
         } else {
           setTableData(filteredCampaigns);
@@ -69,29 +82,60 @@ const Marketing = () => {
     {
       title: "Create Campaign",
       items: [
-        { icon: IoIosMail, title: "Email Campaign", bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-600 dark:text-blue-400", desc: "Create and send email campaigns", formType: "email" },
-        { icon: MdSms, title: "SMS Campaign", bg: "bg-green-100 dark:bg-green-900", text: "text-green-600 dark:text-green-400", desc: "Reach your customers via SMS", formType: "sms" },
-      ]
+        {
+          icon: IoIosMail,
+          title: "Email Campaign",
+          bg: "bg-blue-100 dark:bg-blue-900",
+          text: "text-blue-600 dark:text-blue-400",
+          desc: "Create and send email campaigns",
+          formType: "email",
+        },
+        {
+          icon: MdSms,
+          title: "SMS Campaign",
+          bg: "bg-green-100 dark:bg-green-900",
+          text: "text-green-600 dark:text-green-400",
+          desc: "Reach your customers via SMS",
+          formType: "sms",
+        },
+      ],
     },
     {
       title: "Create Audience",
       items: [
-        { icon: IoIosMail, title: "Email Audience", bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-600 dark:text-blue-400", desc: "Create and manage Email Ads", formType: "emailAudience", platform: "LinkedIn" },
+        {
+          icon: IoIosMail,
+          title: "Email Audience",
+          bg: "bg-blue-100 dark:bg-blue-900",
+          text: "text-blue-600 dark:text-blue-400",
+          desc: "Create and manage Email Ads",
+          formType: "emailAudience",
+          platform: "LinkedIn",
+        },
         // { icon: MdSms, title: "SMS Audience", bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-600 dark:text-blue-400", desc: "Manage SMS advertising", formType: "smsAudience", platform: "Facebook" },
-      ]
+      ],
     },
     {
       title: "Promoted Posts",
       items: [
-        { icon: IoIosMail, title: "Email Posts", bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-600 dark:text-blue-400", desc: "Boost your Email posts", formType: "emailpost" },
+        {
+          icon: IoIosMail,
+          title: "Email Posts",
+          bg: "bg-blue-100 dark:bg-blue-900",
+          text: "text-blue-600 dark:text-blue-400",
+          desc: "Boost your Email posts",
+          formType: "emailpost",
+        },
         // { icon: MdSms, title: "SMS Posts", bg: "bg-pink-100 dark:bg-pink-900", text: "text-pink-600 dark:text-pink-400", desc: "Promote your SMS content", formType: "smspost" }
-      ]
-    }
+      ],
+    },
   ];
 
   const handleDeleteCampaign = async (campaignId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/campaign/delete/${campaignId}`);
+      await axios.delete(
+        `http://localhost:8080/api/campaign/delete/${campaignId}`
+      );
       setTableData(tableData.filter((campaign) => campaign._id !== campaignId)); // Remove from table without re-fetching
     } catch (err) {
       console.error("Error deleting campaign:", err);
@@ -104,15 +148,20 @@ const Marketing = () => {
     setEditModalOpen(true);
   };
 
-
-
   const handleUpdateCampaign = async () => {
     try {
       const updatedData = {
         ...editingCampaign, // retain other fields
       };
-      const res = await axios.put(`http://localhost:8080/api/campaign/update/${editingCampaign._id}`, updatedData);
-      setTableData(tableData.map((campaign) => (campaign._id === editingCampaign._id ? res.data : campaign))); // Update in state
+      const res = await axios.put(
+        `http://localhost:8080/api/campaign/update/${editingCampaign._id}`,
+        updatedData
+      );
+      setTableData(
+        tableData.map((campaign) =>
+          campaign._id === editingCampaign._id ? res.data : campaign
+        )
+      ); // Update in state
       setEditModalOpen(false); // Close modal after update
     } catch (err) {
       console.error("Failed to update campaign:", err);
@@ -123,7 +172,9 @@ const Marketing = () => {
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       {sections.map((section, index) => (
         <section key={index} className="space-y-4">
-          <h2 className="text-2xl font-semibold tracking-tight">{section.title}</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {section.title}
+          </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
             {section.items.map((item, idx) => (
               <div
@@ -131,11 +182,15 @@ const Marketing = () => {
                 className="group relative overflow-hidden transition-all hover:shadow-lg bg-white dark:bg-gray-900 rounded-lg p-6 flex flex-col items-center text-center space-y-4 shadow-md cursor-pointer"
                 onClick={() => handleFormClick(item.formType, item.platform)}
               >
-                <div className={`p-3 ${item.bg} rounded-full transition-transform group-hover:scale-110`}>
+                <div
+                  className={`p-3 ${item.bg} rounded-full transition-transform group-hover:scale-110`}
+                >
                   <item.icon className={`text-2xl ${item.text}`} />
                 </div>
                 <h3 className="font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -144,7 +199,10 @@ const Marketing = () => {
 
       {activeForm && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent">
-          <div className="fixed inset-0 bg-black opacity-50" onClick={closePopup}></div>
+          <div
+            className="fixed inset-0 bg-black opacity-50"
+            onClick={closePopup}
+          ></div>
           <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-1/2 max-w-md relative">
             <button
               onClick={closePopup}
@@ -154,14 +212,17 @@ const Marketing = () => {
             </button>
             {activeForm === "email" && <EmailForm togglePanel={closePopup} />}
             {activeForm === "sms" && <SMSForm togglePanel={closePopup} />}
-            {activeForm === "emailAudience" && <EmailAudience togglePanel={closePopup} />}
+            {activeForm === "emailAudience" && (
+              <EmailAudience togglePanel={closePopup} />
+            )}
             {/* {activeForm === "smsAudience" && <SmsAudience togglePanel={closePopup} />} */}
-            {activeForm === "emailpost" && <EmailPost togglePanel={closePopup} />}
+            {activeForm === "emailpost" && (
+              <EmailPost togglePanel={closePopup} />
+            )}
             {/* {activeForm === "smspost" && <Smspost togglePanel={closePopup} />} */}
           </div>
         </div>
       )}
-
 
       <div className="flex justify-center gap-4 p-2 ">
         <ButtonGroup variant="outlined" aria-label="Campaign button group">
@@ -176,10 +237,11 @@ const Marketing = () => {
             <Button
               key={tab.key}
               onClick={() => setShowTable(tab.key)}
-              className={`transition-all duration-300 ${showTable === tab.key
-                ? "bg-blue-500 text-white shadow-lg"
-                : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
-                }`}
+              className={`transition-all duration-300 ${
+                showTable === tab.key
+                  ? "bg-blue-500 text-white shadow-lg"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
+              }`}
             >
               {tab.label}
             </Button>
@@ -211,23 +273,47 @@ const Marketing = () => {
                     >
                       Title
                     </TableCell>
-                    {showTable !== "smsCampaigns" && <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center">Subject</TableCell>}
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center">Recipients</TableCell>
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center">Scheduled</TableCell>
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center">Created At</TableCell>
-                    <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      align="center">Actions</TableCell>
+                    {showTable !== "smsCampaigns" && (
+                      <TableCell
+                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                        align="center"
+                      >
+                        Subject
+                      </TableCell>
+                    )}
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Recipients
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Scheduled
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Created At
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Actions
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {tableData.map((campaign) => (
                     <TableRow key={campaign._id}>
                       <TableCell align="center">{campaign.title}</TableCell>
-                      {showTable !== "smsCampaigns" && <TableCell align="center">{campaign.subject}</TableCell>}
+                      {showTable !== "smsCampaigns" && (
+                        <TableCell align="center">{campaign.subject}</TableCell>
+                      )}
                       <TableCell>
                         {campaign.recipients.map((recipient, index) => (
                           <div key={index}>{recipient}</div>
@@ -236,12 +322,15 @@ const Marketing = () => {
 
                       <TableCell align="center">{campaign.schedule}</TableCell>
                       <TableCell>
-                        {new Date(campaign.createdAt).toLocaleDateString('en-GB')}
+                        {new Date(campaign.createdAt).toLocaleDateString(
+                          "en-GB"
+                        )}
                       </TableCell>
                       <TableCell align="center">
                         <Button
                           onClick={() => handleEditCampaign(campaign)}
-                          size="small">
+                          size="small"
+                        >
                           <FaEdit size={20} />
                         </Button>
                         <Button
@@ -267,29 +356,63 @@ const Marketing = () => {
                       theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
                   }}
                 >
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Title</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Caption</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Link</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Recipients</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Scheduled</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Created At</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                    align="center">Actions</TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Title
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Caption
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Link
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Recipients
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Scheduled
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Created At
+                  </TableCell>
+                  <TableCell
+                    sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                    align="center"
+                  >
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {tableData.map((campaign) => (
                   <TableRow key={campaign._id}>
                     <TableCell align="center">{campaign.title}</TableCell>
-                    <TableCell align="center">{campaign.emailPost?.caption}</TableCell>
                     <TableCell align="center">
-                      <Link to={campaign.emailPost?.link} target="_blank" rel="noopener noreferrer">
+                      {campaign.emailPost?.caption}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Link
+                        to={campaign.emailPost?.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         {campaign.emailPost?.link}
                       </Link>
                     </TableCell>
@@ -300,12 +423,13 @@ const Marketing = () => {
                     </TableCell>
                     <TableCell align="center">{campaign.schedule}</TableCell>
                     <TableCell>
-                      {new Date(campaign.createdAt).toLocaleDateString('en-GB')}
+                      {new Date(campaign.createdAt).toLocaleDateString("en-GB")}
                     </TableCell>
                     <TableCell align="center">
                       <Button
                         onClick={() => handleEditCampaign(campaign)}
-                        size="small">
+                        size="small"
+                      >
                         <FaEdit size={20} />
                       </Button>
                       <Button
@@ -315,7 +439,6 @@ const Marketing = () => {
                         <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
                       </Button>
                     </TableCell>
-
                   </TableRow>
                 ))}
               </TableBody>
@@ -336,7 +459,6 @@ const Marketing = () => {
 
           {/* Modal content */}
           <div className="bg-white dark:bg-gray-900 rounded-lg p-8 w-full max-w-md relative space-y-6">
-
             {/* Close button */}
             <button
               onClick={() => setEditModalOpen(false)}
@@ -346,7 +468,9 @@ const Marketing = () => {
             </button>
 
             {/* Modal title */}
-            <h2 className="text-2xl font-semibold text-center">Edit Campaign</h2>
+            <h2 className="text-2xl font-semibold text-center">
+              Edit Campaign
+            </h2>
 
             {/* Title field */}
             <TextField
@@ -355,7 +479,12 @@ const Marketing = () => {
               fullWidth
               value={editingCampaign.title}
               margin="dense"
-              onChange={(e) => setEditingCampaign({ ...editingCampaign, title: e.target.value })}
+              onChange={(e) =>
+                setEditingCampaign({
+                  ...editingCampaign,
+                  title: e.target.value,
+                })
+              }
               sx={{ marginBottom: 2 }}
             />
 
@@ -366,7 +495,12 @@ const Marketing = () => {
               fullWidth
               value={editingCampaign.subject}
               margin="dense"
-              onChange={(e) => setEditingCampaign({ ...editingCampaign, subject: e.target.value })}
+              onChange={(e) =>
+                setEditingCampaign({
+                  ...editingCampaign,
+                  subject: e.target.value,
+                })
+              }
               className="mb-4"
             />
 
@@ -384,9 +518,6 @@ const Marketing = () => {
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 };
