@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { LuBot, LuSend, LuTicket, LuUser } from "react-icons/lu";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { io } from "socket.io-client";
 import axios from "axios";
-
+import Avatar from '@mui/material/Avatar';
+import { UserContext } from '../../context/UserContext';
 
 const token = localStorage.getItem("token");
 
@@ -15,6 +16,7 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null);
     const shouldAutoScroll = useRef(false);
+     const { user } = useContext(UserContext);
 
 
     // useEffect(() => {
@@ -125,16 +127,16 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
 
     return (
         <div className="flex-1 flex flex-col">
-            <Card className="flex flex-col h-[500px] bg-white/90 backdrop-blur-sm overflow-hidden">
+            <Card className="flex flex-col h-[500px] bg-white/90 backdrop-blur-sm overflow-hidden dark:bg-[#1B222D]">
                 {/* Header */}
-                <CardHeader className="border-b px-4 py-3 bg-white">
+                <CardHeader className="border-b px-4 py-3 bg-white dark:bg-[#1B222D] dark:border-[#3D4D60]">
                     <div className="flex items-center gap-3 w-full">
                         <div className="h-10 w-10 rounded-full bg-teal-500 text-white flex items-center justify-center font-semibold border-2 border-teal-100">
                             CS
                         </div>
                         <div>
-                            <CardTitle>Support Assistant</CardTitle>
-                            <p className="text-xs text-slate-500">Typically replies in a few minutes</p>
+                            <CardTitle>Support Agent</CardTitle>
+                            <p className="text-xs text-slate-500 dark:text-gray-300">Typically replies in a few minutes</p>
                         </div>
                         <span className="ml-auto text-sm text-green-700 bg-green-100 border border-green-200 px-2 py-0.5 rounded">
                             Online
@@ -143,16 +145,16 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                 </CardHeader>
 
                 {/* Scrollable Chat Messages */}
-                <CardContent className="flex-1 overflow-y-auto px-4 py-2 space-y-6">
+                <CardContent className="flex-1 overflow-y-auto px-4 py-2 space-y-6 ">
                     {messages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center">
                             <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-4">
                                 <LuBot size={32} className="text-rose-600" />
                             </div>
-                            <h3 className="text-lg font-medium text-slate-800 mb-2">
+                            <h3 className="text-lg font-medium text-slate-800 mb-2 dark:text-gray-300">
                                 Welcome to Support Center
                             </h3>
-                            <p className="text-slate-500 max-w-md">
+                            <p className="text-slate-500 max-w-md dark:text-gray-300">
                                 Our support team is here to help. Send a message to get started.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-2 justify-center">
@@ -164,7 +166,7 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                                     <button
                                         key={text}
                                         onClick={() => setInput(text)}
-                                        className="px-3 py-1.5 text-sm bg-slate-100 rounded-full hover:bg-slate-200 transition"
+                                        className="px-3 py-1.5 text-sm bg-slate-100 rounded-full hover:bg-slate-200 transition dark:bg-slate-300"
                                     >
                                         {text}
                                     </button>
@@ -176,7 +178,7 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                             {messages.map((message, index) => (
                                 <div
                                     key={message.id}
-                                    className={`flex ${message.role === "customer" ? "justify-end" : "justify-start"}`}
+                                    className={`flex ${message.role === "customer" ? "justify-end" : "justify-start"} `}
                                 >
                                     <div
                                         className={`flex items-start gap-3 max-w-[85%] ${message.role === "customer" ? "flex-row-reverse" : ""
@@ -188,7 +190,18 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                                                 : "bg-teal-500 border-teal-100"
                                                 }`}
                                         >
-                                            {message.role === "customer" ? <LuUser size={14} /> : "CS"}
+                                            {/* {message.role === "customer" ? <LuUser size={14} /> : "CS"} */}
+                                            {message.role === "customer" ? (
+                                                 <Avatar
+                                                 src={user?.photo ? `http://localhost:8080${user.photo}` : ""}
+                                                 alt={user?.name}
+                                                 sx={{ width: 40, height: 40, bgcolor: "transparent", color: 'black' }}
+                                               >
+                                                 {!user?.photo && user?.name?.charAt(0).toUpperCase()}
+                                               </Avatar>
+                                            ) : (
+                                                "CS"
+                                            )}
                                         </div>
                                         <div
                                             className={`p-3 rounded-2xl text-sm ${message.role === "customer"
@@ -233,30 +246,30 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                 </CardContent>
 
                 {/* Message Input */}
-                <div className="border-t p-4 bg-slate-50">
+                <div className="border-t p-4 bg-slate-50 dark:bg-[#1B222D] dark:border-[#3D4D60]">
                     <form onSubmit={handleSubmit} className="flex w-full items-end gap-2">
                         <div className="flex-1 relative">
                             <textarea
                                 value={input}
                                 onChange={handleInputChange}
                                 placeholder="Type your message here..."
-                                className="w-full min-h-[80px] resize-none border border-slate-300 rounded-lg p-3 pr-10 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                                className="w-full min-h-[80px] resize-none border border-slate-300 rounded-lg p-3 pr-10 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 dark:bg-[#1B222D]"
                             />
                             <button
                                 type="submit"
                                 disabled={isLoading || !input.trim()}
-                                className="absolute bottom-2 right-2 h-8 w-8 flex items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-md"
+                                className="absolute bottom-2 right-2 h-8 w-8 flex items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white shadow-md mb-6"
                             >
                                 <LuSend size={16} />
                             </button>
                         </div>
-                        <button
+                        {/* <button
                             type="button"
                             onClick={() => setTicketDialogOpen(true)}
                             className="h-10 w-10 rounded-full border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center"
                         >
                             <LuTicket size={16} />
-                        </button>
+                        </button> */}
                     </form>
                 </div>
             </Card>
