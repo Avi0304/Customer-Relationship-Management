@@ -20,6 +20,7 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "formik": "^2.4.6",
+    "framer-motion": "^12.6.3",
     "gapi-script": "^1.2.0",
     "jwt-decode": "^4.0.0",
     "morgan": "^1.10.0",
