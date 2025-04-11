@@ -155,6 +155,47 @@ exports.updateSupportRequest = async (req, res) => {
 };
 
 
+exports.updateSupportpriority  = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty())
+    return res.status(400).json({ errors: errors.array() });
+
+  const { id } = req.params;
+  const { priority } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: "Invalid request ID format" });
+  }
+
+  try {
+    const existing = await Support.findById(id);
+    if (!existing) return res.status(404).json({ message: "Request not found" });
+
+    const previousStatus = existing.priority;
+
+    // Only update if changed
+    if (previousStatus === priority) {
+      return res.status(200).json({ message: "priority already set", support: existing });
+    }
+
+    existing.priority = priority;
+    await existing.save();
+
+    // 🔔 Notify status change
+    await createNotification({
+      title: "Support priority Updated",
+      message: `Status changed from ${previousStatus} to ${priority}`,
+      type: "support",
+      userId: existing.userId,
+    });
+
+    res.status(200).json({ message: "Status updated", support: existing });
+  } catch (error) {
+    console.error("Status update error:", error);
+    res.status(500).json({ message: "Failed to update status", error });
+  }
+};
+
 exports.updateSupportStatus = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())

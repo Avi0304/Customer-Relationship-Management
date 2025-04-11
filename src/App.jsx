@@ -29,7 +29,7 @@ import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
 import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage";
 import TicketDetailPage from "./pages/CustomerPages/TicketDetailPage";
 import SocketTest from "./pages/SocketTest";
-import CustomerFeedback from "./pages/CustomerPages/CustomerFeedbackPage";
+
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -98,6 +98,7 @@ function AppContent() {
             path="/support"
             element={<PrivateRoute element={<SupportPage />} />}
           />
+          
 
           <Route
             path="/customer-dashboard"

@@ -50,57 +50,60 @@ export default function CustomerDashBoard() {
 
         return (
             <>
-                <h2 className="text-lg font-bold capitalize text-black mb-2 dark:text-white">
-                    {status === "in-progress" ? "In Progress" : status}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {filtered.map((ticket) => {
-                        const ticketId = ticket._id?.$oid || ticket._id;
-                        const updatedAt = ticket.updatedAt?.$date || ticket.updatedAt;
+                <Card className="shadow=2xl dark:bg-[#1B222D]">
 
-                        return (
-                            <Card
-                                key={ticketId}
-                                className="dark:bg-[#1B222D] bg-white shadow-md dark:shadow=lg rounded-xl p-4 space-y-3 min-h-[180px] flex flex-col transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-xl"
-                            >
+                    <h2 className="text-lg font-bold capitalize text-black mb-2 dark:text-white">
+                        {status === "in-progress" ? "In Progress" : status}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {filtered.map((ticket) => {
+                            const ticketId = ticket._id?.$oid || ticket._id;
+                            const updatedAt = ticket.updatedAt?.$date || ticket.updatedAt;
 
-                                <div className="flex justify-between items-start">
-                                    {/* Fixed height for consistent subject alignment */}
-                                    <CardTitle className="text-base text-lg font-semibold dark:text-white truncate h-[30px]">
-                                        {ticket.subject}
-                                    </CardTitle>
+                            return (
+                                <Card
+                                    key={ticketId}
+                                    className="dark:bg-[#1B222D] bg-white shadow-md dark:shadow=lg rounded-xl p-4 space-y-3 min-h-[180px] flex flex-col transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:hover:shadow-xl"
+                                >
 
-                                    {getPriorityBadge(ticket.priority)}
-                                </div>
+                                    <div className="flex justify-between items-start">
+                                        {/* Fixed height for consistent subject alignment */}
+                                        <CardTitle className="text-base text-lg font-semibold dark:text-white truncate h-[30px]">
+                                            {ticket.subject}
+                                        </CardTitle>
 
-                                <CardContent className="p-0 text-sm dark:text-gray-300 flex-1 flex flex-col">
-                                    {/* Ticket ID */}
-                                    <div className="text-gray-700 text-xs dark:text-gray-400">
-                                        TICKET-{ticket._id.slice(-4).toUpperCase()}
+                                        {getPriorityBadge(ticket.priority)}
                                     </div>
 
-                                    {/* Description + Date block */}
-                                    <div className="flex flex-col justify-between min-h-[48px]">
-                                        <div className="text-sm text-gray-800 dark:text-gray-300 truncate">
-                                            {ticket.description}
+                                    <CardContent className="p-0 text-sm dark:text-gray-300 flex-1 flex flex-col">
+                                        {/* Ticket ID */}
+                                        <div className="text-gray-700 text-xs dark:text-gray-400">
+                                            TICKET-{ticket._id.slice(-4).toUpperCase()}
                                         </div>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                                            {new Date(ticket.updatedAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
 
-                                    {/* View Ticket pinned to bottom */}
-                                    <Link
-                                        to={`/ticket-detail/${ticket._id}`}
-                                        className="text-sm font-medium text-blue-600 hover:underline mt-auto"
-                                    >
-                                        View Ticket →
-                                    </Link>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
+                                        {/* Description + Date block */}
+                                        <div className="flex flex-col justify-between min-h-[48px]">
+                                            <div className="text-sm text-gray-800 dark:text-gray-300 truncate">
+                                                {ticket.description}
+                                            </div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                {new Date(ticket.updatedAt).toLocaleDateString()}
+                                            </div>
+                                        </div>
+
+                                        {/* View Ticket pinned to bottom */}
+                                        <Link
+                                            to={`/ticket-detail/${ticket._id}`}
+                                            className="text-sm font-medium text-blue-600 hover:underline mt-auto"
+                                        >
+                                            View Ticket →
+                                        </Link>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div >
+                </Card>
             </>
         );
     };
