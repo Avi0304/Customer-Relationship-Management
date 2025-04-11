@@ -4,7 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 const path = require("path");
-const http = require('http');
+const http = require("http");
 require("colors");
 
 const { initializeSocket } = require("./socket");
@@ -35,9 +35,9 @@ app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/support", require("./routes/Support"));
 app.use("/api/campaign", require("./routes/Campaign"));
 app.use("/api/email-campaigns", require("./routes/emailCampaignRoutes"));
-app.use("/api/messages", require("./routes/messageRoutes")); // ✅ Add message routes if not added
+app.use("/api/messages", require("./routes/messageRoutes"));
+app.use("/api/feedback", require("./routes/Feedback"));
 
-// Check for PORT
 if (!process.env.PORT) {
   console.error("❌ Missing environment variables. Check .env file.".red.bold);
   process.exit(1);
