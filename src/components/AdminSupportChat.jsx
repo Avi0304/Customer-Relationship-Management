@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { LuBot, LuSend, LuTicket, LuUser } from "react-icons/lu";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { io } from "socket.io-client";
 import axios from "axios";
 import Avatar from '@mui/material/Avatar';
-import { UserContext } from '../../context/UserContext';
+import { UserContext } from '../context/UserContext';
 
 const token = localStorage.getItem("token");
 
-const CustomerSupportChat = ({ ticketId, customerId }) => {
+const AdminSupportChat = ({ ticketId, customerId }) => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +48,7 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
         });
 
         socket.on("receiveMessage", (data) => {
-            if (data.senderId === customerId && data.senderRole === "customer") return;
+            if (data.senderId === user._id && data.senderRole === "admin") return;
 
             shouldAutoScroll.current = true;
             setMessages((prev) => [
@@ -91,8 +91,8 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
 
         const msg = {
             ticketId,
-            senderId: customerId,
-            senderRole: "customer",
+            senderId: user._id,
+            senderRole: "admin",
             message: input,
         };
 
@@ -109,12 +109,12 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
 
             if (socketRef.current) {
                 socketRef.current.emit("sendMessage", msg);
-            }
+            }   
             shouldAutoScroll.current = true;
 
             setMessages((prev) => [
                 ...prev,
-                { id: response.data._id || Date.now(), role: "customer", content: input },
+                { id: response.data._id || Date.now(), role: "admin", content: input },
             ]);
 
             setInput("");
@@ -178,20 +178,20 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                             {messages.map((message, index) => (
                                 <div
                                     key={message.id}
-                                    className={`flex ${message.role === "customer" ? "justify-end" : "justify-start"} `}
+                                    className={`flex ${message.role === "admin" ? "justify-end" : "justify-start"} `}
                                 >
                                     <div
-                                        className={`flex items-start gap-3 max-w-[85%] ${message.role === "customer" ? "flex-row-reverse" : ""
+                                        className={`flex items-start gap-3 max-w-[85%] ${message.role === "admin" ? "flex-row-reverse" : ""
                                             }`}
                                     >
                                         <div
-                                            className={`h-8 w-8 rounded-full mt-1 flex items-center justify-center text-white font-semibold border-2 ${message.role === "customer"
+                                            className={`h-8 w-8 rounded-full mt-1 flex items-center justify-center text-white font-semibold border-2 ${message.role === "admin"
                                                 ? "bg-rose-500 border-rose-100"
                                                 : "bg-teal-500 border-teal-100"
                                                 }`}
                                         >
                                             {/* {message.role === "customer" ? <LuUser size={14} /> : "CS"} */}
-                                            {message.role === "customer" ? (
+                                            {message.role === "admin" ? (
                                                  <Avatar
                                                  src={user?.photo ? `http://localhost:8080${user.photo}` : ""}
                                                  alt={user?.name}
@@ -200,18 +200,18 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
                                                  {!user?.photo && user?.name?.charAt(0).toUpperCase()}
                                                </Avatar>
                                             ) : (
-                                                "SA"
+                                                "CS"
                                             )}
                                         </div>
                                         <div
-                                            className={`p-3 rounded-2xl text-sm ${message.role === "customer"
+                                            className={`p-3 rounded-2xl text-sm ${message.role === "admin"
                                                 ? "bg-gradient-to-r from-rose-500 to-rose-600 text-white"
                                                 : "bg-white border border-slate-200 text-slate-800 shadow-sm"
                                                 }`}
                                         >
                                             <div>{message.content}</div>
                                             <div
-                                                className={`text-xs mt-1 text-right ${message.role === "customer" ? "text-rose-100" : "text-slate-400"
+                                                className={`text-xs mt-1 text-right ${message.role === "admin" ? "text-rose-100" : "text-slate-400"
                                                     }`}
                                             >
                                                 {index === messages.length - 1 ? "Just now" : `${messages.length - 1 - index} min ago`}
@@ -277,4 +277,4 @@ const CustomerSupportChat = ({ ticketId, customerId }) => {
     );
 };
 
-export default CustomerSupportChat;
+export default AdminSupportChat;

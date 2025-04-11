@@ -12,7 +12,8 @@ const {
   addRelatedResource,
   getRelatedResources,
   updateRelatedResource,
-  deleteRelatedResource
+  deleteRelatedResource,
+  updateSupportpriority
 } = require("../controllers/SupportController");
 
 router.get("/all", getAllSupportRequests);
@@ -29,6 +30,7 @@ router.post(
 
 router.put("/:id/status", updateSupportStatus);
 router.put("/:id/Withdrawstatus", withdrawSupportRequest);
+router.put("/:id/priority", updateSupportpriority);
 
 
 router.put(
