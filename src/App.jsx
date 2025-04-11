@@ -29,6 +29,8 @@ import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
 import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage";
 import TicketDetailPage from "./pages/CustomerPages/TicketDetailPage";
 import SocketTest from "./pages/SocketTest";
+import TicketDetailAdmin from "./pages/AdminTicketDetail"
+import CustomerFeedback from "./pages/CustomerPages/CustomerFeedbackPage";
 
 
 function AppContent() {
@@ -98,7 +100,12 @@ function AppContent() {
             path="/support"
             element={<PrivateRoute element={<SupportPage />} />}
           />
-          
+
+          <Route
+            path="/ticket/:id"
+            element={<PrivateRoute element={<TicketDetailAdmin />} />}
+          />
+
 
           <Route
             path="/customer-dashboard"
