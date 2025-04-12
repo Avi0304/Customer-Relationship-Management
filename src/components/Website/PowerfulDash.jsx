@@ -175,28 +175,27 @@ function PowerfulDash() {
   });
 
   return (
-    <section className="w-full mx-auto py-12 md:py-24 lg:py-25  xl:py-15  2xl:py-40 bg-gray-50">
+    <section className="w-full mx-auto py-12 md:py-24 lg:py-25  xl:py-15  2xl:py-40 bg-gray-50 dark:bg-gray-900/60">
       <div className="mx-auto flex max-w-2xl flex-col items-center justify-center gap-4 text-center">
-        <h2 className="text-3xl font-bold leading-[1.1] text-black sm:text-3xl md:text-5xl">
+        <h2 className="text-3xl font-bold leading-[1.1] text-black sm:text-3xl md:text-5xl dark:text-white">
           Powerful Dashboard
         </h2>
-        <p className="max-w-[85%] text-gray-600 sm:text-lg">
+        <p className="max-w-[85%] text-gray-600 sm:text-lg dark:text-gray-400">
           Get a complete overview of your business with our intuitive dashboard.
         </p>
       </div>
 
       {/* Tabs Navigation */}
       <div className="mx-auto max-w-4xl mt-12">
-        <div className="grid grid-cols-4 bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="grid grid-cols-4 bg-white dark:bg-gray-900/60 shadow-md rounded-lg overflow-hidden">
           {["dashboard", "tasks", "leads", "appointments"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-3 text-center font-medium transition-all duration-300 ${
-                activeTab === tab
+              className={`py-3 text-center font-medium transition-all duration-300 ${activeTab === tab
                   ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -205,7 +204,7 @@ function PowerfulDash() {
 
         {/* Dashboard Tab */}
         {activeTab === "dashboard" && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
+          <div className="mt-6 bg-white dark:bg-gray-800 dark:border-gray-700 p-6 rounded-lg shadow-lg">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {[
                 {
@@ -235,13 +234,13 @@ function PowerfulDash() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="p-4 bg-white rounded-lg shadow-md"
+                  className="p-4 bg-white dark:bg-[#1B222D] rounded-lg shadow-md"
                 >
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-medium">{item.title}</h3>
-                    <div className="text-xl text-gray-500">{item.icon}</div>
+                    <h3 className="text-sm font-medium dark:text-gray-100">{item.title}</h3>
+                    <div className="text-xl text-gray-500 dark:text-gray-300">{item.icon}</div>
                   </div>
-                  <p className="text-2xl font-bold mt-2">{item.value}</p>
+                  <p className="text-2xl font-bold mt-2 dark:text-gray-100">{item.value}</p>
                   <p className="text-xs text-green-500">
                     {item.change} from last month
                   </p>
@@ -252,7 +251,7 @@ function PowerfulDash() {
             {/* Sales Overview */}
             <div className="mt-6 grid gap-4 md:grid-cols-2">
               {/* Sales Overview */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-white dark:bg-[#1B222D] p-6 rounded-lg shadow-md">
                 <h3 className="text-lg font-bold">Sales Overview</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
@@ -264,7 +263,7 @@ function PowerfulDash() {
               </div>
 
               {/* Customer Segments */}
-              <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-white p-6 rounded-lg shadow-md dark:bg-[#1B222D]">
                 <h3 className="text-lg font-bold">Customer Segments</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
@@ -280,7 +279,7 @@ function PowerfulDash() {
 
         {/* Tasks Tab */}
         {activeTab === "tasks" && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
+          <div className="mt-6 bg-white dark:bg-gray-800 dark:border-gray-700 p-6 rounded-lg shadow-lg">
             {/* Header Section */}
             <div className="flex justify-between items-center">
               <h3 className="text-xl font-bold">Task List</h3>
@@ -308,20 +307,20 @@ function PowerfulDash() {
             </div>
 
             {/* Task List */}
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-4 ">
               {tasks.map((task, index) => (
                 <div
                   key={index}
-                  className={`p-4 border-l-4 rounded-lg shadow-md flex justify-between items-center ${getBorderClass(
+                  className={`p-4 border-l-4 rounded-lg shadow-md flex justify-between items-center dark:bg-[#1B222D] ${getBorderClass(
                     task.status
                   )}`}
                 >
                   <div>
                     <h4 className="text-lg font-semibold">{task.title}</h4>
-                    <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-300 flex items-center gap-2">
                       <BiCalendar /> {task.date}
                     </p>
-                    <p className="text-sm text-gray-500 flex items-center gap-2">
+                    <p className="text-sm text-gray-500 dark:text-gray-300 flex items-center gap-2">
                       {" "}
                       <HiBuildingOffice /> {task.company}
                     </p>
@@ -345,7 +344,7 @@ function PowerfulDash() {
 
         {/* Leads Tab */}
         {activeTab === "leads" && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
+          <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             {/* Top Bar */}
             <div className="flex justify-between items-center mb-4">
               {/* Search and Filter */}
@@ -401,8 +400,8 @@ function PowerfulDash() {
 
             {/* Leads Table */}
             <div className="overflow-x-auto">
-              <table className="w-full rounded-lg">
-                <thead className="bg-gray-200">
+              <table className="w-full rounded-lg dark:bg-[#1B222D]">
+                <thead className="bg-gray-200 dark:bg-gray-700">
                   <tr>
                     <th className="p-3 text-center">Name</th>
                     <th className="p-3 text-center">Email</th>
@@ -429,11 +428,11 @@ function PowerfulDash() {
                         lead.status === statusFilter
                     )
                     .map((lead, index) => (
-                      <tr key={index} className="border-b  border-gray-300">
-                        <td className="p-3 text-center">{lead.name}</td>
-                        <td className="p-3 text-center">{lead.email}</td>
-                        <td className="p-3 text-center">{lead.phone}</td>
-                        <td className="p-3 text-center">
+                      <tr key={index} className="border-b  border-gray-300 dark:border-gray-700">
+                        <td className="p-3 text-center dark:text-gray-300">{lead.name}</td>
+                        <td className="p-3 text-center dark:text-gray-300">{lead.email}</td>
+                        <td className="p-3 text-center dark:text-gray-300">{lead.phone}</td>
+                        <td className="p-3 text-center dark:text-gray-300">
                           <span
                             className={`px-3 py-1 text-white rounded-full text-sm ${getStatusBadge(
                               lead.status
@@ -462,7 +461,7 @@ function PowerfulDash() {
 
         {/* Calendar Tab */}
         {activeTab === "appointments" && (
-          <div className="mt-6 bg-white p-6 rounded-lg shadow-lg">
+          <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
             {/* Search and Add Button */}
             <div className="flex justify-between items-center mb-4">
               <TextField
@@ -498,8 +497,8 @@ function PowerfulDash() {
 
             {/* Table */}
             <div className="overflow-x-auto mt-4">
-              <table className="min-w-full bg-white">
-                <thead className="bg-gray-100 text-gray-600 uppercase text-sm font-semibold">
+              <table className="min-w-full bg-white dark:bg-[#1B222D]">
+                <thead className="bg-gray-100 text-white dark:bg-gray-700 uppercase text-sm font-semibold">
                   <tr>
                     <th className="py-3 px-4 text-left">Customer</th>
                     <th className="py-3 px-4 text-left">Contact</th>
@@ -513,20 +512,19 @@ function PowerfulDash() {
                 </thead>
                 <tbody>
                   {filteredAppointments.map((appt, index) => (
-                    <tr key={index} className="border-b  border-gray-300">
-                      <td className="py-3 px-4">{appt.customer}</td>
-                      <td className="py-3 px-4">{appt.contact}</td>
-                      <td className="py-3 px-4">{appt.type}</td>
-                      <td className="py-3 px-4">{appt.date}</td>
-                      <td className="py-3 px-4">{appt.time}</td>
-                      <td className="py-3 px-4">{appt.duration}</td>
+                    <tr key={index} className="border-b  border-gray-300 border-gray-700">
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.customer}</td>
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.contact}</td>
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.type}</td>
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.date}</td>
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.time}</td>
+                      <td className="py-3 px-4 dark:text-gray-300">{appt.duration}</td>
                       <td className="py-3 px-4">
                         <span
-                          className={`px-2 py-1 rounded-full text-white text-xs ${
-                            appt.status === "Confirmed"
+                          className={`px-2 py-1 rounded-full text-white text-xs ${appt.status === "Confirmed"
                               ? "bg-green-500"
                               : "bg-yellow-500"
-                          }`}
+                            }`}
                         >
                           {appt.status}
                         </span>

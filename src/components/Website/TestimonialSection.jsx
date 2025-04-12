@@ -72,18 +72,18 @@ export function TestimonialSection() {
   return (
     <section
       id="testimonials"
-      className="w-full py-12 md:py-24 lg:py-25 xl:py-25 2xl:py-40"
+      className="w-full py-12 md:py-24 lg:py-25 xl:py-25 2xl:py-40 dark:bg-gray-900/60"
     >
       <div className="container mx-auto px-4 md:px-6">
         {/* Heading Section */}
         <div className="text-center space-y-4">
-          <div className="inline-block rounded-lg bg-black px-3 py-1 text-sm text-white">
+          <div className="inline-block rounded-full bg-black dark:bg-indigo-950/40 dark:text-indigo-400 px-3 py-1 text-sm text-white">
             Testimonials
           </div>
-          <h2 className="text-3xl font-bold text-black tracking-tight md:text-4xl lg:text-5xl">
+          <h2 className="text-3xl font-bold text-black dark:text-white tracking-tight md:text-4xl lg:text-5xl">
             Trusted by Businesses Worldwide
           </h2>
-          <p className="mx-auto max-w-2xl text-gray-600 md:text-lg">
+          <p className="mx-auto max-w-2xl text-gray-600 md:text-lg dark:text-gray-300">
             See what our customers have to say about our CRM solution.
           </p>
         </div>
@@ -93,12 +93,12 @@ export function TestimonialSection() {
           {currentTestimonials.map((testimonial) => (
             <div
               key={testimonial.id}
-              className="rounded-lg bg-white p-6 shadow-lg flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-2xl"
+              className="rounded-lg bg-white p-6 shadow-lg flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-2xl dark:bg-gray-800 dark:border-gray-700"
               style={{ minHeight: '340px' }} // Set a minimum height for uniform card size
             >
               <div className="flex flex-col gap-4 flex-grow">
-                <FaQuoteRight size={30} className="text-black" />
-                <p className="text-lg text-gray-800">{testimonial.text}</p>
+                <FaQuoteRight size={30} className="text-black dark:text-gray-200" />
+                <p className="text-lg text-gray-800 dark:text-gray-300">{testimonial.text}</p>
               </div>
               <div className="flex items-center gap-4 mt-6">
                 <img
@@ -107,8 +107,8 @@ export function TestimonialSection() {
                   className="h-10 w-10 rounded-full"
                 />
                 <div>
-                  <h3 className="font-medium text-gray-900">{testimonial.name}</h3>
-                  <p className="text-sm text-gray-500">{testimonial.position}</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white">{testimonial.name}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-300">{testimonial.position}</p>
                 </div>
               </div>
             </div>
