@@ -11,6 +11,7 @@ const lightTheme = {
       light: "#3B82F6",
       dark: "#1D4ED8",
     },
+   point3: "black",
     background: {
       default: "#F8FAFC",
       paper: "#FFFFFF",
@@ -34,6 +35,7 @@ const darkTheme = {
       light: "#60A5FA",
       dark: "#3B82F6",
     },
+    point3: "linear-gradient(90deg, #7C3AED 0%, #9333EA 100%)",
     background: {
       default: "#0F172A",
       paper: "#1E293B",
