@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import hero from "./assets/hero.png";
+import Darkhero from "./assets/dark-dashboard.png";
+import lighthero from "./assets/hero.png";
 import { LuArrowRight } from "react-icons/lu";
+import { ThemeContext } from "../../context/ThemeContext";
 
 
 const HeroSection = () => {
+  const { mode } = useContext(ThemeContext);
   return (
     <section className="w-full min-h-screen py-12 md:py-24 lg:py-15 xl:py-15 2xl:py-40 dark:bg-gradient-to-br dark:from-indigo-950/20 dark:to-purple-950/20">
 
@@ -50,7 +53,7 @@ const HeroSection = () => {
           </div>
 
           <img
-            src={hero}
+            src={mode === 'light' ? lighthero : Darkhero }
             alt="CRM Dashboard"
             className="mx-auto w-full max-w-[700px] h-auto rounded-xl object-contain mt-7"
           />
