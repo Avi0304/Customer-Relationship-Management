@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   FaUsers,
   FaChartBar,
@@ -14,8 +14,11 @@ import { BsCameraVideo } from "react-icons/bs";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import { HiBuildingOffice } from "react-icons/hi2";
-import Salegraph from "./assets/salegraph.png";
-import Customer from "./assets/segmation.png";
+import SalegraphDark from "./assets/dark-sale.png";
+import SalegraphLight from "./assets/light-sale.png";
+import CustomerLight from "./assets/light-customer.png";
+import CustomerDark from "./assets/dark-customer.png";
+import { ThemeContext } from "../../context/ThemeContext";
 import {
   Button,
   TextField,
@@ -67,6 +70,7 @@ function PowerfulDash() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
+   const { mode } = useContext(ThemeContext);
 
   const leads = [
     {
@@ -255,7 +259,7 @@ function PowerfulDash() {
                 <h3 className="text-lg font-bold">Sales Overview</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
-                    src={Salegraph}
+                    src={mode === 'dark' ? SalegraphDark : SalegraphLight}
                     alt="Sales Graph"
                     className="w-full h-full object-cover"
                   />
@@ -267,7 +271,7 @@ function PowerfulDash() {
                 <h3 className="text-lg font-bold">Customer Segments</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
-                    src={Customer}
+                    src={mode === 'dark' ? CustomerDark : CustomerLight}
                     alt="Customer Segments"
                     className="w-full h-full object-cover"
                   />

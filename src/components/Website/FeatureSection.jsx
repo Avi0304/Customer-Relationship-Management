@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {
   FiBarChart2,
   FiCalendar,
@@ -10,10 +10,15 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import Dashborad from "./assets/dashborad.png";
+import DarkDash from "./assets/dark-dash.png";
 import Marketing from "./assets/marketing.png";
+import DarkMark from "./assets/dark-mark.png";
 import Appointment from "./assets/appointment.png";
+import DarkAppointment from "./assets/dark-appt.png";
+import { ThemeContext } from "../../context/ThemeContext";
 
 const FeatureSection = () => {
+  const { mode } = useContext(ThemeContext);
   return (
     <section
       id="features"
@@ -39,7 +44,7 @@ const FeatureSection = () => {
         <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
           <img
-            src={Dashborad}
+            src={ mode === 'light' ? Dashborad : DarkDash}
             alt="Dashboard Feature"
             className="w-full rounded-lg shadow-md"
           />
@@ -119,7 +124,7 @@ const FeatureSection = () => {
 
           {/* Right Side (Image) */}
           <img
-            src={Marketing}
+            src={mode === 'light' ?  Marketing : DarkMark }
             alt="Marketing Feature"
             className="w-full rounded-lg shadow-md"
           />
@@ -129,7 +134,7 @@ const FeatureSection = () => {
         <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
           <img
-            src={Appointment}
+            src={mode === 'light' ? Appointment : DarkAppointment}
             alt="Calendar Feature"
             className="w-full rounded-lg shadow-md"
           />
