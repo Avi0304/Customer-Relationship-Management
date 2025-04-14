@@ -63,7 +63,7 @@ const loginController = async (req, res) => {
         }
         const expiresInMs = 60 * 60 * 1000;
         const token = jwt.sign({ userId: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, {
-            expiresIn: '1h'
+            expiresIn: '60m'
         })
         res.status(200).json({ token, userId: user._id,  isAdmin: user.isAdmin, expiresAt: Date.now() + expiresInMs  });
     } catch (error) {
