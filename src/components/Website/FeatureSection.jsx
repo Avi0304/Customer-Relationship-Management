@@ -22,7 +22,7 @@ const FeatureSection = () => {
   return (
     <section
       id="features"
-      className="w-full py-12 md:py-24 lg:py-32 xl:py-25  2xl:py-40 bg-gray-50 dark:bg-gray-900/60"
+      className="w-full py-12 md:py-24 lg:py-20 xl:py-25 2xl:py-20 bg-gray-50 dark:bg-gray-900/60"
     >
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
@@ -71,10 +71,16 @@ const FeatureSection = () => {
               },
             ].map((feature, index) => (
               <div key={index} className="flex items-start gap-4">
-                <div className="text-black text-2xl dark:text-indigo-400">{feature.icon}</div>
+                <div className="text-black text-2xl dark:text-indigo-400">
+                  {feature.icon}
+                </div>
                 <div>
-                  <h3 className="text-xl font-bold text-black dark:text-white">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                  <h3 className="text-xl font-bold text-black dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {feature.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -103,10 +109,16 @@ const FeatureSection = () => {
               },
             ].map((feature, index) => (
               <div key={index} className="flex items-start gap-4">
-                <div className="text-black text-2xl dark:text-indigo-400">{feature.icon}</div>
+                <div className="text-black text-2xl dark:text-indigo-400">
+                  {feature.icon}
+                </div>
                 <div>
-                  <h3 className="text-xl font-bold text-black dark:text-white">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                  <h3 className="text-xl font-bold text-black dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {feature.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -153,10 +165,16 @@ const FeatureSection = () => {
               },
             ].map((feature, index) => (
               <div key={index} className="flex items-start gap-4">
-                <div className="text-black text-2xl dark:text-indigo-400">{feature.icon}</div>
+                <div className="text-black text-2xl dark:text-indigo-400">
+                  {feature.icon}
+                </div>
                 <div>
-                  <h3 className="text-xl font-bold text-black dark:text-white">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                  <h3 className="text-xl font-bold text-black dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {feature.desc}
+                  </p>
                 </div>
               </div>
             ))}

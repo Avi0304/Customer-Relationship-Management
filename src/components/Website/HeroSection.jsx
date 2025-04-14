@@ -5,12 +5,10 @@ import lighthero from "./assets/hero.png";
 import { LuArrowRight } from "react-icons/lu";
 import { ThemeContext } from "../../context/ThemeContext";
 
-
 const HeroSection = () => {
   const { mode } = useContext(ThemeContext);
   return (
-    <section className="w-full min-h-screen py-12 md:py-24 lg:py-15 xl:py-15 2xl:py-40 dark:bg-gradient-to-br dark:from-indigo-950/20 dark:to-purple-950/20">
-
+    <section className="w-full min-h-screen py-12 md:py-24 lg:py-25 xl:py-25 2xl:py-20 dark:bg-gradient-to-br dark:from-indigo-950/20 dark:to-purple-950/20">
       <div className="container mx-auto px-4 md:px-6 ">
         <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px] 2xl:grid-cols-[1fr_800px]">
           {/* Text Content */}
@@ -40,8 +38,6 @@ const HeroSection = () => {
                 Get Started
                 <LuArrowRight size={23} />
               </Link>
-
-
 
               {/* <Link
                                 href="#demo"

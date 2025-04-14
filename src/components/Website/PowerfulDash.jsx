@@ -566,7 +566,7 @@ function PowerfulDash() {
             {/* Table */}
             <div className="overflow-x-auto mt-4">
               <table className="min-w-full bg-white dark:bg-[#1B222D]">
-                <thead className="bg-gray-100 text-white dark:bg-gray-700 uppercase text-sm font-semibold">
+                <thead className="bg-gray-200 dark:bg-gray-700">
                   <tr>
                     <th className="py-3 px-4 text-left">Customer</th>
                     <th className="py-3 px-4 text-left">Contact</th>

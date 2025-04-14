@@ -9,14 +9,14 @@ import { TestimonialSection } from './TestimonialSection';
 import Footer from './Footer';
 import ContactSection from './ContactSection';
 import { ThemeContext } from "../../context/ThemeContext";
-import { useTheme } from '@mui/material/styles'; 
+import { useTheme } from '@mui/material/styles';
 import ThemeToggle from '../ThemeToggle';
 import ThemeSwitch from './ThemeSwitch';
 
 const Page = () => {
     const navigate = useNavigate();
     const { mode } = useContext(ThemeContext);
-    const theme = useTheme(); 
+    const theme = useTheme();
 
     const [activeSection, setActiveSection] = useState(''); // Track the active section
 
@@ -65,25 +65,29 @@ const Page = () => {
                     {/* Navigation Links */}
                     <nav className="hidden md:flex items-center space-x-8">
                         <button
-                            className={`text-base font-medium ${activeSection === 'features' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
+                            className={`text-base font-medium ${activeSection === 'features'
+                                    ? 'text-black dark:text-indigo-400' 
+                                    : 'text-gray-700 dark:text-gray-300'
+                                } hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
                             onClick={() => handleScroll('features')}
                         >
                             Features
                         </button>
+
                         <button
-                            className={`text-base font-medium ${activeSection === 'Solutions' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
+                            className={`text-base font-medium ${activeSection === 'Solutions' ? 'text-black dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
                             onClick={() => handleScroll('Solutions')}
                         >
                             Solutions
                         </button>
                         <button
-                            className={`text-base font-medium ${activeSection === 'Testimonials' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
+                            className={`text-base font-medium ${activeSection === 'Testimonials' ? 'text-black dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
                             onClick={() => handleScroll('Testimonials')}
                         >
                             Testimonials
                         </button>
                         <button
-                            className={`text-base font-medium ${activeSection === 'Contact' ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
+                            className={`text-base font-medium ${activeSection === 'Contact' ? 'text-black dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'} hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors`}
                             onClick={() => handleScroll('Contact')}
                         >
                             Contact
@@ -92,7 +96,7 @@ const Page = () => {
 
                     {/* Buttons */}
                     <div className="flex items-center gap-4">
-                        <ThemeSwitch/>
+                        <ThemeSwitch />
                         <Button
                             variant="outlined"
                             className="hidden md:inline-flex"
