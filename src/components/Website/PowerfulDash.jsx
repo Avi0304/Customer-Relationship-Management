@@ -9,7 +9,7 @@ import {
   FaCalendar,
 } from "react-icons/fa";
 import { BiPlus, BiCalendar } from "react-icons/bi";
-import { FaEdit, FaSearch } from "react-icons/fa";
+import { FaEdit, FaSearch, FaEye } from "react-icons/fa";
 import { BsCameraVideo } from "react-icons/bs";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
@@ -28,6 +28,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
+
 
 function PowerfulDash() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -70,7 +71,7 @@ function PowerfulDash() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
-   const { mode } = useContext(ThemeContext);
+  const { mode } = useContext(ThemeContext);
 
   const leads = [
     {
@@ -169,6 +170,69 @@ function PowerfulDash() {
     },
   ];
 
+  const supportRequests = [
+    {
+      title: "Briefly describe the issue",
+      description: "Provide as much detail as possible about the issue. Include steps to reproduce,...",
+      status: "Open",
+      date: "4/11/2025, 1:10:25 PM",
+    },
+    {
+      title: "Sample Test Ticket",
+      description: "Testing with valid user",
+      status: "Open",
+      date: "4/10/2025, 1:41:07 PM",
+    },
+    {
+      title: "Unable to deploy Next.js",
+      description: "I'm trying to deploy my Next.js application but I keep getting an error...",
+      status: "Open",
+      date: "4/10/2025, 12:23:41 PM",
+    },
+    {
+      title: "Email Integration",
+      description: "Email integration for marketing",
+      status: "Open",
+      date: "4/10/2025, 10:57:11 AM",
+    },
+    {
+      title: "CRM SMS not Working",
+      description: "SMS not working fix it",
+      status: "In Progress",
+      date: "4/10/2025, 10:45:17 AM",
+    },
+    {
+      title: "CRM inquiry",
+      description: "pricing",
+      status: "Closed",
+      date: "4/9/2025, 11:18:52 AM",
+    },
+    {
+      title: "Fix Bugs",
+      description: "fix bugs",
+      status: "Open",
+      date: "4/8/2025, 2:49:40 PM",
+    },
+    {
+      title: "Campaign Not Sending",
+      description: "Scheduled campaign not sending SMS or email to customers",
+      status: "In Progress",
+      date: "4/8/2025, 10:15:12 AM",
+    },
+    {
+      title: "Ticket Auto Close Issue",
+      description: "Tickets are closing automatically after 24 hours, needs review.",
+      status: "Open",
+      date: "4/7/2025, 5:33:09 PM",
+    },
+  ];
+
+  const statusColors = {
+    Open: "bg-green-500",
+    "In Progress": "bg-orange-400",
+    Closed: "bg-gray-400",
+  };
+
   const filteredAppointments = appointments.filter((appt) => {
     const appointmentDate = new Date(appt.date);
     const today = new Date();
@@ -191,14 +255,14 @@ function PowerfulDash() {
 
       {/* Tabs Navigation */}
       <div className="mx-auto max-w-4xl mt-12">
-        <div className="grid grid-cols-4 bg-white dark:bg-gray-900/60 shadow-md rounded-lg overflow-hidden">
-          {["dashboard", "tasks", "leads", "appointments",].map((tab) => (
+        <div className="grid grid-cols-5 bg-white dark:bg-gray-900/60 shadow-md rounded-lg overflow-hidden">
+          {["dashboard", "tasks", "leads", "appointments", "customer-support"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`py-3 text-center font-medium transition-all duration-300 ${activeTab === tab
-                  ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -526,8 +590,8 @@ function PowerfulDash() {
                       <td className="py-3 px-4">
                         <span
                           className={`px-2 py-1 rounded-full text-white text-xs ${appt.status === "Confirmed"
-                              ? "bg-green-500"
-                              : "bg-yellow-500"
+                            ? "bg-green-500"
+                            : "bg-yellow-500"
                             }`}
                         >
                           {appt.status}
@@ -553,6 +617,106 @@ function PowerfulDash() {
             </div>
           </div>
         )}
+
+        {/* Customer Support */}
+        {activeTab === "customer-support" && (
+          <div className="max-w-screen-xl mx-auto p-6 bg-white rounded-xl shadow-lg mt-6 dark:bg-gray-800">
+            {/* Header Section */}
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-blue-600">
+                  <i className="bi bi-support text-xl"></i>
+                </span>
+                <h1 className="text-xl font-bold">Support Requests</h1>
+              </div>
+
+              <div className="flex gap-4">
+                <TextField
+                  variant="outlined"
+                  placeholder="Search Requests"
+                  size="small"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FaSearch className="text-gray-500" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="medium"
+                  startIcon={<BiPlus />}
+                >
+                  New Requests
+                </Button>
+              </div>
+            </div>
+
+            {/* Filters & Sort */}
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex gap-2 flex-wrap">
+                {["All", "Open", "In Progress", "Closed"].map((status) => (
+                  <button
+                    key={status}
+                    className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${statusFilter === status ? 'bg-blue-600 text-white' : 'bg-transparent text-blue-600'}`}
+                    onClick={() => setStatusFilter(status)}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+
+              <select
+                className="border rounded-md p-2 text-sm font-medium dark:bg-gray-800"
+              // value={sortOrder}
+              // onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="Newest">Newest First</option>
+                <option value="Oldest">Oldest First</option>
+              </select>
+            </div>
+
+            {/* Ticket Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {supportRequests.map((ticket, index) => (
+                <div key={index} className="bg-white dark:bg-[#1B222D] dark:border-gray-700 rounded-xl shadow-md p-6 border border-gray-200">
+                  <h2 className="text-md font-semibold text-gray-800 dark:text-gray-300   truncate">{ticket.title}</h2>
+                  <p className="text-sm text-gray-600 mt-2 line-clamp-2 dark:text-gray-400">{ticket.description}</p>
+
+                  <div className="mt-4 flex items-center justify-between">
+                    {/* Status Badge */}
+                    <span
+                      className={`text-xs font-medium px-3 py-1 rounded-full ${ticket.status === 'Open' ? 'bg-green-600 text-white' : ticket.status === 'In Progress' ? 'bg-orange-500 text-white' : 'bg-gray-400 text-white'}`}
+                    >
+                      {ticket.status}
+                    </span>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-4">
+                      <button className="text-blue-600 hover:text-blue-800">
+                        <FaEdit />
+                      </button>
+                      <button className="text-red-500 hover:text-red-700">
+                        <RiDeleteBin6Line />
+                      </button>
+                      <button className="text-blue-400 hover:text-blue-600">
+                        <FaEye />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Date */}
+                  <p className="text-xs text-gray-500 mt-2 dark:text-gray-400">{ticket.date}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </section>
   );

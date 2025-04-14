@@ -10,7 +10,8 @@ import {
 } from "react-icons/fc";
 import { MdEmail } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { Card, CardHeader, CardTitle, CardContent } from "../ui/card"; // Importing the card components
+import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
+import { FcSupport } from "react-icons/fc";
 
 function SolutionSection() {
   return (
@@ -168,6 +169,21 @@ function SolutionSection() {
         <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3 dark:bg-gray-800 dark:border-gray-700">
           <CardHeader>
             <h3 className="tracking-tight text-sm font-medium dark:text-gray-300">
+              Customer Support
+            </h3>
+            <span className="text-2xl">
+              <FcSupport />
+            </span>
+          </CardHeader>
+          <CardTitle className="text-black text-2xl dark:text-white">Ticketing & Support</CardTitle>
+          <CardContent className="dark:text-gray-400">
+            Submit a ticket or chat with our support team for issue resolution.
+          </CardContent>
+        </Card>
+
+        {/* <Card className="transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-3 dark:bg-gray-800 dark:border-gray-700">
+          <CardHeader>
+            <h3 className="tracking-tight text-sm font-medium dark:text-gray-300">
               Customization
             </h3>
             <span className="text-2xl">
@@ -180,7 +196,7 @@ function SolutionSection() {
           <CardContent className="dark:text-gray-400">
             Customize your CRM to fit your business needs.
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </section>
   );
