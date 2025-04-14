@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { motion } from "framer-motion";
 import swal from "sweetalert2";
+import { UserContext } from "../../context/UserContext";
+import { Avatar } from "@mui/material";
+import axios from 'axios';
 
 const Feedback = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +15,7 @@ const Feedback = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const { user } = useContext(UserContext);
 
   const validate = () => {
     const errs = {};
@@ -30,7 +34,7 @@ const Feedback = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const errs = validate();
     if (Object.keys(errs).length) {
       setErrors(errs);
@@ -41,19 +45,30 @@ const Feedback = () => {
       });
       return;
     }
-
+  
     setLoading(true);
-
+  
+    // Get userId and image, and handle the case where image might be empty
+    const userId = user._id;
+    const img = user.photo ? `http://localhost:8080${user.photo}` : ""; // Default to empty if no photo
+  
+    const formDataWithUserId = {
+      ...formData,
+      userId,
+      img,
+    };
+  
     try {
-      const res = await fetch("http://localhost:8080/api/feedback/submit", {
-        method: "POST",
+      const res = await axios.post("http://localhost:8080/api/feedback/submit", formDataWithUserId, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
       });
-
-      const result = await res.json();
-
-      if (res.ok) {
+  
+      console.log(res); // Log the full response to debug
+  
+      const result = res.data;
+  
+      // Adjusted the status check to 201 for successful POST
+      if (res.status === 201) {
         swal.fire({
           title: "Thank You!",
           text: result.message,
@@ -69,6 +84,7 @@ const Feedback = () => {
         });
       }
     } catch (err) {
+      console.error(err); // Log the error to debug
       swal.fire({
         title: "Something went wrong",
         text: "Please try again.",
@@ -78,7 +94,9 @@ const Feedback = () => {
       setLoading(false);
     }
   };
+  
 
+  
   return (
     <motion.div
       className="max-w-xl mx-auto p-6 rounded-2xl shadow-2xl bg-white dark:bg-gray-900"

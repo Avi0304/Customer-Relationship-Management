@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaQuoteRight } from "react-icons/fa";
 
@@ -47,27 +48,44 @@ const testimonials = [
 ];
 
 export function TestimonialSection() {
+
+  const [feedback, setFeedback] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const testimonialsPerPage = 3;
 
+  const fetchFeedback = async () => {
+    try {
+      const res = await axios.get("http://localhost:8080/api/feedback/feedback-all");
+      setFeedback(res.data);
+    } catch (error) {
+      console.error("error in fetching feedback: ", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchFeedback();
+  }, [])
+
   // Get the testimonials for the current page
-  const currentTestimonials = testimonials.slice(
+  const currentTestimonials = feedback.slice(
     currentPage * testimonialsPerPage,
     (currentPage + 1) * testimonialsPerPage
   );
 
   // Auto-slide functionality
+  // Auto-slide functionality
   useEffect(() => {
     const interval = setInterval(() => {
-      if ((currentPage + 1) * testimonialsPerPage < testimonials.length) {
+      if ((currentPage + 1) * testimonialsPerPage < feedback.length) {
         setCurrentPage(currentPage + 1);
       } else {
         setCurrentPage(0); // Reset to the first page when reaching the last set
       }
-    }, 5000); // Change testimonials every 5 seconds
+    }, 5000);
 
-    return () => clearInterval(interval); // Cleanup on component unmount
-  }, [currentPage]);
+    return () => clearInterval(interval);
+  }, [currentPage, feedback.length]); // <-- also update dependency here
+
 
   return (
     <section
@@ -92,13 +110,22 @@ export function TestimonialSection() {
         <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-3">
           {currentTestimonials.map((testimonial) => (
             <div
-              key={testimonial.id}
+              key={testimonial._id}
               className="rounded-lg bg-white p-6 shadow-lg flex flex-col h-full transition-transform transform hover:scale-105 hover:shadow-2xl dark:bg-gray-800 dark:border-gray-700"
-              style={{ minHeight: '340px' }} // Set a minimum height for uniform card size
+              style={{ minHeight: '450px' }}
             >
               <div className="flex flex-col gap-4 flex-grow">
                 <FaQuoteRight size={30} className="text-black dark:text-gray-200" />
-                <p className="text-lg text-gray-800 dark:text-gray-300">{testimonial.text}</p>
+                <p
+                  className="text-lg text-gray-800 dark:text-gray-300 text-justify overflow-hidden text-ellipsis"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 10, 
+                    WebkitBoxOrient: "vertical"
+                  }}
+                >
+                  {testimonial.message}
+                </p>
               </div>
               <div className="flex items-center gap-4 mt-6">
                 <img
