@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const AdminRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -9,20 +10,7 @@ const AdminRoute = ({ element }) => {
   }
 
   if (!isAdmin) {
-    return (
-      <div style={{
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        backgroundColor: "#f8f8f8",
-        color: "#333"
-      }}>
-        <h1>🚫 Access Denied</h1>
-        <p>You do not have permission to view this page.</p>
-      </div>
-    );
+   return <NotFoundPage/>
   }
 
   return element;

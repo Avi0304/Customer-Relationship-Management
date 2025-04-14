@@ -206,12 +206,12 @@ const AdminSupportChat = ({ ticketId, customerId }) => {
                                         <div
                                             className={`p-3 rounded-2xl text-sm ${message.role === "admin"
                                                 ? "bg-gradient-to-r from-rose-500 to-rose-600 text-white"
-                                                : "bg-white border border-slate-200 text-slate-800 shadow-sm"
+                                                : "bg-gradient-to-r from-teal-500 to-teal-600 text-white"
                                                 }`}
                                         >
                                             <div>{message.content}</div>
                                             <div
-                                                className={`text-xs mt-1 text-right ${message.role === "admin" ? "text-rose-100" : "text-slate-400"
+                                                className={`text-xs mt-1 text-right ${message.role === "admin" ? "text-rose-100" : "text-teal-100"
                                                     }`}
                                             >
                                                 {index === messages.length - 1 ? "Just now" : `${messages.length - 1 - index} min ago`}
