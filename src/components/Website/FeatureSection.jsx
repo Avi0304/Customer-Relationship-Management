@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import {
   FiBarChart2,
   FiCalendar,
@@ -43,14 +43,16 @@ const FeatureSection = () => {
         {/* Features Grid */}
         <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
-          <img
-            src={ mode === 'light' ? Dashborad : DarkDash}
-            alt="Dashboard Feature"
-            className="w-full rounded-lg shadow-md"
-          />
+          <div className="h-full w-full">
+            <img
+              src={mode === 'light' ? Dashborad : DarkDash}
+              alt="Dashboard Feature"
+              className="w-full h-full object-cover rounded-lg shadow-md"
+            />
+          </div>
 
           {/* Right Side (Features List) */}
-          <div className="space-y-6">
+          <div className="flex flex-col justify-center space-y-6">
             {[
               {
                 icon: <FiBarChart2 />,
@@ -88,7 +90,7 @@ const FeatureSection = () => {
         {/* Second Features Row */}
         <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Text) */}
-          <div className="space-y-6">
+          <div className="flex flex-col justify-center space-y-6">
             {[
               {
                 icon: <FiMail />,
@@ -123,24 +125,28 @@ const FeatureSection = () => {
           </div>
 
           {/* Right Side (Image) */}
-          <img
-            src={mode === 'light' ?  Marketing : DarkMark }
-            alt="Marketing Feature"
-            className="w-full rounded-lg shadow-md"
-          />
+          <div className="h-full w-full">
+            <img
+              src={mode === 'light' ? Marketing : DarkMark}
+              alt="Marketing Feature"
+              className="w-full h-full object-cover rounded-lg shadow-md"
+            />
+          </div>
         </div>
 
         {/* Third Features Row */}
         <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
           {/* Left Side (Image) */}
-          <img
+         <div className="h-full w-full">
+         <img
             src={mode === 'light' ? Appointment : DarkAppointment}
             alt="Calendar Feature"
-            className="w-full rounded-lg shadow-md"
+            className="w-full h-full object-cover rounded-lg shadow-md"
           />
+         </div>
 
           {/* Right Side (Text) */}
-          <div className="space-y-6">
+          <div className="flex flex-col justify-center space-y-6">
             {[
               {
                 icon: <FiCalendar />,
