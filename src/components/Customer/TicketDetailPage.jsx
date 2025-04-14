@@ -5,8 +5,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
-import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft } from "react-icons/lu";
+import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft, LuLink, } from "react-icons/lu";
 import CustomerSupportChat from "./CustomerSupportChat";
+import { BiSupport } from "react-icons/bi";
 
 
 const Badge = ({ label, type }) => {
@@ -203,7 +204,7 @@ const TicketDetailPage = () => {
           </Card>
 
           {/* Withdraw or Reopen */}
-          <Card className="min-h-[235px] bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl p-4 space-y-3 flex flex-col hover:shadow-lg dark:hover:shadow-xl">
+          <Card className="min-h-[249px] bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl p-4 space-y-3 flex flex-col hover:shadow-lg dark:hover:shadow-xl">
             <CardHeader>
               <CardTitle className="text-gray-900 dark:text-white">
                 {ticket.status === "Withdrawn" ? "Ticket Already Withdrawn" : "Withdraw Ticket"}
@@ -250,78 +251,14 @@ const TicketDetailPage = () => {
 
         {/* Right Section */}
         <div className="space-y-6">
-          {/* Ticket Status Card */}
-          <Card className="h-auto flex flex-col bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-black dark:text-white">Ticket Status</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-black dark:text-gray-200">Current status:</span>
-                  <Badge label={ticket.status} type={ticket.status} />
-                </div>
-
-                <FormControl component="fieldset" sx={{ marginTop: 3 }}>
-                  <FormLabel
-                    component="legend"
-                    sx={{
-                      fontWeight: 400,
-                      color: '#000',
-                      '&.Mui-focused': { color: '#000' },
-                      '.dark &': {
-                        color: '#E5E7EB', // Tailwind's gray-200 equivalent
-                      },
-                    }}
-                  >
-                    Update Status
-                  </FormLabel>
-
-                  <RadioGroup
-                    name="status"
-                    value={currentRequest.status}
-                    onChange={(e) => setCurrentRequest({ ...currentRequest, status: e.target.value })}
-                  >
-                    {["Open", "In Progress", "Closed"].map((label) => (
-                      <FormControlLabel
-                        key={label}
-                        value={label}
-                        control={
-                          <Radio
-                            color={
-                              label === "Open"
-                                ? "primary"
-                                : label === "In Progress"
-                                  ? "warning"
-                                  : "success"
-                            }
-                          />
-                        }
-                        label={
-                          <span className="text-black dark:text-gray-200">{label}</span>
-                        }
-                      />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-
-              </div>
-
-              <button
-                onClick={() => handleStatusUpdate()}
-                disabled={loading}
-                className="mt-6 bg-blue-600 text-white px-4 py-2 text-sm rounded disabled:opacity-50"
-              >
-                {loading ? "Updating..." : "Update Status"}
-              </button>
-            </CardContent>
-          </Card>
-
           {/* Related Resources Card */}
           <Card className="bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl min-h-[182px]">
             <CardHeader>
-              <CardTitle className="text-black dark:text-white">Related Resources</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-black dark:text-white">
+                <LuLink /> Related Resources
+              </CardTitle>
             </CardHeader>
+
             <CardContent>
               {resources.length > 0 ? (
                 <ul className="space-y-2 text-sm text-blue-600 dark:text-blue-400">
@@ -339,57 +276,49 @@ const TicketDetailPage = () => {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-sm">No related resources found.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm capitalize">No related resources added by support agent.</p>
               )}
             </CardContent>
           </Card>
-        </div>
+          <div className="h-auto max-h-[370px] flex flex-col bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl">
+            <Card className="w-full overflow-hidden border-0 shadow-lg rounded-xl dark:bg-[#1B222D]">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold dark:text-white">
+                  <BiSupport /> Support Hours
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-1">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 p-2 rounded-md bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
+                      <LuCalendar className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Monday - Friday</p>
+                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">9am - 8pm</p>
+                      </div>
+                    </div>
 
-        <div className="w-full mt-1 col-span-1 lg:col-span-3">
-          <CustomerSupportChat ticketId={ticket._id} customerId={ticket.userId}/>
-        </div>
+                    <div className="flex items-center gap-3 p-2 rounded-md bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
+                      <LuCalendar className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Saturday</p>
+                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">10am - 6pm</p>
+                      </div>
+                    </div>
 
-        {/* Full Width Support Hours Card */}
-        <div className="w-full mt-1 col-span-1 lg:col-span-3">
-          <Card className="w-full overflow-hidden border-0 shadow-lg rounded-xl dark:bg-[#1B222D]">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-xl font-bold dark:text-white">Support Hours</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
-                    <LuCalendar className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
-                    <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">Monday - Friday</p>
-                      <p className="text-indigo-600 dark:text-indigo-300 font-semibold">9am - 8pm</p>
+                    <div className="flex items-center gap-3 p-2 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
+                      <LuCalendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Sunday</p>
+                        <p className="text-sm text-red-500 dark:text-red-400 font-semibold">Closed</p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
-                    <LuCalendar className="h-5 w-5 text-indigo-600 dark:text-indigo-300" />
-                    <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">Saturday</p>
-                      <p className="text-indigo-600 dark:text-indigo-300 font-semibold">10am - 6pm</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
-                    <LuCalendar className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                    <div>
-                      <p className="font-medium text-gray-800 dark:text-gray-200">Sunday</p>
-                      <p className="text-red-500 dark:text-red-400 font-semibold">Closed</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-5 border-t border-gray-100 dark:border-gray-700">
-                  <div className="flex items-start gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-900 border border-amber-100 dark:border-amber-800">
-                    <LuCircleAlert className="h-5 w-5 text-amber-600 dark:text-amber-300 mt-0.5" />
-                    <div>
-                      <p className="text-gray-700 dark:text-gray-300">
+                  <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex items-start gap-3 p-3 rounded-md bg-amber-50 dark:bg-amber-900 border border-amber-100 dark:border-amber-800">
+                      <LuCircleAlert className="h-4 w-4 text-amber-600 dark:text-amber-300 mt-0.5" />
+                      <p className="text-sm text-gray-700 dark:text-gray-300 leading-tight">
                         For urgent issues outside of these hours, please use the{" "}
                         <Link
                           href="#"
@@ -402,11 +331,16 @@ const TicketDetailPage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
+              </CardContent>
+            </Card>
+          </div>
         </div>
+
+        <div className="w-full mt-1 col-span-1 lg:col-span-3">
+          <CustomerSupportChat ticketId={ticket._id} customerId={ticket.userId} />
+        </div>
+
+        {/* Full Width Support Hours Card */}
 
       </div>
     </div>
