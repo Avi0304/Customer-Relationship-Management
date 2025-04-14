@@ -192,7 +192,7 @@ function PowerfulDash() {
       {/* Tabs Navigation */}
       <div className="mx-auto max-w-4xl mt-12">
         <div className="grid grid-cols-4 bg-white dark:bg-gray-900/60 shadow-md rounded-lg overflow-hidden">
-          {["dashboard", "tasks", "leads", "appointments"].map((tab) => (
+          {["dashboard", "tasks", "leads", "appointments",].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -502,7 +502,7 @@ function PowerfulDash() {
             {/* Table */}
             <div className="overflow-x-auto mt-4">
               <table className="min-w-full bg-white dark:bg-[#1B222D]">
-                <thead className="bg-gray-100 text-white dark:bg-gray-700 uppercase text-sm font-semibold">
+                <thead className="bg-gray-200 dark:bg-gray-700">
                   <tr>
                     <th className="py-3 px-4 text-left">Customer</th>
                     <th className="py-3 px-4 text-left">Contact</th>
