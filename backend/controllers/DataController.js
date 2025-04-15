@@ -2,26 +2,101 @@ const DataBackup = require("../models/DataModel");
 const fs = require("fs");
 const path = require("path");
 const User = require("../models/User");
+const Appointment = require("../models/Appointment");
+const Task = require("../models/Task");
+const Customer = require("../models/Customer");
+const Leads = require("../models/Leads");
+const Support = require("../models/Support");
+const Sales = require("../models/Sales");
 
 // Export Data
+// exports.exportData = async (req, res) => {
+//   try {
+//     console.log("🚀 Export API called!");
+
+//     const { format } = req.query;
+//     console.log("🔹 Requested format:", format);
+
+//     const userId = req.user.userId; // Ensure correct field
+//     console.log("🔹 Fetching data for user:", userId);
+
+//     const data = await DataBackup.find({ userId });
+//     console.log("🔹 Data retrieved from DB:", data);
+
+//     if (!data.length) {
+//       console.log("⚠️ No data found for this user.");
+//       return res.status(404).json({ message: "No data found." });
+//     }
+
+//     let response;
+//     if (format === "json") {
+//       response = JSON.stringify(data, null, 2);
+//       res.setHeader("Content-Type", "application/json");
+//     } else if (format === "csv") {
+//       const csvData = data
+//         .map((d) => Object.values(d.toObject()).join(","))
+//         .join("\n");
+//       response = csvData;
+//       res.setHeader("Content-Type", "text/csv");
+//     } else {
+//       return res.status(400).json({ message: "Invalid format." });
+//     }
+
+//     res.setHeader("Content-Disposition", `attachment; filename=data.${format}`);
+//     res.send(response);
+//   } catch (error) {
+//     console.error("🔥 Error exporting data:", error);
+//     res.status(500).json({ message: "Error exporting data", error });
+//   }
+// };
+
 exports.exportData = async (req, res) => {
   try {
     console.log("🚀 Export API called!");
 
-    const { format } = req.query;
+    const { format, model } = req.query; // Accept 'model' as a query parameter
     console.log("🔹 Requested format:", format);
+    console.log("🔹 Requested model:", model);
 
     const userId = req.user.userId; // Ensure correct field
     console.log("🔹 Fetching data for user:", userId);
 
-    const data = await DataBackup.find({ userId });
-    console.log("🔹 Data retrieved from DB:", data);
+    // Fetch data based on the 'model' query parameter
+    let data;
+    if (model === "appointments") {
+      data = await Appointment.find();
+      console.log("🔹 Data retrieved from Appointment DB:", data);
+    } 
+    else if (model === "tasks") {
+      data = await Task.find(); 
+      console.log("🔹 Data retrieved from Task DB:", data);
+    } 
+    else if (model === "sales") {
+      data = await Sales.find(); 
+      console.log("🔹 Data retrieved from Sales DB:", data);
+    } 
+    else if (model === "customers") {
+      data = await Customer.find(); 
+      console.log("🔹 Data retrieved from Customer DB:", data);
+    } 
+    else if (model === "support") {
+      data = await Support.find(); 
+      console.log("🔹 Data retrieved from Support DB:", data);
+    } 
+    else if (model === "leads") {
+      data = await Leads.find(); 
+      console.log("🔹 Data retrieved from Lead DB:", data);
+    } 
+    else {
+      return res.status(400).json({ message: "Invalid model." });
+    }
 
     if (!data.length) {
       console.log("⚠️ No data found for this user.");
       return res.status(404).json({ message: "No data found." });
     }
 
+   
     let response;
     if (format === "json") {
       response = JSON.stringify(data, null, 2);
@@ -36,8 +111,10 @@ exports.exportData = async (req, res) => {
       return res.status(400).json({ message: "Invalid format." });
     }
 
-    res.setHeader("Content-Disposition", `attachment; filename=data.${format}`);
+    // Set the content disposition for file download
+    res.setHeader("Content-Disposition", `attachment; filename=${model}.${format}`);
     res.send(response);
+
   } catch (error) {
     console.error("🔥 Error exporting data:", error);
     res.status(500).json({ message: "Error exporting data", error });
@@ -45,33 +122,75 @@ exports.exportData = async (req, res) => {
 };
 
 // Backup Data
+// exports.createBackup = async (req, res) => {
+//   try {
+//     console.log("🔹 Received Backup Request:", req.body);
+
+//     if (!req.user || !req.user.userId) {
+//       return res
+//         .status(401)
+//         .json({ message: "Unauthorized. User ID not found." });
+//     }
+
+//     const userId = req.user.userId;
+
+//     if (!req.body || Object.keys(req.body).length === 0) {
+//       return res.status(400).json({ message: "No data provided for backup." });
+//     }
+
+//     const backupData = await DataBackup.create({
+//       userId,
+//       backupData: req.body.backupData, // 🔹 Store user data
+//     });
+
+//     res
+//       .status(201)
+//       .json({ message: "Backup created successfully", backupData });
+//   } catch (error) {
+//     console.error("🔥 Error creating backup:", error);
+//     res.status(500).json({ message: "Internal Server Error", error });
+//   }
+// };
+
 exports.createBackup = async (req, res) => {
   try {
-    console.log("🔹 Received Backup Request:", req.body);
-
-    if (!req.user || !req.user.userId) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized. User ID not found." });
-    }
-
+    const { model } = req.query; // e.g., ?model=appointments
     const userId = req.user.userId;
 
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ message: "No data provided for backup." });
+    if (!model) {
+      return res.status(400).json({ message: "Model is required." });
     }
 
-    const backupData = await DataBackup.create({
+    // Load data from the correct model dynamically
+    let data;
+    if (model === "appointments") {
+      data = await Appointment.find();
+    } else if (model === "tasks") {
+      data = await Task.find();
+    } else if (model === "sales") {
+      data = await Sales.find();
+    } else if (model === "customers") {
+      data = await Customer.find();
+    } else if (model === "support") {
+      data = await Support.find();
+    } else if (model === "leads") {
+      data = await Leads.find();
+    } else {
+      return res.status(400).json({ message: "Invalid model name." });
+    }
+
+    // Save to DataBackup collection
+    const backup = new DataBackup({
       userId,
-      backupData: req.body.backupData, // 🔹 Store user data
+      model,
+      backupData: data,
     });
 
-    res
-      .status(201)
-      .json({ message: "Backup created successfully", backupData });
+    await backup.save();
+    res.status(200).json({ message: `Backup for ${model} created.`, backup });
   } catch (error) {
     console.error("🔥 Error creating backup:", error);
-    res.status(500).json({ message: "Internal Server Error", error });
+    res.status(500).json({ message: "Error creating backup", error });
   }
 };
 
@@ -98,6 +217,7 @@ exports.restoreBackup = async (req, res) => {
     res.status(500).json({ message: "Error restoring data", error });
   }
 };
+
 
 // Delete Account & Data
 exports.deleteAccount = async (req, res) => {
