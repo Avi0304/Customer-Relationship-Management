@@ -310,4 +310,31 @@ const sendMeetingEmail = async (req, res) => {
   }
 }
 
-module.exports = { getAllAppointment, addAppointment, updateAppointment, deleteAppointment, upcomingAppointment, pastAppointment, sendMeetingEmail }
+const saveEventId = async(req,res) => {
+  const { eventId } = req.body;
+  const { appointmentId } = req.params; 
+
+  try {
+    if (!eventId || !appointmentId) {
+      return res.status(400).json({ message: "Appointment ID and Event ID are required" });
+    }
+
+
+    const appointment = await Appointment.findById(appointmentId);
+    
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    
+    appointment.eventId = eventId;
+    await appointment.save();
+
+    return res.status(200).json({ message: "Event ID saved successfully" });
+  } catch (error) {
+    console.error("Error saving event ID:", error);
+    return res.status(500).json({ message: "Failed to save event ID" });
+  }
+}
+
+module.exports = { getAllAppointment, addAppointment, updateAppointment, deleteAppointment, upcomingAppointment, pastAppointment, sendMeetingEmail, saveEventId }

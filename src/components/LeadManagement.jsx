@@ -279,11 +279,22 @@ const LeadManagement = () => {
       confirmButtonText: "Yes, Export!",
     }).then((result) => {
       if (result.isConfirmed) {
-        const ws = XLSX.utils.json_to_sheet(leads);
+        // Include contactInfo (email and phone) in the exported data
+        const leadsWithContactInfo = leads.map(lead => ({
+          ...lead,
+          email: lead.contactInfo ? lead.contactInfo.email : '',
+          phone: lead.contactInfo ? lead.contactInfo.phone : '',
+        }));
+  
+        // Convert the leads data (with contact info) to a sheet
+        const ws = XLSX.utils.json_to_sheet(leadsWithContactInfo);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Leads");
+        
+        // Export the Excel file
         XLSX.writeFile(wb, "leads.xlsx");
-
+  
+        // Show success message
         Swal.fire({
           title: "Exported!",
           text: "Your leads have been exported.",
@@ -298,6 +309,7 @@ const LeadManagement = () => {
       }
     });
   };
+  
 
   return (
     <div className="mt-0">
