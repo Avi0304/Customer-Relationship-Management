@@ -314,10 +314,10 @@ const CustomerSetting = () => {
 
   // === Data Management Logic ===
   // === Export Data ===
-  const handleExportData = async (format) => {
+  const handleExportData = async (format, modal) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/data/export?format=${format}`,
+        `http://localhost:8080/api/data/export?format=${format}&model=${modal}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob", // Ensure proper file handling
@@ -352,26 +352,16 @@ const CustomerSetting = () => {
         return;
       }
 
-      // ✅ Fetch the current user settings before backing up
-      const settingsResponse = await axios.get(
-        "http://localhost:8080/api/Profile/get-profile",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const userSettings = settingsResponse.data; // 🔹 Get actual user settings
-
       // ✅ Send the correct user settings data for backup
       const response = await axios.post(
-        "http://localhost:8080/api/data/backup",
-        { backupData: userSettings },
+        "http://localhost:8080/api/data/backup?model=support",
+        { },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      const backupData = response.data.backupData;
+      const backupData = response.data.backup.backupData;
       const jsonString = JSON.stringify(backupData, null, 2);
       const blob = new Blob([jsonString], { type: "application/json" });
       const fileUrl = URL.createObjectURL(blob);
@@ -918,7 +908,7 @@ const CustomerSetting = () => {
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("csv")}
+                            onClick={() => handleExportData("csv", "support")}
                             startIcon={<FaFileCsv />}
                           >
                             Export as CSV
@@ -933,7 +923,7 @@ const CustomerSetting = () => {
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("json")}
+                            onClick={() => handleExportData("json", "support")}
                             startIcon={<LuFileJson2 />}
                           >
                             Export as JSON

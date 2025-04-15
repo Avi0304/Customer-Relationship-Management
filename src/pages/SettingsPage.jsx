@@ -11,6 +11,7 @@ import {
   CircularProgress,
   useTheme,
   Typography,
+  Select, MenuItem, FormControl, InputLabel
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -46,7 +47,9 @@ const SettingsPage = () => {
     push: false,
   });
 
+  const [selectedModel, setSelectedModel] = useState("");
   const [backupFile, setBackupFile] = useState(null);
+  const [selectedBackUpModel, setSelectedBackUpModel] = useState("");
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -314,10 +317,10 @@ const SettingsPage = () => {
 
   // === Data Management Logic ===
   // === Export Data ===
-  const handleExportData = async (format) => {
+  const handleExportData = async (format, model) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/data/export?format=${format}`,
+        `http://localhost:8080/api/data/export?format=${format}&model=${model}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob", // Ensure proper file handling
@@ -330,12 +333,12 @@ const SettingsPage = () => {
 
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `data.${format}`;
+      link.download = `data_${model}.${format}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      Swal.fire("Success", `Data exported as ${format}`, "success");
+      Swal.fire("Success", `Data of ${model} exported as ${format}`, "success");
     } catch (error) {
       console.error("Error exporting data:", error);
       Swal.fire("Error", "Failed to export data", "error");
@@ -343,42 +346,33 @@ const SettingsPage = () => {
   };
 
   // === Backup Data and Store it Locally ===
-  const handleBackup = async () => {
+  const handleBackup = async (modelName) => {
     try {
       const token = localStorage.getItem("token");
 
-      if (!token) {
-        Swal.fire("Error", "Unauthorized. Please log in again.", "error");
+      if (!token || token === "undefined") {
+        Swal.fire("Error", "Token missing. Please log in again.", "error");
         return;
       }
 
-      // ✅ Fetch the current user settings before backing up
-      const settingsResponse = await axios.get(
-        "http://localhost:8080/api/Profile/get-profile",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const userSettings = settingsResponse.data; // 🔹 Get actual user settings
 
       // ✅ Send the correct user settings data for backup
       const response = await axios.post(
-        "http://localhost:8080/api/data/backup",
-        { backupData: userSettings },
+        `http://localhost:8080/api/data/backup?model=${modelName}`,
+        {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      const backupData = response.data.backupData;
+      const backupData = response.data.backup.backupData;
       const jsonString = JSON.stringify(backupData, null, 2);
       const blob = new Blob([jsonString], { type: "application/json" });
       const fileUrl = URL.createObjectURL(blob);
 
       setBackupFile(blob); // ✅ Store the backup file in state
 
-      Swal.fire("Success", "Backup created successfully!", "success");
+      Swal.fire("Success", `Backup for ${modelName} created successfully!`, "success");
 
       // ✅ Automatically trigger file download
       const link = document.createElement("a");
@@ -456,6 +450,10 @@ const SettingsPage = () => {
       );
     }
   };
+
+
+
+
 
   const handleViewPolicy = () => {
     Swal.fire({
@@ -904,21 +902,44 @@ const SettingsPage = () => {
                     <div className="mt-6">
                       <div className="mb-6">
                         <h3 className="text-lg font-semibold">Export Data</h3>
-                        <p className="text-gray-500 text-sm mb-2">
+                        <p className="text-gray-500 text-sm mb-4">
                           Download your data securely in CSV or JSON format.
                         </p>
 
-                        <div className="flex gap-3">
+                        <FormControl
+                          variant="outlined"
+                          size="small"
+                          sx={{ minWidth: 200 }}
+                          fullWidth
+                        >
+                          <InputLabel>Select Data to Export</InputLabel>
+                          <Select
+                            value={selectedModel}
+                            onChange={(e) => setSelectedModel(e.target.value)}
+                            label="Select Data to Export"
+                          >
+                            {/* <MenuItem value="" disabled>Select Model</MenuItem> */}
+                            <MenuItem value="appointments">Appointments</MenuItem>
+                            <MenuItem value="tasks">Tasks</MenuItem>
+                            <MenuItem value="leads">Leads</MenuItem>
+                            <MenuItem value="customers">Customers</MenuItem>
+                            <MenuItem value="sales">Sales</MenuItem>
+                            <MenuItem value="support">Customer Support</MenuItem>
+                          </Select>
+                        </FormControl>
+
+                        <div className="flex gap-3 mt-4">
                           <Button
                             variant="contained"
                             color="primary"
+
                             sx={{
                               backgroundColor: "#3B82F6",
                               color: "white",
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("csv")}
+                            onClick={() => handleExportData("csv", selectedModel)}
                             startIcon={<FaFileCsv />}
                           >
                             Export as CSV
@@ -933,7 +954,7 @@ const SettingsPage = () => {
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("json")}
+                            onClick={() => handleExportData("json", selectedModel)}
                             startIcon={<LuFileJson2 />}
                           >
                             Export as JSON
@@ -948,12 +969,34 @@ const SettingsPage = () => {
                         <h3 className="text-lg font-semibold">
                           Backup & Restore
                         </h3>
-                        <p className="text-gray-500 text-sm mb-2">
+                        <p className="text-gray-500 text-sm mb-4">
                           Backup your current data or restore data from a backup
                           file.
                         </p>
 
-                        <div className="flex gap-3">
+                        <FormControl
+                          variant="outlined"
+                          size="small"
+                          sx={{ minWidth: 200 }}
+                          fullWidth
+                        >
+                          <InputLabel>Select Data to Backup</InputLabel>
+                          <Select
+                            value={selectedBackUpModel}
+                            onChange={(e) => setSelectedBackUpModel(e.target.value)}
+                            label="Select Data to Backup"
+                          >
+                            {/* <MenuItem value="" disabled>Select Model</MenuItem> */}
+                            <MenuItem value="appointments">Appointments</MenuItem>
+                            <MenuItem value="tasks">Tasks</MenuItem>
+                            <MenuItem value="leads">Leads</MenuItem>
+                            <MenuItem value="customers">Customers</MenuItem>
+                            <MenuItem value="sales">Sales</MenuItem>
+                            <MenuItem value="support">Customer Support</MenuItem>
+                          </Select>
+                        </FormControl>
+
+                        <div className="flex gap-3 mt-4">
                           <Button
                             variant="contained"
                             color="primary"
@@ -963,7 +1006,7 @@ const SettingsPage = () => {
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={handleBackup}
+                            onClick={() => handleBackup(selectedBackUpModel)}
                             startIcon={<MdBackup />}
                           >
                             Backup Now
