@@ -269,6 +269,25 @@ const AppointmentSchedule = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+
+          const appointmentToDelete = appointments.find((appointment) => appointment._id === id);
+
+          console.log(appointmentToDelete);
+          
+          console.log("Appointment ID: ", appointmentToDelete._id);
+          console.log("Event ID: ", appointmentToDelete.eventId);
+          
+          
+
+          if(!appointmentToDelete || !appointmentToDelete.eventId){
+            throw new Error("Event Id not found");
+          }
+
+          await gapi.client.calendar.events.delete({
+            calendarId: "primary",
+            eventId: appointmentToDelete.eventId
+          })
+
           await axios.delete(
             `http://localhost:8080/api/Appointment/delete/${id}`
           );
@@ -442,7 +461,25 @@ const AppointmentSchedule = () => {
 
       // Extract and open the Google Meet link
       const meetLink = response.result?.hangoutLink;
-      if (meetLink) {
+      const eventId = response.result?.id;
+
+      if (meetLink && eventId) {
+
+        await axios.post(`http://localhost:8080/api/Appointment/send-eventId/${appointment._id}`, {
+          eventId: eventId,
+        });
+
+        if (response.status === 200) {
+        
+          setAppointments((prev) =>
+            prev.map((app) =>
+              app._id === appointment._id ? { ...app, eventId } : app
+            )
+          );
+    
+          console.log("Event ID set successfully", eventId);
+        }
+        
 
         await axios.post("http://localhost:8080/api/Appointment/send-meeting", {
           email: appointment.email,

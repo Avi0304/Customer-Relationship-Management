@@ -100,7 +100,7 @@ const DashboardStats = async (req, res) => {
       : 0;
 
     const customerChange = lastMonthCustomers
-      ? ((activeCustomers - lastMonthCustomers) / lastMonthCustomers) * 100
+      ? Math.min(((activeCustomers - lastMonthCustomers) / lastMonthCustomers) * 100, 100)
       : 0;
 
     const salesChange = lastMonthSales
