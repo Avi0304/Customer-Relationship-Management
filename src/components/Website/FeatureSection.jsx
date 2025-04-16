@@ -41,7 +41,8 @@ const FeatureSection = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+        <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
+
           {/* Left Side (Image) */}
           <div className="h-full w-full">
             <img
@@ -88,7 +89,8 @@ const FeatureSection = () => {
         </div>
 
         {/* Second Features Row */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+        <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
+
           {/* Left Side (Text) */}
           <div className="flex flex-col justify-center space-y-6">
             {[
@@ -108,7 +110,7 @@ const FeatureSection = () => {
                 desc: "Organize and track customer interactions and history.",
               },
             ].map((feature, index) => (
-              <div key={index} className="flex items-start gap-4">
+              <div key={index} className="flex items-start gap-4 mx-2">
                 <div className="text-black text-2xl dark:text-indigo-400">
                   {feature.icon}
                 </div>
@@ -135,7 +137,8 @@ const FeatureSection = () => {
         </div>
 
         {/* Third Features Row */}
-        <div className="mt-12 grid max-w-5xl mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+        <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
+
           {/* Left Side (Image) */}
          <div className="h-full w-full">
          <img
