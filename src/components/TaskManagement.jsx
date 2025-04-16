@@ -365,10 +365,10 @@ const TaskManagement = () => {
                 key={task._id}
                 className={`p-5 shadow-md border-l-8 flex justify-between items-center bg-white text-lg ${
                   task.priority === "High"
-                    ? "border-red-400"
+                    ? "border-red-400 dark:border-red-500"
                     : task.priority === "Medium"
-                    ? "border-yellow-400"
-                    : "border-green-400"
+                    ? "border-yellow-400 dark:border-yellow-500"
+                    : "border-green-400 dark:border-green-500"
                 } light:bg-white dark:bg-gray-800 shadow-lg dark:shadow-md`}
               >
                 {editingTask && editingTask._id === task._id ? (
