@@ -16,7 +16,7 @@ const maybeSendLeadStatusChangeNotification = async (leadId, previousStatus, new
 // Create a new lead and link it to a customer
 exports.createLead = async (req, res) => {
   try {
-    const { name, contactInfo, status, customerId } = req.body;
+    const { name, contactInfo, status, customerId, amount } = req.body;
 
     if (
       !contactInfo ||
@@ -53,7 +53,7 @@ exports.createLead = async (req, res) => {
         leadId: newLead._id,
       });
     } else {
-      newLead = new Lead({ name, contactInfo, status });
+      newLead = new Lead({ name, contactInfo, status, amount });
       await newLead.save();
 
       // ✅ Notification even when customerId is not provided
@@ -105,7 +105,7 @@ exports.getLeadById = async (req, res) => {
 
 exports.updateLead = async (req, res) => {
   try {
-    const { name, contactInfo, status } = req.body;
+    const { name, contactInfo, status, amount } = req.body;
     const { id } = req.params;
 
     const validStatuses = ["new", "contacted", "converted"];
@@ -122,6 +122,15 @@ exports.updateLead = async (req, res) => {
     lead.contactInfo.email = contactInfo?.email || lead.contactInfo.email;
     lead.contactInfo.phone = contactInfo?.phone || lead.contactInfo.phone;
     lead.status = status.toLowerCase();
+
+    // Ensure 'amount' is set when status is 'converted'
+    if (status.toLowerCase() === "converted") {
+      if (amount === undefined || amount === null) {
+        return res.status(400).json({ message: "Amount is required for converted leads." });
+      }
+      lead.amount = Number(amount);  // Ensure amount is a valid number
+    }
+
     await lead.save();
     
     await maybeSendLeadStatusChangeNotification(lead._id, previousStatus, lead.status);
@@ -135,8 +144,8 @@ exports.updateLead = async (req, res) => {
           name: lead.name,
           email: lead.contactInfo.email,
           phone: lead.contactInfo.phone,
-          amount: "0", // Default amount, update as needed
-          segmentation: "Medium", // Default segmentation, update as needed
+          amount: lead.amount,  // Ensure amount is passed when creating customer
+          segmentation: "Medium", 
           status: "pending",
           leadstatus: "converted",
           leadId: lead._id,
@@ -169,6 +178,7 @@ exports.updateLead = async (req, res) => {
     res.status(500).json({ message: "Error updating lead", error });
   }
 };
+
 
 // Delete lead and remove reference from customer
 exports.deleteLead = async (req, res) => {
