@@ -27,6 +27,7 @@ import {
 import { BiSupport } from "react-icons/bi";
 import { FaRegBell } from "react-icons/fa";
 import { ThemeContext } from "../context/ThemeContext";
+import {useNotification} from "../context/NotificationContext";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { formatDistanceToNow } from "date-fns";
@@ -103,66 +104,67 @@ const getNotificationIcon = (type = "") => {
 
 const NotificationBell = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [notifications, setNotifications] = useState([]);
+  // const [notifications, setNotifications] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [socket, setSocket] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [socket, setSocket] = useState(null);
   const { mode } = useContext(ThemeContext);
+  const { notifications,setNotifications, loading } = useNotification();
 
   const currentTheme = localStorage.getItem('theme') || 'light';
   const isDark = currentTheme === 'dark';
 
   // Socket Connection
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (!token) return;
 
-    const newSocket = io("http://localhost:8080", {
-      auth: { token }
-    });
+  //   const newSocket = io("http://localhost:8080", {
+  //     auth: { token }
+  //   });
 
-    setSocket(newSocket);
-    return () => newSocket.disconnect();
-  }, []);
+  //   setSocket(newSocket);
+  //   return () => newSocket.disconnect();
+  // }, []);
 
-  // Handle incoming notifications
-  useEffect(() => {
-    if (!socket) return;
+  // // Handle incoming notifications
+  // useEffect(() => {
+  //   if (!socket) return;
 
-    const handleNewNotification = (notification) => {
-      setNotifications((prev) => [notification, ...prev]);
-      if (Notification.permission === "granted") {
-        new Notification(notification.title, {
-          body: notification.message
-        });
-      }
-    };
+  //   const handleNewNotification = (notification) => {
+  //     setNotifications((prev) => [notification, ...prev]);
+  //     if (Notification.permission === "granted") {
+  //       new Notification(notification.title, {
+  //         body: notification.message
+  //       });
+  //     }
+  //   };
 
-    socket.on("new_notification", handleNewNotification);
-    return () => socket.off("new_notification", handleNewNotification);
-  }, [socket]);
+  //   socket.on("new_notification", handleNewNotification);
+  //   return () => socket.off("new_notification", handleNewNotification);
+  // }, [socket]);
 
-  // Fetch from backend
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  // // Fetch from backend
+  // useEffect(() => {
+  //   const fetchNotifications = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const token = localStorage.getItem("token");
+  //       if (!token) return;
 
-        const res = await axios.get("http://localhost:8080/api/notifications", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+  //       const res = await axios.get("http://localhost:8080/api/notifications", {
+  //         headers: { Authorization: `Bearer ${token}` }
+  //       });
 
-        setNotifications(res.data);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotifications();
-  }, []);
+  //       setNotifications(res.data);
+  //     } catch (err) {
+  //       console.error("Fetch error:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchNotifications();
+  // }, []);
 
   const handleMarkAsRead = async (id) => {
     try {
