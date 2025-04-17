@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
 import { UserProvider } from "./context/UserContext";
+import { NotificationProvider } from "./context/NotificationContext"
 import DashBoard from "./pages/DashBoard";
 import TaskManagementPage from "./pages/TaskManagementPage";
 import CustomerDetails from "./components/CustomerDetails";
@@ -145,9 +146,11 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <UserProvider>
-        <AppContent />
-      </UserProvider>
+      <NotificationProvider>
+        <UserProvider>
+          <AppContent />
+        </UserProvider>
+      </NotificationProvider>
     </ThemeProvider>
   );
 }

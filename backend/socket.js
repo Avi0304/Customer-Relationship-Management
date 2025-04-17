@@ -30,7 +30,8 @@ const initializeSocket = (server) => {
   });
 
   io.on('connection', (socket) => {
-    console.log(`✅ Connected: ${socket.userId}`);
+    socket.join(socket.userId.toString());
+    console.log(`🔔 User ${socket.userId} joined their notification room`);
 
     // Join ticket chat room
     socket.on('joinTicketRoom', (ticketId) => {
