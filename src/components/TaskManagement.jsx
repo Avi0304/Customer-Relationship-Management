@@ -343,7 +343,7 @@ const TaskManagement = () => {
             key={status}
             onClick={() => setFilter(status)}
             className={`px-5 py-2 rounded text-white text-lg transition ${
-              filter === status ? "bg-blue-500" : "bg-gray-400"
+              filter === status ? "bg-blue-500 dark:bg-blue-600" : "bg-gray-400 dark:bg-gray-700"
             }`}
           >
             {status}

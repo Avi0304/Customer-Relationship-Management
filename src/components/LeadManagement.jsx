@@ -108,34 +108,150 @@ const LeadManagement = () => {
     setNewLead((prevState) => ({ ...prevState, status: event.target.value }));
   };
 
+  // const handleAddNewLead = async () => {
+  //   try {
+  //     // await NewLeadValidationSchema.validate(newLead, { abortEarly: false });
+
+  //     if (newLead._id) {
+  //       // Update existing lead using PUT request
+  //       const response = await axios.put(
+  //         `http://localhost:8080/api/leads/update/${newLead._id}`,
+  //         newLead
+  //       );
+
+  //       console.log("Update Response Data:", response.data); // Debugging API response
+
+  //       // Check if response data contains the updated lead
+  //       if (response.data && response.data.lead) {
+  //         setLeads((prevLeads) => {
+  //           const lead = prevLeads.map((lead) =>
+  //             lead._id === response.data.lead._id ? response.data.lead : lead
+  //           );
+  //           return [...lead];
+  //           const updatedLeads = prevLeads.map((lead) =>
+  //             lead._id === response.data.updatedLead._id
+  //               ? response.data.updatedLead
+  //               : lead
+  //           );
+  //           return [...updatedLeads];
+  //         });
+
+  //         Swal.fire({
+  //           title: "Updated!",
+  //           text: "Lead has been updated successfully.",
+  //           icon: "success",
+  //           iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+  //           background: currentTheme === "dark" ? "#1e293b" : "#fff",
+  //           color: currentTheme === "dark" ? "#f8fafc" : "#000",
+  //           timer: 4000,
+  //           timerProgressBar: true,
+  //           showConfirmButton: false,
+  //         });
+  //       } else {
+  //         console.error("Invalid response data:", response.data);
+  //         Swal.fire({
+  //           title: "Error!",
+  //           text: "Failed to update...",
+  //           icon: "error",
+  //           iconColor: currentTheme === "dark" ? "#f87171" : "red",
+  //           background: currentTheme === "dark" ? "#1e293b" : "#fff",
+  //           color: currentTheme === "dark" ? "#f8fafc" : "#000",
+  //         });
+  //       }
+  //     } else {
+  //       // Add new lead using POST request
+  //       if (
+  //         !newLead.name.trim() ||
+  //         !newLead.contactInfo.email.trim() ||
+  //         !newLead.contactInfo.phone.trim()
+  //       ) {
+  //         Swal.fire("Error", "All fields are required!", "error");
+  //         return;
+  //       }
+
+  //       const response = await axios.post(
+  //         "http://localhost:8080/api/leads/add",
+  //         newLead
+  //       );
+
+  //       console.log("Response Data:", response.data); // Debugging API response
+
+  //       // Check if response data contains newLead
+  //       if (response.data && response.data.newLead) {
+  //         setLeads((prevLeads) => [...prevLeads, response.data.newLead]);
+
+  //         Swal.fire({
+  //           title: "Added!",
+  //           text: "New lead has been added successfully.",
+  //           icon: "success",
+  //           iconColor: currentTheme === "dark" ? "#4ade80" : "green",
+  //           background: currentTheme === "dark" ? "#1e293b" : "#fff",
+  //           color: currentTheme === "dark" ? "#f8fafc" : "#000",
+  //           timer: 4000,
+  //           timerProgressBar: true,
+  //           showConfirmButton: false,
+  //         });
+  //       } else {
+  //         console.error("Invalid response data:", response.data);
+  //         Swal.fire("Error", "Failed to add lead. Please try again.", "error");
+  //       }
+  //     }
+
+  //     setOpenAddDialog(false);
+
+  //     // Reset newLead state
+  //     setNewLead({
+  //       name: "",
+  //       contactInfo: { email: "", phone: "" },
+  //       status: "new",
+  //     });
+  //   } catch (error) {
+  //     console.error("Validation Error:", error);
+  //     Swal.fire({
+  //       title: "Error!",
+  //       text: "Please check the entered details.",
+  //       icon: "error",
+  //       iconColor: currentTheme === "dark" ? "#f87171" : "red",
+  //       background: currentTheme === "dark" ? "#1e293b" : "#fff",
+  //       color: currentTheme === "dark" ? "#f8fafc" : "#000",
+  //     });
+  //   }
+  // };
+
   const handleAddNewLead = async () => {
     try {
+      // Validate the lead data if needed (optional)
       // await NewLeadValidationSchema.validate(newLead, { abortEarly: false });
 
+      if (newLead.status === "converted" && !newLead.amount) {
+        Swal.fire("Error", "Amount is required for converted leads!", "error");
+        return;
+      }
+
+      if (newLead.status === "converted") {
+        newLead.amount = Number(newLead.amount); // Ensure amount is a number
+      }      
+  
       if (newLead._id) {
         // Update existing lead using PUT request
+        console.log(newLead);
+        
         const response = await axios.put(
           `http://localhost:8080/api/leads/update/${newLead._id}`,
           newLead
         );
-
+  
         console.log("Update Response Data:", response.data); // Debugging API response
-
+  
         // Check if response data contains the updated lead
         if (response.data && response.data.lead) {
           setLeads((prevLeads) => {
-            const lead = prevLeads.map((lead) =>
-              lead._id === response.data.lead._id ? response.data.lead : lead
-            );
-            return [...lead];
             const updatedLeads = prevLeads.map((lead) =>
-              lead._id === response.data.updatedLead._id
-                ? response.data.updatedLead
-                : lead
+              lead._id === response.data.lead._id ? response.data.lead : lead
             );
             return [...updatedLeads];
           });
-
+  
           Swal.fire({
             title: "Updated!",
             text: "Lead has been updated successfully.",
@@ -163,23 +279,24 @@ const LeadManagement = () => {
         if (
           !newLead.name.trim() ||
           !newLead.contactInfo.email.trim() ||
-          !newLead.contactInfo.phone.trim()
+          !newLead.contactInfo.phone.trim() ||
+          (newLead.status === "converted" && !newLead.amount) // Check if amount is required for "converted" status
         ) {
           Swal.fire("Error", "All fields are required!", "error");
           return;
         }
-
+  
         const response = await axios.post(
           "http://localhost:8080/api/leads/add",
           newLead
         );
-
+  
         console.log("Response Data:", response.data); // Debugging API response
-
+  
         // Check if response data contains newLead
         if (response.data && response.data.newLead) {
           setLeads((prevLeads) => [...prevLeads, response.data.newLead]);
-
+  
           Swal.fire({
             title: "Added!",
             text: "New lead has been added successfully.",
@@ -196,14 +313,15 @@ const LeadManagement = () => {
           Swal.fire("Error", "Failed to add lead. Please try again.", "error");
         }
       }
-
+  
       setOpenAddDialog(false);
-
+  
       // Reset newLead state
       setNewLead({
         name: "",
         contactInfo: { email: "", phone: "" },
         status: "new",
+        amount: "", // Ensure amount is reset
       });
     } catch (error) {
       console.error("Validation Error:", error);
@@ -217,7 +335,7 @@ const LeadManagement = () => {
       });
     }
   };
-
+  
   const handleEditLead = (lead) => {
     setNewLead(lead);
     setOpenAddDialog(true);
@@ -285,15 +403,15 @@ const LeadManagement = () => {
           email: lead.contactInfo ? lead.contactInfo.email : '',
           phone: lead.contactInfo ? lead.contactInfo.phone : '',
         }));
-  
+
         // Convert the leads data (with contact info) to a sheet
         const ws = XLSX.utils.json_to_sheet(leadsWithContactInfo);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Leads");
-        
+
         // Export the Excel file
         XLSX.writeFile(wb, "leads.xlsx");
-  
+
         // Show success message
         Swal.fire({
           title: "Exported!",
@@ -309,7 +427,7 @@ const LeadManagement = () => {
       }
     });
   };
-  
+
 
   return (
     <div className="mt-0">
@@ -532,6 +650,19 @@ const LeadManagement = () => {
               <MenuItem value="converted">Converted</MenuItem>
             </Select>
           </FormControl>
+
+          {newLead.status === "converted" && (
+            <TextField
+              label="Amount"
+              variant="outlined"
+              name="amount"
+              value={newLead.amount || ""}
+              onChange={handleNewLeadChange}
+              fullWidth
+              margin="dense"
+              style={{ marginBottom: "16px" }}
+            />
+          )}
         </DialogContent>
 
         <DialogActions sx={{ m: 1 }}>

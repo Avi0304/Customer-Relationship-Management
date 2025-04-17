@@ -18,6 +18,13 @@ const leadSchema = new mongoose.Schema(
       default: null,
       required: false,
     },
+    amount: {
+      type: Number,
+      required: function() {
+        return this.status === 'converted'; // Make amount required only when status is 'converted'
+      },
+      default: 0, 
+    },
   },
   { timestamps: true }
 );
