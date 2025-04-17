@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Customer = require("../models/Customer");
-const Lead = require("../models/Leads"); // Ensure correct import
+const Lead = require("../models/Leads"); 
+const Sale = require("../models/Sales");
 
 const { createNotification } = require('../utils/notificationService');
 
@@ -114,6 +115,16 @@ const updateCustomer = async (req, res) => {
     
     if (!updatedCustomer) {
       return res.status(404).json({ message: "Customer not found" });
+    }
+    if (updatedCustomer.status === "completed") {
+      const newSale = new Sale({
+        customer: updatedCustomer.name,       
+        customerId: updatedCustomer._id,     
+        amount: updatedCustomer.amount,
+        status: "Completed",
+      });
+    
+      await newSale.save();
     }
 
     await createNotification({
