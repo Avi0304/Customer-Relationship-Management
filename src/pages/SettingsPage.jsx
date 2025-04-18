@@ -42,9 +42,10 @@ const SettingsPage = () => {
 
   const { user, setUser } = useContext(UserContext);
 
+  const pushEnabled = localStorage.getItem("pushEnabled") === "true"
   const [notifications, setNotifications] = useState({
     email: true,
-    push: false,
+    push: pushEnabled,
   });
 
   const [selectedModel, setSelectedModel] = useState("");
@@ -840,12 +841,20 @@ const SettingsPage = () => {
 
                             <Switch
                               checked={notifications[key]}
-                              onChange={() =>
-                                setNotifications((prev) => ({
-                                  ...prev,
-                                  [key]: !prev[key],
-                                }))
-                              }
+                              onChange={() => {
+                                setNotifications((prev) => {
+                                  const updatedNotifications = {
+                                    ...prev,
+                                    [key]: !prev[key],
+                                  };
+                                  // For push notifications, also update the localStorage
+                                  if (key === "push") {
+                                    const isPushEnabled = !prev[key];
+                                    localStorage.setItem("pushEnabled", isPushEnabled.toString()); // Save to localStorage
+                                  }
+                                  return updatedNotifications;
+                                });
+                              }}
                             />
                           </div>
                         ))}
@@ -894,6 +903,7 @@ const SettingsPage = () => {
                     </div>
                   </div>
                 )}
+
 
                 {/* Data Management Tab */}
                 {tab === "data" && (
