@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
+import { useRef } from "react";
 
 const NotificationContext = createContext();
 
@@ -8,6 +9,7 @@ export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [socket, setSocket] = useState(null);
+  const shownNotificationIds = useRef(new Set());
 
   // ✅ Fetch unseen + initial notifications
   const fetchNotifications = async () => {
@@ -28,6 +30,17 @@ export const NotificationProvider = ({ children }) => {
 
         if (fresh.length > 0) {
           console.log("📥 New notifications from DB fetch:", fresh);
+
+          if (Notification.permission === "granted") {
+            fresh.forEach((notif) => {
+              if (!shownNotificationIds.current.has(notif._id)) {
+                new Notification(notif.title, {
+                  body: notif.message,
+                });
+                shownNotificationIds.current.add(notif._id); // ✅ Mark as shown
+              }
+            });
+          }
         }
 
         return [...fresh, ...prev]; // newest on top
@@ -90,6 +103,8 @@ export const NotificationProvider = ({ children }) => {
       Notification.requestPermission();
     }
   }, []);
+
+  
 
   return (
     <NotificationContext.Provider
