@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
-import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
+import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel, } from '@mui/material';
 import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft, LuLink, LuPlus } from "react-icons/lu";
 import AdminSupportChat from "../components/AdminSupportChat";
 
@@ -38,9 +38,14 @@ const TicketDetailsAdmin = () => {
     const [isHovered, setIsHovered] = useState(false)
     const [priority, setPriority] = useState(currentRequest?.priority || "");
     const [isUpdating, setIsUpdating] = useState(false);
+    const [currentRequest2, setCurrentRequest2] = useState({ priority: "" });
 
 
-
+    useEffect(() => {
+        if (ticket && ticket.priority) {
+            setCurrentRequest2({ priority: ticket.priority });
+        }
+    }, [ticket]);
 
     useEffect(() => {
         const fetchTicketDetails = async () => {
@@ -98,15 +103,19 @@ const TicketDetailsAdmin = () => {
     };
 
     const handlePriorityUpdate = async (e) => {
-        e.preventDefault(); // Prevent form from refreshing the page
+        e.preventDefault(); // Prevent form default behavior
         try {
             setIsUpdating(true);
+
+            // console.log(ticket.priority);
+
             const res = await axios.put(`http://localhost:8080/api/support/${ticket._id}/priority`, {
-                priority,
+                priority: currentRequest2.priority,
             });
 
+            // Update ticket and current request states
             setTicket((prev) => ({ ...prev, priority: res.data.support.priority }));
-            setCurrentRequest({ priority: res.data.support.priority });
+            setCurrentRequest2({ priority: res.data.support.priority });
 
             Swal.fire({
                 icon: "success",
@@ -123,6 +132,7 @@ const TicketDetailsAdmin = () => {
             setIsUpdating(false);
         }
     };
+
 
 
     const handleresource = async (e) => {
@@ -382,72 +392,87 @@ const TicketDetailsAdmin = () => {
                             <button
                                 onClick={() => handleStatusUpdate()}
                                 disabled={loading}
-                                className="mt-6 bg-blue-600 text-white px-4 py-2 text-sm rounded disabled:opacity-50"
+                                className={`mt-6 w-full flex items-center justify-center gap-2 ${loading
+                                    ? "bg-blue-400 cursor-not-allowed"
+                                    : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
+                                    } dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all`}
                             >
                                 {loading ? "Updating..." : "Update Status"}
                             </button>
                         </CardContent>
                     </Card>
 
-                    
-                    <Card className="bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl min-h-[182px]">
+
+                    <Card className="h-auto flex flex-col bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl mt-6">
                         <CardHeader>
-                            <CardTitle className="text-black dark:text-white">Update Priority</CardTitle>
+                            <CardTitle className="text-black dark:text-white">Ticket Priority</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="font-semibold text-black dark:text-gray-200">Current Priority:</span>
-                                <Badge label={ticket.priority} type={ticket.priority} />
-                            </div>
-                            <form onSubmit={handlePriorityUpdate} className="space-y-4 mt-5">
-                                <div className="flex flex-col">
-                                    <FormLabel className="text-sm font-medium dark:text-gray-300 mb-1"  sx={{
+
+                        <CardContent className="flex-1 flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="font-semibold text-black dark:text-gray-200">Current priority:</span>
+                                    <Badge label={ticket.priority} type={ticket.priority} />
+                                </div>
+
+                                <FormControl component="fieldset" sx={{ marginTop: 3 }}>
+                                    <FormLabel
+                                        component="legend"
+                                        sx={{
                                             fontWeight: 400,
                                             color: '#000',
                                             '&.Mui-focused': { color: '#000' },
                                             '.dark &': {
-                                                color: '#E5E7EB', // Tailwind's gray-200 equivalent
+                                                color: '#E5E7EB', // gray-200
                                             },
-                                        }}>
-                                        Select Priority
-                                    </FormLabel>
-                                    <RadioGroup
-                                        value={priority}
-                                        onChange={(e) => setPriority(e.target.value)}
-
-                                        className="flex gap-1"
+                                        }}
                                     >
-                                        {["Low", "Medium", "High"].map((level) => (
+                                        Update Priority
+                                    </FormLabel>
+
+                                    <RadioGroup
+                                        name="priority"
+                                        value={currentRequest2.priority}
+                                        onChange={(e) => setCurrentRequest2({ ...currentRequest2, priority: e.target.value })}
+                                    >
+                                        {["Low", "Medium", "High"].map((label) => (
                                             <FormControlLabel
-                                                key={level}
-                                                value={level}
-                                                control={<Radio
-                                                    sx={{
-                                                        color: "#3B82F6",
-                                                        '&.Mui-checked': {
-                                                            color: "#2563EB", // blue-600
-                                                        },
-                                                    }}
-                                                />}
-                                                label={<span className="text-gray-800 dark:text-white text-sm">{level}</span>}
+                                                key={label}
+                                                value={label}
+                                                control={
+                                                    <Radio
+                                                        color={
+                                                            label === "Low"
+                                                                ? "primary"
+                                                                : label === "Medium"
+                                                                    ? "secondary"
+                                                                    : label === "High"
+                                                                        ? "warning"
+                                                                        : "error"
+                                                        }
+                                                    />
+                                                }
+                                                label={<span className="text-black dark:text-gray-200">{label}</span>}
                                             />
                                         ))}
                                     </RadioGroup>
-                                </div>
+                                </FormControl>
+                            </div>
 
-                                <button
-                                    type="submit"
-                                    disabled={isUpdating}
-                                    className={`w-full flex items-center justify-center gap-2 ${isUpdating
+                            <button
+                                onClick={handlePriorityUpdate}
+                                disabled={isUpdating}
+                                className={`mt-6 w-full flex items-center justify-center gap-2 ${isUpdating
                                         ? "bg-blue-400 cursor-not-allowed"
                                         : "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
-                                        } dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all`}
-                                >
-                                    {isUpdating ? "Updating..." : "Update Priority"}
-                                </button>
-                            </form>
+                                    } dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold py-1.5 rounded-lg shadow-md hover:shadow-lg transition-all`}
+                            >
+                                {isUpdating ? "Updating..." : "Update Priority"}
+                            </button>
+
                         </CardContent>
                     </Card>
+
                 </div>
 
                 <div className="w-full mt-1 col-span-1 lg:col-span-3">
