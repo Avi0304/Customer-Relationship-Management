@@ -34,6 +34,7 @@ app.use("/api/Contact", require("./routes/contactRoute"));
 app.use("/api/notifications", require("./routes/notificationRoute"));
 app.use("/api/support", require("./routes/Support"));
 app.use("/api/campaign", require("./routes/Campaign"));
+app.use("/api/audience", require("./routes/Campaign"));
 app.use("/api/email-campaigns", require("./routes/emailCampaignRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/feedback", require("./routes/Feedback"));

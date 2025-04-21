@@ -19,6 +19,19 @@ import {
   CircularProgress,
   TextField,
   ButtonGroup,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Box,
+  Grid,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
 } from "@mui/material";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
@@ -33,6 +46,27 @@ const Marketing = () => {
   const [loading, setLoading] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false); // state to open/close the edit modal
   const [editingCampaign, setEditingCampaign] = useState(null);
+  const [audience, setAudience] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [editingAudience, setEditingAudience] = useState(null);
+
+
+  useEffect(() => {
+    const fetchAudience = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://localhost:8080/api/audience/get-audience")
+        const audience = response.data;
+        setAudience(audience);
+      } catch (error) {
+        console.error("Error in fetching audience data: ", error);
+      }
+      setLoading(false)
+    }
+
+    fetchAudience()
+
+  }, []);
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -130,6 +164,24 @@ const Marketing = () => {
       ],
     },
   ];
+  const handleDeleteAudience = async (AudienceId) => {
+    try {
+      // Make the delete request
+      const response = await axios.delete(
+        `http://localhost:8080/api/campaign/delete-audience/${AudienceId}`
+      );
+
+      // Check if the deletion was successful (optional, based on API response)
+      if (response.status === 200) {
+        // Update the state to remove the deleted audience
+        setAudience((prevAudience) => prevAudience.filter((aud) => aud._id !== AudienceId));
+      } else {
+        console.error("Failed to delete audience");
+      }
+    } catch (error) {
+      console.error("Error deleting the audience: ", error);
+    }
+  };
 
   const handleDeleteCampaign = async (campaignId) => {
     try {
@@ -147,6 +199,37 @@ const Marketing = () => {
     setEditingCampaign(campaign);
     setEditModalOpen(true);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log("click");
+
+    const updatedAudience = {
+      ...editingAudience,
+    };
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/campaign/update-audience/${editingAudience._id}`,
+        updatedAudience
+      );
+
+      const updatedData = response.data;
+
+      console.log("✅ Audience updated successfully:", response.data);
+      setAudience((prevAudiences) =>
+        prevAudiences.map((aud) =>
+          aud._id === updatedData._id ? updatedData : aud
+        )
+      );
+
+      setOpen(false); // Close dialog after success
+    } catch (error) {
+      console.error("❌ Failed to update audience:", error);
+    }
+  };
+
 
   const handleUpdateCampaign = async () => {
     try {
@@ -166,6 +249,24 @@ const Marketing = () => {
     } catch (err) {
       console.error("Failed to update campaign:", err);
     }
+  };
+
+  const handleEditAudience = (aud) => {
+    setEditingAudience(aud);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditingAudience(null);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditingAudience({
+      ...editingAudience,
+      [name]: value,
+    });
   };
 
   return (
@@ -237,11 +338,10 @@ const Marketing = () => {
             <Button
               key={tab.key}
               onClick={() => setShowTable(tab.key)}
-              className={`transition-all duration-300 ${
-                showTable === tab.key
-                  ? "bg-blue-500 text-white shadow-lg"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
-              }`}
+              className={`transition-all duration-300 ${showTable === tab.key
+                ? "bg-blue-500 text-white shadow-lg"
+                : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
+                }`}
             >
               {tab.label}
             </Button>
@@ -254,6 +354,101 @@ const Marketing = () => {
           <div className="flex justify-center items-center">
             <CircularProgress />
           </div>
+        ) : showTable === "audienceTable" ? (
+          audience.length === 0 ? (
+            <p className="text-center text-gray-500">No audience data found.</p>
+          ) : (
+            <TableContainer component={Paper} className="shadow-lg">
+              <Table aria-label="audience table">
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+                    }}
+                  >
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Name
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Description
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Age Range
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Location
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Gender
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Interests
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      align="center"
+                    >
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {audience.map((aud) => (
+                    <TableRow key={aud._id}>
+                      <TableCell align="center">{aud.audienceName}</TableCell>
+                      <TableCell align="center" sx={{ maxWidth: '200px' }}>{aud.audienceDescription}</TableCell>
+                      <TableCell align="center">{aud.ageRange}</TableCell>
+                      <TableCell align="center">{aud.location}</TableCell>
+                      <TableCell align="center">{aud.gender}</TableCell>
+                      <TableCell align="center">
+                        {Array.isArray(aud.interests) && aud.interests.length > 0 ? (
+                          aud.interests.map((interest, index) => (
+                            <div key={index}>{interest}</div>
+                          ))
+                        ) : (
+                          'No interests'
+                        )}
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <Button
+                          onClick={() => handleEditAudience(aud)}
+                          size="small"
+                        >
+                          <FaEdit size={20} />
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteAudience(aud._id)}
+                          size="small"
+                        >
+                          <RiDeleteBin6Line className="h-5 w-5 text-red-600" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )
         ) : showTable === "emailCampaigns" || showTable === "smsCampaigns" ? (
           tableData.length === 0 ? (
             <p className="text-center text-gray-500">No campaigns found.</p>
@@ -518,6 +713,153 @@ const Marketing = () => {
           </div>
         </div>
       )}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>Edit Audience</DialogTitle>
+
+        {/* Form wrapper includes DialogContent and Buttons */}
+        <Box component="form" onSubmit={handleSubmit}>
+          <DialogContent
+            dividers
+            sx={{
+              p: 2,
+              maxHeight: '75vh',
+              overflowY: 'auto',
+            }}
+          >
+            {editingAudience ? (
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    name="audienceName"
+                    label="Audience Name"
+                    fullWidth
+                    required
+                    variant="outlined"
+                    value={editingAudience.audienceName}
+                    onChange={handleChange}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    name="audienceDescription"
+                    label="Description"
+                    fullWidth
+                    required
+                    multiline
+                    rows={2}
+                    variant="outlined"
+                    value={editingAudience.audienceDescription}
+                    onChange={handleChange}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <FormControl fullWidth required>
+                    <InputLabel>Age Range</InputLabel>
+                    <Select
+                      name="ageRange"
+                      value={editingAudience.ageRange}
+                      onChange={handleChange}
+                      label="Age Range"
+                    >
+                      {["18-25", "26-35", "36-50", "50+"].map((age) => (
+                        <MenuItem key={age} value={age}>
+                          {age}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <FormControl fullWidth required>
+                    <InputLabel>Location</InputLabel>
+                    <Select
+                      name="location"
+                      value={editingAudience.location}
+                      onChange={handleChange}
+                      label="Location"
+                    >
+                      {["India", "USA", "Canada", "UK", "Europe", "Asia"].map((loc) => (
+                        <MenuItem key={loc} value={loc}>
+                          {loc}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <FormControl fullWidth required>
+                    <InputLabel>Gender</InputLabel>
+                    <Select
+                      name="gender"
+                      value={editingAudience.gender}
+                      onChange={handleChange}
+                      label="Gender"
+                    >
+                      <MenuItem value="All">All</MenuItem>
+                      <MenuItem value="Male">Male</MenuItem>
+                      <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    name="emailSubject"
+                    label="Email Subject"
+                    fullWidth
+                    variant="outlined"
+                    value={editingAudience.emailSubject}
+                    onChange={handleChange}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    name="emailBody"
+                    label="Email Body"
+                    fullWidth
+                    multiline
+                    rows={4}
+                    variant="outlined"
+                    value={editingAudience.emailBody}
+                    onChange={handleChange}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    name="caption"
+                    label="Caption"
+                    fullWidth
+                    variant="outlined"
+                    value={editingAudience.caption}
+                    onChange={handleChange}
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              <Box display="flex" justifyContent="center" py={4}>
+                <CircularProgress />
+              </Box>
+            )}
+          </DialogContent>
+
+          {/* Submit Buttons (inside the form now!) */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, gap: 2 }}>
+            <Button variant="outlined" color="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? <CircularProgress size={24} /> : "Save Changes"}
+            </Button>
+          </Box>
+        </Box>
+      </Dialog>
+
     </div>
   );
 };

@@ -22,17 +22,17 @@ const emailCampaignSchema = new mongoose.Schema({
   },
   startDate: {
     type: Date,
-    required: true,
+    // required: true,
   },
   endDate: {
     type: Date,
-    required: true,
-    validate: {
-      validator: function (value) {
-        return value >= this.startDate;
-      },
-      message: "End date must be after the start date",
-    },
+    // required: true,
+    // validate: {
+    //   validator: function (value) {
+    //     return value >= this.startDate;
+    //   },
+    //   message: "End date must be after the start date",
+    // },
   },
   mediaUrl: {
     type: String,
