@@ -9,20 +9,27 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [targetingOptions, setTargetingOptions] = useState({
     audienceName: "",
-    audienceDescription: "",  // Fixed mismatch
+    audienceDescription: "",
     ageRange: "",
     location: "",
     gender: "",
-    emailSubject: "",  // Fixed mismatch
-    emailBody: "",  // Fixed mismatch
+    emailSubject: "",
+    emailBody: "",
+    caption: "",
+    callToAction: "",
+    budget: "",
+    email: "", // comma-separated
   });
+
   const [error, setError] = useState(null);
 
   const interestOptions = ["Technology", "Business", "Marketing", "Startups", "Innovation"];
 
   const handleInterestToggle = (interest) => {
     setSelectedInterests((prev) =>
-      prev.includes(interest) ? prev.filter((item) => item !== interest) : [...prev, interest]
+      prev.includes(interest)
+        ? prev.filter((item) => item !== interest)
+        : [...prev, interest]
     );
   };
 
@@ -41,11 +48,15 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
     const audienceData = {
       ...targetingOptions,
       interests: selectedInterests,
+      email: targetingOptions.email
+        .split(",")
+        .map((email) => email.trim())
+        .filter((email) => email !== ""),
       platform: selectedPlatform,
     };
 
     try {
-      await axios.post("http://localhost:8080/api/audiences", audienceData, {
+      await axios.post("http://localhost:8080/api/audience/audience-add", audienceData, {
         headers: { "Content-Type": "application/json" },
       });
       togglePanel();
@@ -55,34 +66,74 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
   };
 
   return (
-    <Box sx={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
-      display: "flex", justifyContent: "center", alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.5)", zIndex: 1300, overflow: "auto", p: 2 }}>
-      <Paper elevation={3} sx={{ width: "100%", maxWidth: 700, p: 4, borderRadius: 2 }}>
+    <Box
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 1300,
+        overflow: "auto",
+        p: 2,
+      }}
+    >
+      <Paper elevation={3} sx={{ width: "100%", maxWidth: 700, p: 4, borderRadius: 2,   maxHeight: "90vh",overflowY: "auto", }}>
         <Typography variant="h4" align="center" gutterBottom>
           {selectedPlatform} Audience Targeting
         </Typography>
 
-        {error && <Typography color="error" align="center" sx={{ mb: 2 }}>{error}</Typography>}
+        {error && (
+          <Typography color="error" align="center" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-              <TextField name="audienceName" label="Audience Name" fullWidth required
-                variant="outlined" value={targetingOptions.audienceName} onChange={handleChange} />
+              <TextField
+                name="audienceName"
+                label="Audience Name"
+                fullWidth
+                required
+                variant="outlined"
+                value={targetingOptions.audienceName}
+                onChange={handleChange}
+              />
             </Grid>
+
             <Grid item xs={12} md={6}>
-              <TextField name="audienceDescription" label="Description" fullWidth required
-                multiline rows={2} variant="outlined"
-                value={targetingOptions.audienceDescription} onChange={handleChange} />
+              <TextField
+                name="audienceDescription"
+                label="Description"
+                fullWidth
+                required
+                multiline
+                rows={2}
+                variant="outlined"
+                value={targetingOptions.audienceDescription}
+                onChange={handleChange}
+              />
             </Grid>
 
             <Grid item xs={12} md={4}>
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel>Age Range</InputLabel>
-                <Select name="ageRange" value={targetingOptions.ageRange} onChange={handleChange} label="Age Range">
-                  {["18-25", "26-35", "36-50", "50+"].map((age) => (  // Fixed values to match backend
-                    <MenuItem key={age} value={age}>{age}</MenuItem>
+                <Select
+                  name="ageRange"
+                  value={targetingOptions.ageRange}
+                  onChange={handleChange}
+                  label="Age Range"
+                >
+                  {["18-25", "26-35", "36-50", "50+"].map((age) => (
+                    <MenuItem key={age} value={age}>
+                      {age}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -91,9 +142,16 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
             <Grid item xs={12} md={4}>
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel>Location</InputLabel>
-                <Select name="location" value={targetingOptions.location} onChange={handleChange} label="Location">
-                  {["India", "USA", "Canada", "UK", "Europe", "Asia"].map((loc) => (
-                    <MenuItem key={loc} value={loc}>{loc}</MenuItem>
+                <Select
+                  name="location"
+                  value={targetingOptions.location}
+                  onChange={handleChange}
+                  label="Location"
+                >
+                  {["India", "USA", "Canada", "UK", "Europe", "Asia", "New York"].map((loc) => (
+                    <MenuItem key={loc} value={loc}>
+                      {loc}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -102,7 +160,12 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
             <Grid item xs={12} md={4}>
               <FormControl fullWidth variant="outlined" required>
                 <InputLabel>Gender</InputLabel>
-                <Select name="gender" value={targetingOptions.gender} onChange={handleChange} label="Gender">
+                <Select
+                  name="gender"
+                  value={targetingOptions.gender}
+                  onChange={handleChange}
+                  label="Gender"
+                >
                   <MenuItem value="All">All</MenuItem>
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
@@ -111,28 +174,104 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>Select Interests</Typography>
+              <Typography variant="h6" gutterBottom>
+                Select Interests
+              </Typography>
               <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
                 {interestOptions.map((interest) => (
-                  <Chip key={interest} label={interest} onClick={() => handleInterestToggle(interest)}
-                    color={selectedInterests.includes(interest) ? "primary" : "default"} />
+                  <Chip
+                    key={interest}
+                    label={interest}
+                    onClick={() => handleInterestToggle(interest)}
+                    color={selectedInterests.includes(interest) ? "primary" : "default"}
+                  />
                 ))}
               </Stack>
             </Grid>
 
             <Grid item xs={12}>
-              <TextField name="emailSubject" label="Email Subject" fullWidth required
-                variant="outlined" value={targetingOptions.emailSubject} onChange={handleChange} />
+              <TextField
+                name="emailSubject"
+                label="Email Subject"
+                fullWidth
+                required
+                variant="outlined"
+                value={targetingOptions.emailSubject}
+                onChange={handleChange}
+              />
             </Grid>
+
             <Grid item xs={12}>
-              <TextField name="emailBody" label="Email Body" fullWidth required
-                multiline rows={4} variant="outlined"
-                value={targetingOptions.emailBody} onChange={handleChange} />
+              <TextField
+                name="emailBody"
+                label="Email Body"
+                fullWidth
+                required
+                multiline
+                rows={4}
+                variant="outlined"
+                value={targetingOptions.emailBody}
+                onChange={handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                name="caption"
+                label="Caption"
+                fullWidth
+                required
+                variant="outlined"
+                value={targetingOptions.caption}
+                onChange={handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                name="callToAction"
+                label="Call To Action"
+                fullWidth
+                required
+                variant="outlined"
+                value={targetingOptions.callToAction}
+                onChange={handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                name="budget"
+                label="Budget"
+                type="number"
+                fullWidth
+                required
+                variant="outlined"
+                value={targetingOptions.budget}
+                onChange={handleChange}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                name="email"
+                label="Email(s)"
+                fullWidth
+                required
+                variant="outlined"
+                helperText="Separate multiple emails with commas"
+                value={targetingOptions.email}
+                onChange={handleChange}
+              />
             </Grid>
 
             <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="outlined" color="secondary" onClick={togglePanel}>Cancel</Button>
-              <Button type="submit" variant="contained" color="primary">Create Audience</Button>
+              <Button variant="outlined" color="secondary" onClick={togglePanel}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Create Audience
+              </Button>
             </Grid>
           </Grid>
         </form>
