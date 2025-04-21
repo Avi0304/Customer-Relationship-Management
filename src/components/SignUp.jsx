@@ -4,6 +4,8 @@ import { SignupValidationSchema } from "./validation/AuthValidation";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Button, ButtonGroup, Box } from '@mui/material';
+
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -81,31 +83,54 @@ const SignUp = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center light:bg-gray-100 px-4 dark:bg-slate-950">
-      <div className="w-full max-w-xl bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
+    <div className="min-h-screen flex items-center justify-center light:bg-gray-100 px-4 py-5 dark:bg-slate-950 overflow-auto">
+      <div className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
 
-        {/* Tabs */}
-        <div className="grid grid-cols-2 bg-gray-100 rounded-lg p-1 mb-6 w-full shadow-sm">
-          {['customer', 'admin'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`py-2.5 text-center font-semibold text-sm transition-all duration-300 rounded-md ${activeTab === tab
-                ? 'bg-white text-black shadow-sm border-b-2 border-blue-600'
-                : 'text-gray-500 hover:text-black'
-                }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+        <Box display="flex" justifyContent="center">
+          <ButtonGroup
+            variant="outlined"
+            aria-label="account type tabs"
+            sx={{
+              borderRadius: '9999px',
+              padding: '0px',
+            }}
+          >
+            {['customer', 'admin'].map((tab) => (
+              <Button
+                key={tab}
+                variant={activeTab === tab ? 'contained' : 'outlined'}
+                onClick={() => setActiveTab(tab)}
+                sx={{
+                  textTransform: 'capitalize',
+                  px: 2,   
+                  py: 0.5, 
+                  borderRadius: '9999px', 
+                  fontWeight: 500, 
+                  fontSize: '14px', 
+                  letterSpacing: '0.4px',
+                  backgroundColor: activeTab === tab ? 'linear-gradient(135deg, #6EE7B7, #3B82F6)' : 'transparent',
+                  color: activeTab === tab ? '#fff' : '#3B82F6',
+                  borderColor: activeTab === tab ? 'transparent' : '#3B82F6',
+                  '&:hover': {
+                    backgroundColor: activeTab === tab ? '#3B82F6' : '#E0F7FF',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Box>
+
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-gray-800 text-center dark:text-white">
-        {activeTab === 'admin' ? 'Create Admin Account' : 'Create an Account'}
+        <h2 className="text-3xl font-bold text-gray-800 text-center dark:text-white mt-1">
+          {activeTab === 'admin' ? 'Create Admin Account' : 'Create an Account'}
         </h2>
-        <p className="text-md text-gray-500 text-center mb-6 dark:text-slate-400">
-         {activeTab === 'admin' ? 'Register as an administrator': 'Sign up to get started'}
+        <p className="text-md text-gray-500 text-center mb-5 dark:text-slate-400">
+          {activeTab === 'admin' ? 'Register as an administrator' : 'Sign up to get started'}
         </p>
 
         {/* Formik Form */}
@@ -115,70 +140,70 @@ const SignUp = () => {
             email: "",
             password: "",
             confirmPassword: "",
-            adminKey: "",  
+            adminKey: "",
           }}
           validationSchema={SignupValidationSchema}
           onSubmit={handleSignup}
         >
           {({ isSubmitting }) => (
-            <Form className="space-y-6">
-             
-                {/* Username */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                    Username
-                  </label>
-                  <Field
-                    type="text"
-                    name="username"
-                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
-                    placeholder="Choose a username"
-                  />
-                  <ErrorMessage name="username" component="p" className="text-red-500 text-xs mt-1" />
-                </div>
+            <Form className="space-y-4">
 
-                {/* Email */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                    Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="email"
-                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
-                    placeholder="Enter your email"
-                  />
-                  <ErrorMessage name="email" component="p" className="text-red-500 text-xs mt-1" />
-                </div>
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Username
+                </label>
+                <Field
+                  type="text"
+                  name="username"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
+                  placeholder="Choose a username"
+                />
+                <ErrorMessage name="username" component="p" className="text-red-500 text-xs mt-1" />
+              </div>
 
-                {/* Password */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                    Password
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
-                    placeholder="Create a password"
-                  />
-                  <ErrorMessage name="password" component="p" className="text-red-500 text-xs mt-1" />
-                </div>
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Email
+                </label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
+                  placeholder="Enter your email"
+                />
+                <ErrorMessage name="email" component="p" className="text-red-500 text-xs mt-1" />
+              </div>
 
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                    Confirm Password
-                  </label>
-                  <Field
-                    type="password"
-                    name="confirmPassword"
-                    className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
-                    placeholder="Confirm your password"
-                  />
-                  <ErrorMessage name="confirmPassword" component="p" className="text-red-500 text-xs mt-1" />
-                </div>
-            
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Password
+                </label>
+                <Field
+                  type="password"
+                  name="password"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
+                  placeholder="Create a password"
+                />
+                <ErrorMessage name="password" component="p" className="text-red-500 text-xs mt-1" />
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Confirm Password
+                </label>
+                <Field
+                  type="password"
+                  name="confirmPassword"
+                  className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
+                  placeholder="Confirm your password"
+                />
+                <ErrorMessage name="confirmPassword" component="p" className="text-red-500 text-xs mt-1" />
+              </div>
+
 
               {activeTab === 'admin' && (
                 <div>
