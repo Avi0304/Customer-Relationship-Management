@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import {
   Table,
@@ -8,41 +8,51 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import axios from "axios";
 
 const RecentActivityTable = () => {
-  const activites = [
-    {
-      customer: "Acme Inc.",
-      status: "Completed",
-      date: "2025-01-24",
-      value: "₹ 60,000",
-      color: "bg-green-500 text-white dark:bg-green-600",
-    },
-    {
-      customer: "Widget Corp",
-      status: "Pending",
-      date: "2025-01-15",
-      value: "₹ 80,000",
-      color: "bg-yellow-500 text-white dark:bg-yellow-600",
-    },
-    {
-      customer: "Tech Solutions.",
-      status: "In Progress",
-      date: "2025-02-17",
-      value: "₹ 40,000",
-      color: "bg-blue-500 text-white dark:bg-blue-600",
-    },
-    {
-      customer: "Axe IT Solutions",
-      status: "In Progress",
-      date: "2025-02-13",
-      value: "₹ 50,000",
-      color: "bg-blue-500 text-white dark:bg-blue-600",
-    },
-  ];
-  
+  const [activities, setActivities] = useState([]);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/Customer/all");
+        const data = response.data;
+
+        // Sort by createdAt (most recent first), then take top 4
+        const sorted = data
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 4);
+
+        const statusColors = {
+          completed: "bg-green-500 text-white dark:bg-green-600",
+          pending: "bg-yellow-500 text-white dark:bg-yellow-600",
+          cancelled: "bg-red-500 text-white dark:bg-red-600",
+        };
+
+        const enhanced = sorted.map((item) => ({
+          name: item.name,
+          status: item.status || "Pending",
+          date: new Date(item.createdAt).toLocaleDateString("en-IN", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
+          value: `₹ ${item.amount?.toLocaleString("en-IN") || "0"}`,
+          color: statusColors[item.status] || "bg-gray-500 text-white",
+        }));
+
+        setActivities(enhanced);
+      } catch (error) {
+        console.error("Failed to fetch activities:", error);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
   return (
-    <Card className="col-span-4   bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md">
+    <Card className="col-span-4 bg-white dark:bg-[#1B222D] shadow-lg dark:shadow-md">
       <CardHeader>
         <h1 className="text-2xl font-bold light:text-gray-900 dark:text-gray-100 leading-none tracking-tight mb-3">
           Recent Activity
@@ -67,10 +77,10 @@ const RecentActivityTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {activites.map(({ customer, status, date, value, color }) => (
-              <TableRow key={customer} className="light:bg-white dark:bg-gray-900 dark:hover:bg-gray-700 ">
+            {activities.map(({ name, status, date, value, color }, index) => (
+              <TableRow key={index} className="light:bg-white dark:bg-gray-900 dark:hover:bg-gray-700">
                 <TableCell className="light:text-gray-700 dark:text-gray-300">
-                  {customer}
+                  {name}
                 </TableCell>
                 <TableCell>
                   <span
