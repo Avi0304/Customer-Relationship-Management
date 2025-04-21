@@ -15,6 +15,9 @@ const SalesSchema = new mongoose.Schema(
       enum: ["Completed", "Pending", "Cancelled"],
       default: "Pending",
     },
+    services: {
+      type: String,
+    },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Customer",

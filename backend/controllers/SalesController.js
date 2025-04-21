@@ -34,12 +34,13 @@ const getAllSales = async (req, res) => {
 // ➤ Add Sale
 const addSale = async (req, res) => {
   try {
-    const { customer, amount, status } = req.body;
+    const { customer, amount, status, services } = req.body;
 
     const newSale = new Sale({
       customer,
       amount,
       status: status || "Pending",
+      services
     });
 
     const savedSale = await newSale.save();

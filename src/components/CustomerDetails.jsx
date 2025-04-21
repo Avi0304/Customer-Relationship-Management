@@ -35,6 +35,7 @@ const CustomerDetails = () => {
     customer: "",
     amount: "",
     status: "",
+    services: "",
   });
   const currentTheme = localStorage.getItem("theme") || "light";
 
@@ -57,7 +58,7 @@ const CustomerDetails = () => {
 
   const handleOpen = (customer = null) => {
     setSelectedCustomer(customer);
-    setFormData(customer || { customer: "", amount: "", status: "" });
+    setFormData(customer || { customer: "", amount: "", status: "", service: "" });
     setOpen(true);
   };
 
@@ -67,8 +68,16 @@ const CustomerDetails = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+  
+    // Check if the 'services' field is being updated
+    if (name === "services") {
+      setFormData({ ...formData, [name]: value });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
+  
 
   const handleSave = async () => {
     if (!formData.name || !formData.email || !formData.phone || !formData.segmentation || !formData.amount) {
@@ -76,14 +85,10 @@ const CustomerDetails = () => {
       return;
     }
 
-    // if (isNaN(formData.amount) || formData.amount.trim() === "") {
-    //   Swal.fire("Oops!", "Amount must be a valid number.", "error");
-    //   return;
-    // }
-
     if (formData.amount !== undefined && formData.amount !== null) {
       formData.amount = String(formData.amount).trim();
     }
+
 
     try {
       if (selectedCustomer) {
@@ -285,7 +290,7 @@ const CustomerDetails = () => {
                     <FaEdit size={20} />
                   </Button>
                   <Button color="info" onClick={() => handleOpen(customer)}>
-                    <FaEye size={20} className="text-black dark:text-[#E5E7EB]"/>
+                    <FaEye size={20} className="text-black dark:text-[#E5E7EB]" />
                   </Button>
                   <Button
                     color="error"
@@ -362,6 +367,18 @@ const CustomerDetails = () => {
               <MenuItem value="cancelled">cancelled</MenuItem>
             </Select>
           </FormControl>
+
+          {formData.status === "completed" && (
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Service"
+              name="services"
+              value={formData.services || ""}
+              onChange={handleChange}
+              required
+            />
+          )}
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
           <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
