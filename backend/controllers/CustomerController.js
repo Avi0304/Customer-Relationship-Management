@@ -49,7 +49,7 @@ const getCustomerById = async (req, res) => {
 // Add a new customer
 const addCustomer = async (req, res) => {
   try {
-    const { name, email, phone, segmentation, status, leadstatus, amount } =
+    const { name, email, phone, segmentation, status, leadstatus, amount, services } =
       req.body;
 
     // First, check if a customer with the same email exists
@@ -77,6 +77,7 @@ const addCustomer = async (req, res) => {
       status: status || "pending",
       leadstatus: leadstatus || "new",
       amount,
+      services
     });
 
     await newCustomer.save();
@@ -117,11 +118,15 @@ const updateCustomer = async (req, res) => {
       return res.status(404).json({ message: "Customer not found" });
     }
     if (updatedCustomer.status === "completed") {
+
+      const services = updatedCustomer.services || "n/a";
+
       const newSale = new Sale({
         customer: updatedCustomer.name,       
         customerId: updatedCustomer._id,     
         amount: updatedCustomer.amount,
         status: "Completed",
+        services: services
       });
     
       await newSale.save();

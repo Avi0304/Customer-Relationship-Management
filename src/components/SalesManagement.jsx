@@ -40,6 +40,7 @@ const SalesManagement = () => {
     customer: "",
     amount: "",
     status: "Pending",
+    services: ""
   });
   const currentTheme = localStorage.getItem('theme') || 'light';
 
@@ -59,7 +60,7 @@ const SalesManagement = () => {
 
   // ➤ Add Sale
   const handleAddSale = () => {
-    setNewSale({ customer: "", amount: "", status: "Pending" });
+    setNewSale({ customer: "", amount: "", status: "Pending", services: "" });
     setIsAdding(true);
   };
 
@@ -255,6 +256,12 @@ const SalesManagement = () => {
                 align="center"
                 sx={{ fontWeight: "bold", fontSize: "1rem" }}
               >
+                Service
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", fontSize: "1rem" }}
+              >
                 Amount
               </TableCell>
               <TableCell
@@ -276,6 +283,7 @@ const SalesManagement = () => {
               <TableRow key={sale._id}>
                 {/* <TableCell align="center">{sale._id}</TableCell> */}
                 <TableCell align="center">{sale.customer}</TableCell>
+                <TableCell align="center">{sale.services}</TableCell>
                 <TableCell align="center">₹ {sale.amount}</TableCell>
                 <TableCell align="center">
                   <span
@@ -325,6 +333,13 @@ const SalesManagement = () => {
             onChange={(e) =>
               setNewSale({ ...newSale, customer: e.target.value })
             }
+          />
+          <TextField
+            label="Services"
+            fullWidth
+            margin="dense"
+            value={newSale.services}
+            onChange={(e) => setNewSale({ ...newSale, services: e.target.value })}
           />
           <TextField
             label="Amount"
@@ -380,6 +395,15 @@ const SalesManagement = () => {
             value={selectedSale?.customer || ""}
             onChange={(e) =>
               setSelectedSale({ ...selectedSale, customer: e.target.value })
+            }
+          />
+           <TextField
+            label="Services"
+            fullWidth
+            margin="dense"
+            value={selectedSale?.services || ""}
+            onChange={(e) =>
+              setSelectedSale({ ...selectedSale, services: e.target.value })
             }
           />
           <TextField

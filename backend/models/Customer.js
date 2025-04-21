@@ -46,6 +46,9 @@ const CustomerSchema = new mongoose.Schema(
       default: null,
       required: false,
     },
+    services: {
+      type: String
+    },
   },
   { timestamps: true }
 );
