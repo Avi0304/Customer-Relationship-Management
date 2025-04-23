@@ -65,7 +65,7 @@ const CustomerSidebar = () => {
         });
 
         setTimeout(() => {
-          navigate("/login");
+          navigate("/");
         }, 2000);
       }
     });

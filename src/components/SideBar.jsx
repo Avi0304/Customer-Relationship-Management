@@ -57,7 +57,7 @@ const Sidebar = () => {
         });
   
         setTimeout(() => {
-          navigate("/login");
+          navigate("/");
         }, 2000);
       }
     });
