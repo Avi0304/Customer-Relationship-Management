@@ -30,6 +30,7 @@ const CustomerDetails = () => {
 
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
+  const [viewOnly, setViewOnly] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [formData, setFormData] = useState({
     customer: "",
@@ -56,9 +57,10 @@ const CustomerDetails = () => {
 
 
 
-  const handleOpen = (customer = null) => {
+  const handleOpen = (customer = null, isViewOnly = false) => {
     setSelectedCustomer(customer);
     setFormData(customer || { customer: "", amount: "", status: "", service: "" });
+    setViewOnly(isViewOnly);
     setOpen(true);
   };
 
@@ -69,7 +71,7 @@ const CustomerDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     // Check if the 'services' field is being updated
     if (name === "services") {
       setFormData({ ...formData, [name]: value });
@@ -77,7 +79,7 @@ const CustomerDetails = () => {
       setFormData({ ...formData, [name]: value });
     }
   };
-  
+
 
   const handleSave = async () => {
     if (!formData.name || !formData.email || !formData.phone || !formData.segmentation || !formData.amount) {
@@ -289,7 +291,7 @@ const CustomerDetails = () => {
                   <Button color="primary" onClick={() => handleOpen(customer)}>
                     <FaEdit size={20} />
                   </Button>
-                  <Button color="info" onClick={() => handleOpen(customer)}>
+                  <Button color="info" onClick={() => handleOpen(customer, true)}>
                     <FaEye size={20} className="text-black dark:text-[#E5E7EB]" />
                   </Button>
                   <Button
@@ -308,7 +310,7 @@ const CustomerDetails = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <h2 className="font-bold">
-            {selectedCustomer ? "Edit Customer" : "Add Customer"}
+            {viewOnly ? "View Details" : selectedCustomer ? "Edit Customer" : "Add Customer"}
           </h2>
         </DialogTitle>
         <DialogContent>
@@ -320,6 +322,7 @@ const CustomerDetails = () => {
             value={formData.name || ""}
             onChange={handleChange}
             required
+            InputProps={{ readOnly: viewOnly }}
           />
           <TextField
             fullWidth
@@ -330,6 +333,7 @@ const CustomerDetails = () => {
             value={formData.email || ""}
             onChange={handleChange}
             required
+            InputProps={{ readOnly: viewOnly }}
           />
           <TextField
             fullWidth
@@ -340,6 +344,7 @@ const CustomerDetails = () => {
             value={formData.phone || ""}
             onChange={handleChange}
             required
+            InputProps={{ readOnly: viewOnly }}
           />
           <TextField
             fullWidth
@@ -348,6 +353,7 @@ const CustomerDetails = () => {
             name="segmentation"
             value={formData.segmentation || ""}
             onChange={handleChange}
+            InputProps={{ readOnly: viewOnly }}
           />
           <TextField
             fullWidth
@@ -358,8 +364,9 @@ const CustomerDetails = () => {
             value={formData.amount || ""}
             onChange={handleChange}
             required
+            InputProps={{ readOnly: viewOnly }}
           />
-          <FormControl fullWidth margin="dense">
+          <FormControl fullWidth margin="dense" disabled={viewOnly}>
             <InputLabel>Status</InputLabel>
             <Select name="status" value={formData.status || "Pending"} onChange={handleChange}>
               <MenuItem value="completed">completed</MenuItem>
@@ -377,17 +384,21 @@ const CustomerDetails = () => {
               value={formData.services || ""}
               onChange={handleChange}
               required
+              InputProps={{ readOnly: viewOnly }}
             />
           )}
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
           <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
-            Cancel
+            {viewOnly ? "Close" : "Cancel"}
           </Button>
-          <Button onClick={handleSave} color="primary" variant="contained">
-            {selectedCustomer ? "Update" : "Add"}
-          </Button>
+          {!viewOnly && (
+            <Button onClick={handleSave} color="primary" variant="contained">
+              {selectedCustomer ? "Update" : "Add"}
+            </Button>
+          )}
         </DialogActions>
+
       </Dialog>
 
     </Box>
