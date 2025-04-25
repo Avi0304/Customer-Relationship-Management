@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import {
   Button,
@@ -27,6 +27,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { Search } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+
 
 
 const Support = () => {
@@ -38,6 +40,7 @@ const Support = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortOrder, setSortOrder] = useState("Newest");
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -113,9 +116,10 @@ const Support = () => {
         );
         Swal.fire("Success", "Request updated successfully!", "success");
       } else {
+        const requestWithUserId = { ...currentRequest, userId: user._id };
         await axios.post(
           "http://localhost:8080/api/support/add",
-          currentRequest
+          requestWithUserId
         );
         Swal.fire("Success", "Request created successfully!", "success");
       }
@@ -124,7 +128,7 @@ const Support = () => {
       setCurrentRequest(null);
       await fetchRequests();
     } catch (error) {
-      console.error("Error saving request:", error);
+      console.error('Error saving request:', error.response?.data || error.message);
       Swal.fire("Success", "Failed to save request", "success");
       setOpenDialog(false);
       setCurrentRequest(null);
@@ -223,6 +227,7 @@ const Support = () => {
                 subject: "",
                 description: "",
                 status: "Open",
+                priority: "Medium",
               });
               setOpenDialog(true);
             }}
@@ -435,6 +440,20 @@ const Support = () => {
               <MenuItem value="Open">Open</MenuItem>
               <MenuItem value="In Progress">In Progress</MenuItem>
               <MenuItem value="Closed">Closed</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Priority</InputLabel>
+            <Select
+              label="Priority"
+              name="priority"
+              value={currentRequest?.priority || "Medium"}
+              onChange={handleChange}
+            >
+              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="High">High</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>
