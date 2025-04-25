@@ -86,13 +86,13 @@ const Login = () => {
       console.log("timeLeft:", timeLeft);
       
 
-      if (timeLeft <= 0) {
-        logoutUser();
-      } else {
-        setTimeout(() => {
-          logoutUser();
-        }, timeLeft);
-      }
+      // if (timeLeft <= 0) {
+      //   logoutUser();
+      // } else {
+      //   setTimeout(() => {
+      //     logoutUser();
+      //   }, timeLeft);
+      // }
 
       // setTimeout(() => {
       //   navigate("/dashboard");
@@ -138,19 +138,19 @@ const Login = () => {
     }
   };
 
-  const logoutUser = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("expiresAt");
-    setUser(null);
-    navigate("/login");
+  // const logoutUser = () => {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("expiresAt");
+  //   setUser(null);
+  //   navigate("/login");
 
-    Swal.fire({
-      title: "Session Expired!",
-      text: "You have been logged out.",
-      icon: "warning",
-      confirmButtonText: "OK",
-    });
-  };
+  //   Swal.fire({
+  //     title: "Session Expired!",
+  //     text: "You have been logged out.",
+  //     icon: "warning",
+  //     confirmButtonText: "OK",
+  //   });
+  // };
 
   const handleOtpSubmit = async () => {
     try {
