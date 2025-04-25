@@ -3,6 +3,28 @@ const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const { createNotification } = require('../utils/notificationService')
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+
+const sendEmail = async (to, subject, html) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: `"CRM Support" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    html,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
 
 const notifySupportAdded = async (support) => {
   await createNotification({
@@ -98,11 +120,109 @@ exports.createSupportRequest = async (req, res) => {
       userId,
     });
 
-    res.status(201).json(newRequest);
+    // Email body creation
+    const userEmailSubject = "Support Request Received";
+    const userEmailBody = `
+    <html>
+      <body style="font-family: 'Helvetica Neue', sans-serif; background-color: #f4f6f9; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background-color: #0056b3; color: white; padding: 20px;">
+            <h2 style="margin: 0;">📬 Support Request Confirmation</h2>
+          </div>
+          <div style="padding: 30px;">
+            <p>Hi <strong>${user.name}</strong>,</p>
+            <p>We have received your support request and our team is on it. Here are the details:</p>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Subject:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${subject}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Description:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${description}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px;"><strong>Priority:</strong></td>
+                <td style="padding: 10px;">${priority}</td>
+              </tr>
+            </table>
+    
+            <p style="margin-top: 25px;">You can expect a reply within 24 hours. If your issue is urgent, feel free to reply to this email directly.</p>
+    
+            <div style="margin-top: 30px; text-align: center;">
+              <a href="http://localhost:5173/customer-ticket" style="padding: 10px 20px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 5px;">View Request</a>
+            </div>
+    
+            <p style="margin-top: 30px;">Thanks,<br/>The CRM Support Team</p>
+          </div>
+        </div>
+      </body>
+    </html>
+    `;
+    
+  
+
+    const adminEmailSubject = `New Support Request from ${user.name}`;
+    const adminEmailBody = `
+    <html>
+      <body style="font-family: 'Helvetica Neue', sans-serif; background-color: #f4f6f9; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background-color: #dc3545; color: white; padding: 20px;">
+            <h2 style="margin: 0;">⚠️ New Support Request Submitted</h2>
+          </div>
+          <div style="padding: 30px;">
+            <p>A new support request has been received:</p>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Name:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${user.name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Email:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${user.email}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Subject:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${subject}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;"><strong>Description:</strong></td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">${description}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px;"><strong>Priority:</strong></td>
+                <td style="padding: 10px;">${priority}</td>
+              </tr>
+            </table>
+    
+            <div style="margin-top: 30px; text-align: center;">
+              <a href="http://localhost:5173/support" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px;">Review Ticket</a>
+            </div>
+    
+            <p style="margin-top: 30px;">Please check the admin panel to assign and respond.</p>
+            <p>Regards,<br/>CRM System</p>
+          </div>
+        </div>
+      </body>
+    </html>
+    `;
+    
+
+    // Separate try-catch for sending email
+    try {   
+      await sendEmail(user.email, userEmailSubject, userEmailBody);
+      await sendEmail(ADMIN_EMAIL, adminEmailSubject, adminEmailBody);
+    } catch (emailErr) {
+      console.error("Email sending failed:", emailErr);
+    }
+
+    return res.status(201).json(newRequest);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create request", error });
+    console.error("Support creation failed:", error);
+    return res.status(500).json({ message: "Failed to create request", error });
   }
 };
+
 
 
 
