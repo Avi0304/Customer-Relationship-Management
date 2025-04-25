@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useContext } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import Swal from 'sweetalert2';
+import { useContext, useEffect } from "react";
 import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
 import { UserProvider } from "./context/UserContext";
 import { NotificationProvider } from "./context/NotificationContext"
@@ -37,9 +38,67 @@ import CustomerFeedback from "./pages/CustomerPages/CustomerFeedbackPage";
 function AppContent() {
   const { mode } = useContext(ThemeContext);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const checkSessionExpiration = () => {
+      const token = localStorage.getItem('token');
+      const expiresAt = localStorage.getItem('expiresAt');
+
+      if (!token || !expiresAt) return;
+
+      const remainingTime = expiresAt - Date.now();
+      console.log("Remaining time in autoLogout: ", remainingTime);
+      
+
+      if (remainingTime <= 0) {
+        logoutUser();
+      } else {
+        // Auto logout after remaining time
+        setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      }
+    };
+
+    const logoutUser = () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('isAdmin');
+      localStorage.removeItem('expiresAt');
+
+      Swal.fire({
+        title: "Session Expired",
+        text: "You have been logged out due to inactivity.",
+        icon: "warning",
+        iconColor: "red",
+        confirmButtonText: "OK",
+      });
+
+      navigate('/login');
+    };
+
+    // Run check when app mounts
+    checkSessionExpiration();
+
+    // Also run check on tab switch (user returns to app)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        checkSessionExpiration();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [navigate, location]);
+
   return (
     <div className={mode === "dark" ? "dark" : "light"}>
-      <Router>
+      {/* <Router> */}
         <Routes>
           {/* Public Routes */}
           <Route path="/socket" element={<SocketTest />} />
@@ -138,7 +197,7 @@ function AppContent() {
             element={<CustomerRoute element={<CustomerFeedback />} />}
           />
         </Routes>
-      </Router>
+      {/* </Router> */}
     </div>
   );
 }
@@ -148,7 +207,9 @@ function App() {
     <ThemeProvider>
       <NotificationProvider>
         <UserProvider>
-          <AppContent />
+          <Router>
+            <AppContent />
+          </Router>
         </UserProvider>
       </NotificationProvider>
     </ThemeProvider>

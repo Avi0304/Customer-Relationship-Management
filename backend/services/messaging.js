@@ -88,10 +88,6 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-const client2 = twilio(
-  process.env.TWILIO_ACCOUNT_SID2,
-  process.env.TWILIO_AUTH_TOKEN2
-);
 
 const formatNumber = (number) =>
   number.startsWith("+") ? number : `+91${number}`;
@@ -155,46 +151,11 @@ const sendSms = async (message, recipients) => {
   }
 };
 
-const sendWhatsapp = async (message) => {
-  try {
-    // 1. Get all users with phone numbers
-    const users = await User.find({ phone: { $exists: true, $ne: "" } });
 
-    if (users.length === 0) {
-      console.log("⚠️ No users with phone numbers found.");
-      return { success: false, message: "No recipients found." };
-    }
-
-    // 2. Format numbers
-    const formatWhatsappNumber = (number) =>
-      number.startsWith("+") ? `whatsapp:${number}` : `whatsapp:+91${number}`;
-
-    const formattedRecipients = users.map((user) =>
-      formatWhatsappNumber(user.phone)
-    );
-
-    // 3. Send messages
-    const from = `${process.env.TWILIO_WHATSAPP_NUMBER}`;
-
-    for (const to of formattedRecipients) {
-      await client2.messages.create({
-        body: message,
-        from,
-        to,
-      });
-      console.log("✅ WhatsApp sent to:", to);
-    }
-
-    return { success: true };
-  } catch (err) {
-    console.error("❌ Failed to send WhatsApp:", err.message);
-    throw err;
-  }
-};
 
 module.exports = {
   sendEmail,
   sendEmailWithPost,
   sendSms,
-  sendWhatsapp,
+ 
 };
