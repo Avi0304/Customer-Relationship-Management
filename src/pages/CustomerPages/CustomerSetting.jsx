@@ -388,44 +388,45 @@ const CustomerSetting = () => {
   };
 
   // === Restore Data from Stored Backup File ===
-  const handleRestore = async (e) => {
+  const handleRestore = async (e, modelName) => {
     console.log("🔹 Restore function triggered!");
-
-    const file = e.target.files[0] || backupFile;
-    console.log("📂 Selected File:", file);
-
+  
+    // Ensure the file is selected
+    const file = e.target.files[0];
     if (!file) {
       console.warn("⚠️ No file selected!");
       Swal.fire("Error", "No backup file selected!", "error");
       return;
     }
-
+  
+    console.log("📂 Selected File:", file);
+  
+    // Ensure the file is a .json file
     if (!file.name.endsWith(".json")) {
       console.warn("⚠️ Invalid file format:", file.name);
-      Swal.fire(
-        "Error",
-        "Invalid file format! Please upload a .json file.",
-        "error"
-      );
+      Swal.fire("Error", "Invalid file format! Please upload a .json file.", "error");
       return;
     }
-
+  
+    // Token check (authentication)
     const token = localStorage.getItem("token");
-    console.log("🔑 Token:", token);
-
     if (!token) {
-      console.warn("⚠️ No token found! User might be logged out.");
+      console.warn("⚠️ No token found!");
       Swal.fire("Error", "Unauthorized. Please log in again.", "error");
       return;
     }
-
+  
+    // Prepare the form data for upload
     const formData = new FormData();
     formData.append("backupFile", file);
-    console.log("📤 FormData ready:", formData);
-
+  
+    console.log("📤 Sending FormData:", formData);
+  
+    // Send the request to restore the data
     try {
+      // Add the model as a query parameter
       const response = await axios.post(
-        "http://localhost:8080/api/data/restore",
+        `http://localhost:8080/api/data/restore?model=${modelName}`, // Add model as query param
         formData,
         {
           headers: {
@@ -434,7 +435,6 @@ const CustomerSetting = () => {
           },
         }
       );
-
       console.log("✅ Restore Response:", response.data);
       Swal.fire("Success", "Data restored successfully!", "success");
     } catch (error) {
@@ -985,7 +985,7 @@ const CustomerSetting = () => {
                               id="restore-upload"
                               accept=".json"
                               hidden
-                              onChange={handleRestore} // ✅ Now it's correctly placed
+                              onChange={() => handleRestore("support")} 
                             />
                           </label>
                         </div>
