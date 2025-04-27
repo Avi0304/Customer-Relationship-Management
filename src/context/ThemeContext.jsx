@@ -38,7 +38,7 @@ const darkTheme = {
     point3: "linear-gradient(90deg, #7C3AED 0%, #9333EA 100%)",
     background: {
       default: "#0F172A",
-      paper: "#1E293B",
+      paper: "#1B222D",
       secondary: "#1E293B",
     },
     text: {

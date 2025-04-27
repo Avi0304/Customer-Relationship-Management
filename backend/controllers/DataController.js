@@ -195,6 +195,29 @@ exports.createBackup = async (req, res) => {
 };
 
 // Restore Data
+// exports.restoreBackup = async (req, res) => {
+//   try {
+//     console.log("🔹 Restore API called!");
+
+//     if (!req.file) {
+//       console.log("❌ No file received.");
+//       return res.status(400).json({ message: "No file uploaded" });
+//     }
+
+//     console.log("✅ File received:", req.file);
+
+//     const filePath = req.file.path;
+//     const fileData = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+//     await DataBackup.create({ userId: req.user.userId, backupData: fileData });
+
+//     res.status(200).json({ message: "Data restored successfully" });
+//   } catch (error) {
+//     console.error("🔥 Error restoring data:", error);
+//     res.status(500).json({ message: "Error restoring data", error });
+//   }
+// };
+
 exports.restoreBackup = async (req, res) => {
   try {
     console.log("🔹 Restore API called!");
@@ -209,9 +232,57 @@ exports.restoreBackup = async (req, res) => {
     const filePath = req.file.path;
     const fileData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-    await DataBackup.create({ userId: req.user.userId, backupData: fileData });
+    const { model } = req.query; // e.g., ?model=appointments
+    const userId = req.user.userId;
 
-    res.status(200).json({ message: "Data restored successfully" });
+    if (!model) {
+      return res.status(400).json({ message: "Model is required." });
+    }
+
+    // Function to remove _id from the backup data
+    const removeIds = (data) => {
+      return data.map((item) => {
+        const { _id, ...rest } = item; // Destructure and remove _id field
+        return rest; // Return the document without _id
+      });
+    };
+
+    // Check if the backup data matches the correct model
+    if (!fileData || !Array.isArray(fileData)) {
+      return res.status(400).json({ message: "Invalid backup data format." });
+    }
+
+    let restoredData;
+    if (model === "appointments") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Appointment.insertMany(cleanedData); // Insert cleaned data
+    } else if (model === "tasks") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Task.insertMany(cleanedData); // Insert cleaned data
+    } else if (model === "sales") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Sales.insertMany(cleanedData); // Insert cleaned data
+    } else if (model === "customers") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Customer.insertMany(cleanedData); // Insert cleaned data
+    } else if (model === "support") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Support.insertMany(cleanedData); // Insert cleaned data
+    } else if (model === "leads") {
+      const cleanedData = removeIds(fileData); // Clean the data
+      restoredData = await Leads.insertMany(cleanedData); // Insert cleaned data
+    } else {
+      return res.status(400).json({ message: "Invalid model name." });
+    }
+
+    // Optionally save the restored backup entry in the DataBackup collection
+    await DataBackup.create({
+      userId,
+      model,
+      backupData: fileData,
+    });
+
+    res.status(200).json({ message: `${model.charAt(0).toUpperCase() + model.slice(1)} data restored successfully.`, restoredData });
   } catch (error) {
     console.error("🔥 Error restoring data:", error);
     res.status(500).json({ message: "Error restoring data", error });
