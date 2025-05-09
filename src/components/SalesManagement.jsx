@@ -288,10 +288,10 @@ const SalesManagement = () => {
                 <TableCell align="center">
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${sale.status === "Completed"
-                      ? "bg-green-500 text-white"
+                      ? "bg-green-500 text-white dark:bg-green-600"
                       : sale.status === "Pending"
-                        ? "bg-yellow-500 text-white"
-                        : "bg-red-500 text-white"
+                        ? "bg-yellow-500 text-white dark:bg-yellow-600"
+                        : "bg-red-500 text-white dark:bg-red-600"
                       }`}
                   >
                     {sale.status}

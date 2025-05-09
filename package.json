@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "client": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "server": "cd backend && npm run server",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -47,6 +49,7 @@
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2",
     "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.0.0",

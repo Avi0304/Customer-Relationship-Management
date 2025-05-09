@@ -278,10 +278,10 @@ const CustomerDetails = () => {
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <span
                     className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Completed"
-                      ? "bg-green-500 text-white"
+                      ? "bg-green-500 text-white dark:bg-green-600"
                       : customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Pending"
-                        ? "bg-yellow-500 text-white"
-                        : "bg-red-500 text-white"
+                        ? "bg-yellow-500 text-white dark:bg-yellow-600"
+                        : "bg-red-500 text-white dark:bg-red-600"
                       }`}
                   >
                     {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
