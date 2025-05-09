@@ -60,7 +60,7 @@ const RecentActivityTable = () => {
       </CardHeader>
       <CardContent>
         <Table className="w-full border border-gray-200 dark:border-gray-700">
-          <TableHeader className="light:bg-gray-100 dark:bg-gray-700">
+          <TableHeader className="light:bg-gray-300 dark:bg-gray-700">
             <TableRow className="dark:bg-gray-900 dark:hover:bg-gray-700">
               <TableHead className="light:text-gray-800 dark:text-gray-200">
                 Customer

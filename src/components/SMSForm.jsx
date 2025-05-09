@@ -175,13 +175,13 @@ const SMSForm = ({ togglePanel }) => {
                   control={<Radio />}
                   label="Send Immediately"
                 />
-                <FormControlLabel
+                {/* <FormControlLabel
                   value="later"
                   control={<Radio />}
                   label="Schedule for Later"
-                />
+                /> */}
               </RadioGroup>
-              {schedule === "later" && (
+              {/* {schedule === "later" && (
                 <TextField
                   fullWidth
                   type="datetime-local"
@@ -192,7 +192,7 @@ const SMSForm = ({ togglePanel }) => {
                   required
                   sx={{ mt: 2 }}
                 />
-              )}
+              )} */}
             </Grid>
 
             {/* Action Buttons */}

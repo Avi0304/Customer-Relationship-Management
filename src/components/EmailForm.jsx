@@ -212,9 +212,9 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
                 <Typography variant="h6">Schedule</Typography>
                 <RadioGroup row name="schedule" value={schedule} onChange={handleScheduleChange}>
                   <FormControlLabel value="immediately" control={<Radio />} label="Send Immediately" />
-                  <FormControlLabel value="later" control={<Radio />} label="Schedule for Later" />
+                  {/* <FormControlLabel value="later" control={<Radio />} label="Schedule for Later" /> */}
                 </RadioGroup>
-                {schedule === "later" && (
+                {/* {schedule === "later" && (
                   <TextField
                     fullWidth
                     type="datetime-local"
@@ -225,7 +225,7 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
                     value={formData.scheduledTime}
                     onChange={handleChange}
                   />
-                )}
+                )} */}
               </Grid>
 
               <Grid item xs={6}>
