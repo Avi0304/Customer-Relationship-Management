@@ -192,12 +192,33 @@ npm install
      TWILIO_SID=your_twilio_sid
      TWILIO_AUTH_TOKEN=your_twilio_auth_token
      TWILIO_PHONE_NUMBER=your_twilio_phone_number
-     GOOGLE_CLIENT_ID=your_google_client_id
-     GOOGLE_CLIENT_SECRET=your_google_client_secret
-     GOOGLE_REDIRECT_URI=your_google_redirect
      ```
 
-### 🚀 4. Run the Application
+###  🔑 4. Google API Configuration
+- To enable Google Calendar & Meet integration in the application:
+
+1. **Create the .env file in the directory:**
+```bash
+.env
+```
+
+2. **Add your Google API credentials:**
+```bash
+VITE_GOOGLE_CLIENT_ID=your_google_client_id
+VITE_GOOGLE_API_KEY=your_google_api_key
+```
+3. **Usage in Code**
+- Update the following files:
+    - AppointmentSchedule.jsx
+    - useGoogleCalendar.js
+
+- To access the credentials, use:
+```bash
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+```
+
+### 🚀 5. Run the Application
 
 1. **Backend**:
    ```bash

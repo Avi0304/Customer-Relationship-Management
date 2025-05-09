@@ -368,8 +368,8 @@ const AppointmentSchedule = () => {
   );
 
   const CLIENT_ID =
-    "147226171626-paikqrlke6klt0qv9knh21hkmnf8dmph.apps.googleusercontent.com";
-  const API_KEY = "AIzaSyDhCX4zzrbsMr-c3Ot92ywLNv-IhUDBLsY";
+   import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
   const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
   useEffect(() => {
