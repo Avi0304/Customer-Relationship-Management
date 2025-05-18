@@ -82,7 +82,7 @@ const CustomerDetails = () => {
 
 
   const handleSave = async () => {
-    if (!formData.name || !formData.email || !formData.phone || !formData.segmentation || !formData.amount) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.amount) {
       Swal.fire("Oops!", "All fields are required.", "error");
       return;
     }
@@ -115,7 +115,7 @@ const CustomerDetails = () => {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          segmentation: formData.segmentation,
+          // segmentation: formData.segmentation,
           status: formData.status || "pending", // Default status if not provided
           leadstatus: formData.leadstatus || "new", // Default lead status
           amount: formData.amount,
@@ -346,7 +346,7 @@ const CustomerDetails = () => {
             required
             InputProps={{ readOnly: viewOnly }}
           />
-          <TextField
+          {/* <TextField
             fullWidth
             margin="dense"
             label="Segmentation"
@@ -354,7 +354,7 @@ const CustomerDetails = () => {
             value={formData.segmentation || ""}
             onChange={handleChange}
             InputProps={{ readOnly: viewOnly }}
-          />
+          /> */}
           <TextField
             fullWidth
             margin="dense"
@@ -374,6 +374,18 @@ const CustomerDetails = () => {
               <MenuItem value="cancelled">cancelled</MenuItem>
             </Select>
           </FormControl>
+
+            {(formData.segmentation === "Low" || formData.segmentation === "Medium" || formData.segmentation === "High") && (
+             <TextField
+            fullWidth
+            margin="dense"
+            label="Segmentation"
+            name="segmentation"
+            value={formData.segmentation || ""}
+            onChange={handleChange}
+            InputProps={{ readOnly: viewOnly }}
+          />
+          )}
 
           {formData.status === "completed" && (
             <TextField

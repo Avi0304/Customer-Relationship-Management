@@ -28,7 +28,7 @@ const CustomerSchema = new mongoose.Schema(
     segmentation: {
       type: String,
       enum: ["High", "Medium", "Low"],
-      required: true,
+      // required: true,
     },
     status: {
       type: String,
