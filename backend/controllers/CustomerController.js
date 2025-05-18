@@ -49,7 +49,7 @@ const getCustomerById = async (req, res) => {
 // Add a new customer
 const addCustomer = async (req, res) => {
   try {
-    const { name, email, phone, segmentation, status, leadstatus, amount, services } =
+    const { name, email, phone, status, leadstatus, amount, services } =
       req.body;
 
     // First, check if a customer with the same email exists
@@ -67,6 +67,15 @@ const addCustomer = async (req, res) => {
         .status(400)
         .json({ message: "Customer with this phone number already exists" });
     }
+
+    let segmentation = "Low";
+    if(amount >= 20000){
+      segmentation = "Medium"
+    }
+    else if(amount >= 40000){
+      segmentation = "High"
+    }
+    
 
     // Create and save new customer
     const newCustomer = new Customer({
