@@ -47,7 +47,7 @@ const CustomerSchema = new mongoose.Schema(
       required: false,
     },
     services: {
-      type: String
+      type: String,
     },
   },
   { timestamps: true }

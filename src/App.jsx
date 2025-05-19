@@ -1,9 +1,15 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import Swal from 'sweetalert2';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import Swal from "sweetalert2";
 import { useContext, useEffect } from "react";
 import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
 import { UserProvider } from "./context/UserContext";
-import { NotificationProvider } from "./context/NotificationContext"
+import { NotificationProvider } from "./context/NotificationContext";
 import DashBoard from "./pages/DashBoard";
 import TaskManagementPage from "./pages/TaskManagementPage";
 import CustomerDetails from "./components/CustomerDetails";
@@ -19,7 +25,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 import AdminRoute from "./components/AdminRoute";
 import MarketingPage from "./pages/MarketingPage";
-import ProfilePage from "./pages/ProfilePage"; // Fixed import issue
+import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import Page from "./components/Website/Page";
 import { Support } from "@mui/icons-material";
@@ -31,9 +37,8 @@ import CustomerSetting from "./pages/CustomerPages/CustomerSetting";
 import CustomerProfilePAge from "./pages/CustomerPages/CustomerProfilePage";
 import TicketDetailPage from "./pages/CustomerPages/TicketDetailPage";
 import SocketTest from "./pages/SocketTest";
-import TicketDetailAdmin from "./pages/AdminTicketDetail"
+import TicketDetailAdmin from "./pages/AdminTicketDetail";
 import CustomerFeedback from "./pages/CustomerPages/CustomerFeedbackPage";
-
 
 function AppContent() {
   const { mode } = useContext(ThemeContext);
@@ -43,14 +48,13 @@ function AppContent() {
 
   useEffect(() => {
     const checkSessionExpiration = () => {
-      const token = localStorage.getItem('token');
-      const expiresAt = localStorage.getItem('expiresAt');
+      const token = localStorage.getItem("token");
+      const expiresAt = localStorage.getItem("expiresAt");
 
       if (!token || !expiresAt) return;
 
       const remainingTime = expiresAt - Date.now();
       console.log("Remaining time in autoLogout: ", remainingTime);
-      
 
       if (remainingTime <= 0) {
         logoutUser();
@@ -63,9 +67,9 @@ function AppContent() {
     };
 
     const logoutUser = () => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('isAdmin');
-      localStorage.removeItem('expiresAt');
+      localStorage.removeItem("token");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("expiresAt");
 
       Swal.fire({
         title: "Session Expired",
@@ -75,7 +79,7 @@ function AppContent() {
         confirmButtonText: "OK",
       });
 
-      navigate('/login');
+      navigate("/login");
     };
 
     // Run check when app mounts
@@ -88,115 +92,111 @@ function AppContent() {
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Cleanup
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [navigate, location]);
 
   return (
     <div className={mode === "dark" ? "dark" : "light"}>
       {/* <Router> */}
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/socket" element={<SocketTest />} />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/socket" element={<SocketTest />} />
 
-          <Route path="/" element={<Page />} />
-          <Route path="/login" element={<PublicRoute element={<Login />} />} />
-          <Route
-            path="/signup"
-            element={<PublicRoute element={<Signup />} />}
-          />
-          <Route
-            path="/forget-password"
-            element={<PublicRoute element={<ForgetPassword />} />}
-          />
-          <Route
-            path="/reset-password"
-            element={<PublicRoute element={<ResetPassword />} />}
-          />
+        <Route path="/" element={<Page />} />
+        <Route path="/login" element={<PublicRoute element={<Login />} />} />
+        <Route path="/signup" element={<PublicRoute element={<Signup />} />} />
+        <Route
+          path="/forget-password"
+          element={<PublicRoute element={<ForgetPassword />} />}
+        />
+        <Route
+          path="/reset-password"
+          element={<PublicRoute element={<ResetPassword />} />}
+        />
 
-          {/* Private Routes */}
-          <Route
-            path="/dashboard"
-            element={<AdminRoute element={<DashBoard />} />}
-          />
-          <Route
-            path="/profile"
-            element={<PrivateRoute element={<ProfilePage />} />}
-          />
-          <Route
-            path="/settings/:tab?"
-            element={<PrivateRoute element={<SettingsPage />} />}
-          />
-          <Route
-            path="/leads"
-            element={<PrivateRoute element={<LeadPage />} />}
-          />
-          <Route
-            path="/task"
-            element={<PrivateRoute element={<TaskManagementPage />} />}
-          />
-          <Route
-            path="/customers"
-            element={<PrivateRoute element={<CustomerPage />} />}
-          />
-          <Route
-            path="/customer/view/:id"
-            element={<PrivateRoute element={<CustomerDetails />} />}
-          />
-          <Route
-            path="/appointment"
-            element={<PrivateRoute element={<AppointmentPage />} />}
-          />
-          <Route
-            path="/sales"
-            element={<PrivateRoute element={<SalesPage />} />}
-          />
-          <Route path="/marketing" element={<MarketingPage />} />
-          <Route
-            path="/support"
-            element={<PrivateRoute element={<SupportPage />} />}
-          />
+        {/* Private Routes */}
+        <Route
+          path="/dashboard"
+          element={<AdminRoute element={<DashBoard />} />}
+        />
+        <Route
+          path="/profile"
+          element={<PrivateRoute element={<ProfilePage />} />}
+        />
+        <Route
+          path="/settings/:tab?"
+          element={<PrivateRoute element={<SettingsPage />} />}
+        />
+        <Route
+          path="/leads"
+          element={<PrivateRoute element={<LeadPage />} />}
+        />
+        <Route
+          path="/task"
+          element={<PrivateRoute element={<TaskManagementPage />} />}
+        />
+        <Route
+          path="/customers"
+          element={<PrivateRoute element={<CustomerPage />} />}
+        />
+        <Route
+          path="/customer/view/:id"
+          element={<PrivateRoute element={<CustomerDetails />} />}
+        />
+        <Route
+          path="/appointment"
+          element={<PrivateRoute element={<AppointmentPage />} />}
+        />
+        <Route
+          path="/sales"
+          element={<PrivateRoute element={<SalesPage />} />}
+        />
+        <Route path="/marketing" element={<MarketingPage />} />
+        <Route
+          path="/support"
+          element={<PrivateRoute element={<SupportPage />} />}
+        />
 
-          <Route
-            path="/ticket/:id"
-            element={<PrivateRoute element={<TicketDetailAdmin />} />}
-          />
+        <Route
+          path="/ticket/:id"
+          element={<PrivateRoute element={<TicketDetailAdmin />} />}
+        />
 
+        <Route
+          path="/customer-dashboard"
+          element={<CustomerRoute element={<CustomerDashboard />} />}
+        />
 
-          <Route
-            path="/customer-dashboard"
-            element={<CustomerRoute element={<CustomerDashboard />} />}
-          />
+        <Route
+          path="/customer-ticket"
+          element={<CustomerRoute element={<TicketPAge />} />}
+        />
 
-          <Route
-            path="/customer-ticket"
-            element={<CustomerRoute element={<TicketPAge />} />}
-          />
+        <Route
+          path="/customer-setting/:tab?"
+          element={<CustomerRoute element={<CustomerSetting />} />}
+        />
 
-          <Route
-            path="/customer-setting/:tab?"
-            element={<CustomerRoute element={<CustomerSetting />} />}
-          />
+        <Route
+          path="/customer-Profile"
+          element={<CustomerRoute element={<CustomerProfilePAge />} />}
+        />
 
-          <Route
-            path="/customer-Profile"
-            element={<CustomerRoute element={<CustomerProfilePAge />} />}
-          />
+        <Route
+          path="/ticket-detail/:id"
+          element={<CustomerRoute element={<TicketDetailPage />} />}
+        />
 
-          <Route
-            path="/ticket-detail/:id"
-            element={<CustomerRoute element={<TicketDetailPage />} />}
-          />
-
-          <Route
-            path="/feedback"
-            element={<CustomerRoute element={<CustomerFeedback />} />}
-          />
-        </Routes>
+        <Route
+          path="/feedback"
+          element={<CustomerRoute element={<CustomerFeedback />} />}
+        />
+      </Routes>
       {/* </Router> */}
     </div>
   );

@@ -1,16 +1,15 @@
-const Appointment = require('../models/Appointment');
+const Appointment = require("../models/Appointment");
 const nodemailer = require("nodemailer");
-const { createNotification } = require('../utils/notificationService');
+const { createNotification } = require("../utils/notificationService");
 
 // Get All Appointment
 const getAllAppointment = async (req, res) => {
   try {
     const appointments = await Appointment.find().sort({ date: 1 });
 
-
     const formattedAppointments = appointments.map((appointment) => ({
-      ...appointment._doc, // Spread existing data
-      date: appointment.date.toISOString().split("T")[0], // Format date to YYYY-MM-DD
+      ...appointment._doc,
+      date: appointment.date.toISOString().split("T")[0],
     }));
 
     res.status(200).json(formattedAppointments);
@@ -18,7 +17,6 @@ const getAllAppointment = async (req, res) => {
     res.status(500).json({ message: "Error getting Appointment", error });
   }
 };
-
 
 // Add Appointment
 const addAppointment = async (req, res) => {
@@ -53,11 +51,11 @@ const addAppointment = async (req, res) => {
     const savedAppointment = await newAppointment.save();
 
     await createNotification({
-      title: 'New Appointment Scheduled',
+      title: "New Appointment Scheduled",
       message: `Appointment scheduled for ${savedAppointment.customer} on ${savedAppointment.date} at ${savedAppointment.time}`,
-      type: 'appointment',
+      type: "appointment",
     });
-    
+
     res.status(201).json({
       message: "Appointment Added Successfully...",
       savedAppointment,
@@ -69,7 +67,6 @@ const addAppointment = async (req, res) => {
     });
   }
 };
-
 
 // update Appointmetn
 // const updateAppointment = async (req, res) => {
@@ -163,18 +160,18 @@ const updateAppointment = async (req, res) => {
     // Notification: Status changed
     if (status && status !== oldStatus) {
       await createNotification({
-        title: 'Appointment Status Updated',
+        title: "Appointment Status Updated",
         message: `Appointment for ${updatedAppointment.customer} changed from ${oldStatus} to ${status}`,
-        type: 'appointment',
+        type: "appointment",
       });
     }
 
     // Notification: Time changed
     if (req.body.time && req.body.time !== oldTime) {
       await createNotification({
-        title: 'Appointment Time Updated',
+        title: "Appointment Time Updated",
         message: `Appointment for ${updatedAppointment.customer} moved from ${oldTime} to ${req.body.time}`,
-        type: 'appointment',
+        type: "appointment",
       });
     }
 
@@ -188,56 +185,70 @@ const updateAppointment = async (req, res) => {
   }
 };
 
-
-
 // delete
 const deleteAppointment = async (req, res) => {
   try {
     await Appointment.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Appointment Deleted Successfully...' })
+    res.status(200).json({ message: "Appointment Deleted Successfully..." });
   } catch (error) {
-    res.status(500).json({ message: 'Error in delete Appointment: ', error })
+    res.status(500).json({ message: "Error in delete Appointment: ", error });
   }
-}
+};
 
 // upcoming Appointment
 const upcomingAppointment = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const upcoming = await Appointment.find({ date: { $gte: today } }).sort({ date: 1 });
+    const upcoming = await Appointment.find({ date: { $gte: today } }).sort({
+      date: 1,
+    });
 
     const formattedUpcoming = upcoming.map((appointment) => ({
       ...appointment._doc, // Spread existing data
       date: appointment.date.toISOString().split("T")[0], // Convert to YYYY-MM-DD
     }));
 
-    res.status(200).json({ message: 'Upcoming Appointment: ', upcomingappointment: formattedUpcoming });
+    res
+      .status(200)
+      .json({
+        message: "Upcoming Appointment: ",
+        upcomingappointment: formattedUpcoming,
+      });
   } catch (error) {
-    res.status(500).json({ message: 'Error in fetching Upcoming Appointments: ', error })
+    res
+      .status(500)
+      .json({ message: "Error in fetching Upcoming Appointments: ", error });
   }
-}
+};
 
 //past Appointment
 const pastAppointment = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const past = await Appointment.find({ date: { $lt: today } }).sort({ date: -1 });
+    const past = await Appointment.find({ date: { $lt: today } }).sort({
+      date: -1,
+    });
 
     const formattedPast = past.map((appointment) => ({
       ...appointment._doc, // Spread existing data
       date: appointment.date.toISOString().split("T")[0], // Convert to YYYY-MM-DD
     }));
 
-    res.status(200).json({ message: 'Past Appointment: ', pastappointment: formattedPast });
+    res
+      .status(200)
+      .json({ message: "Past Appointment: ", pastappointment: formattedPast });
   } catch (error) {
-    res.status(500).json({ message: 'Error in fetching the past appointment: ', error })
+    res
+      .status(500)
+      .json({ message: "Error in fetching the past appointment: ", error });
   }
-}
+};
 
 const sendMeetingEmail = async (req, res) => {
-  const { email, customer, contact, type, date, time, duration, meetLink } = req.body;
+  const { email, customer, contact, type, date, time, duration, meetLink } =
+    req.body;
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -245,7 +256,7 @@ const sendMeetingEmail = async (req, res) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-    })
+    });
     const mailOptions = {
       from: `"CRM Appointments" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -299,34 +310,32 @@ const sendMeetingEmail = async (req, res) => {
         </div>
       `,
     };
-    
 
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "Email sent successfully!" });
-
   } catch (error) {
     console.error("Email error:", error);
     res.status(500).json({ message: "Failed to send email", error });
   }
-}
+};
 
-const saveEventId = async(req,res) => {
+const saveEventId = async (req, res) => {
   const { eventId } = req.body;
-  const { appointmentId } = req.params; 
+  const { appointmentId } = req.params;
 
   try {
     if (!eventId || !appointmentId) {
-      return res.status(400).json({ message: "Appointment ID and Event ID are required" });
+      return res
+        .status(400)
+        .json({ message: "Appointment ID and Event ID are required" });
     }
 
-
     const appointment = await Appointment.findById(appointmentId);
-    
+
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    
     appointment.eventId = eventId;
     await appointment.save();
 
@@ -335,6 +344,15 @@ const saveEventId = async(req,res) => {
     console.error("Error saving event ID:", error);
     return res.status(500).json({ message: "Failed to save event ID" });
   }
-}
+};
 
-module.exports = { getAllAppointment, addAppointment, updateAppointment, deleteAppointment, upcomingAppointment, pastAppointment, sendMeetingEmail, saveEventId }
+module.exports = {
+  getAllAppointment,
+  addAppointment,
+  updateAppointment,
+  deleteAppointment,
+  upcomingAppointment,
+  pastAppointment,
+  sendMeetingEmail,
+  saveEventId,
+};

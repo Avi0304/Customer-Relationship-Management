@@ -2,8 +2,6 @@
 @custom-variant dark (&:where(.dark, .dark *));
 @custom-variant light (&:where(.light, .light *));
 
-
-
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -30,8 +28,6 @@
   --space-black: #0d0221;       /* Deep space black */
   --neon-glow: 0 0 10px;        /* Glow effect value */
 }
-
-
 
 body {
   margin: 0;

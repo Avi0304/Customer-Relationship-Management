@@ -11,7 +11,7 @@ const lightTheme = {
       light: "#3B82F6",
       dark: "#1D4ED8",
     },
-   point3: "black",
+    point3: "black",
     background: {
       default: "#F8FAFC",
       paper: "#FFFFFF",

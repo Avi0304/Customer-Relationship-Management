@@ -85,36 +85,43 @@ const CustomerSegmentation = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip  contentStyle={{
-                backgroundColor: 'var(--light-bg, #fff)',
-                borderColor: 'var(--light-border, #e5e7eb)',
-                borderRadius: '0.5rem',
-                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                '@media (prefers-color-scheme: dark)': {
-                  backgroundColor: 'hsl(var(--card))',
-                  borderColor: 'hsl(var(--border))',
-                }
-              }}
-              labelStyle={{
-                color: 'var(--light-text, #111827)',
-                fontWeight: 600,
-                '@media (prefers-color-scheme: dark)': {
-                  color: 'hsl(var(--foreground))',
-                }
-              }}
-              itemStyle={{
-                '@media (prefers-color-scheme: dark)': {
-                  color: 'hsl(var(--muted-foreground))',
-                }
-              }}/>
-                <Legend layout="horizontal" align="center" verticalAlign="bottom"   wrapperStyle={{
-                paddingLeft: '2rem',
-              }}
-              formatter={(value) => (
-                <span className="light:text-gray-700 dark:text-gray-300">
-                  {value}
-                </span>
-              )}/>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "var(--light-bg, #fff)",
+                    borderColor: "var(--light-border, #e5e7eb)",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    "@media (prefers-color-scheme: dark)": {
+                      backgroundColor: "hsl(var(--card))",
+                      borderColor: "hsl(var(--border))",
+                    },
+                  }}
+                  labelStyle={{
+                    color: "var(--light-text, #111827)",
+                    fontWeight: 600,
+                    "@media (prefers-color-scheme: dark)": {
+                      color: "hsl(var(--foreground))",
+                    },
+                  }}
+                  itemStyle={{
+                    "@media (prefers-color-scheme: dark)": {
+                      color: "hsl(var(--muted-foreground))",
+                    },
+                  }}
+                />
+                <Legend
+                  layout="horizontal"
+                  align="center"
+                  verticalAlign="bottom"
+                  wrapperStyle={{
+                    paddingLeft: "2rem",
+                  }}
+                  formatter={(value) => (
+                    <span className="light:text-gray-700 dark:text-gray-300">
+                      {value}
+                    </span>
+                  )}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

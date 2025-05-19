@@ -16,7 +16,9 @@ const RecentActivityTable = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/Customer/all");
+        const response = await axios.get(
+          "http://localhost:8080/api/Customer/all"
+        );
         const data = response.data;
 
         // Sort by createdAt (most recent first), then take top 4
@@ -78,7 +80,10 @@ const RecentActivityTable = () => {
           </TableHeader>
           <TableBody>
             {activities.map(({ name, status, date, value, color }, index) => (
-              <TableRow key={index} className="light:bg-white dark:bg-gray-900 dark:hover:bg-gray-700">
+              <TableRow
+                key={index}
+                className="light:bg-white dark:bg-gray-900 dark:hover:bg-gray-700"
+              >
                 <TableCell className="light:text-gray-700 dark:text-gray-300">
                   {name}
                 </TableCell>

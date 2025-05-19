@@ -6,7 +6,7 @@ import { UserContext } from "../../context/UserContext";
 import { Avatar } from "@mui/material";
 import { FaUser } from "react-icons/fa";
 
-const CustomerTopNav = ({title}) => {
+const CustomerTopNav = ({ title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -21,7 +21,6 @@ const CustomerTopNav = ({title}) => {
 
       <div className="flex items-center gap-6">
         <ThemeToggle />
-        {/* <NotificationBell /> */}
 
         {/* Profile Dropdown */}
         <div className="relative">
@@ -33,7 +32,12 @@ const CustomerTopNav = ({title}) => {
               <Avatar
                 src={user?.photo ? `http://localhost:8080${user.photo}` : ""}
                 alt={user?.name}
-                sx={{ width: 40, height: 40, bgcolor: "transparent", color: "black" }}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: "transparent",
+                  color: "black",
+                }}
               >
                 {!user?.photo && user?.name?.charAt(0).toUpperCase()}
               </Avatar>

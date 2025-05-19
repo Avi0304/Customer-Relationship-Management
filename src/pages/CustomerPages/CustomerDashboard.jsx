@@ -5,7 +5,6 @@ import CustomerTopNav from "../../components/Customer/CustomerTopNav";
 import CustomerSidebar from "../../components/Customer/CustomerSidebar";
 import CustomerDashBoard from "../../components/Customer/CustomerDashBoard";
 
-
 function CustomerDashboard() {
   return (
     <div className="flex min-h-screen flex-col">

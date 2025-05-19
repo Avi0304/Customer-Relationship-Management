@@ -6,17 +6,14 @@ const CustomerRoute = ({ element }) => {
   const token = localStorage.getItem("token");
   const isAdmin = localStorage.getItem("isAdmin") === "true";
 
-  // Not logged in
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // Logged in but is admin
   if (isAdmin) {
-    return <NotFoundPage/>
+    return <NotFoundPage />;
   }
 
-  // Logged in and is a customer
   return element;
 };
 

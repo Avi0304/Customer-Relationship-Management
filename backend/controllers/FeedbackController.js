@@ -1,5 +1,5 @@
 const Feedback = require("../models/Feedback");
-const User = require("../models/User"); 
+const User = require("../models/User");
 
 exports.submitFeedback = async (req, res) => {
   try {
@@ -38,11 +38,9 @@ exports.submitFeedback = async (req, res) => {
   }
 };
 
-
-
 exports.getAllFeedback = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 }); 
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
 
     if (feedbacks.length === 0) {
       return res.status(404).json({ message: "No feedback found" });

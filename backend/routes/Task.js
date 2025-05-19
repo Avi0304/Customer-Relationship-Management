@@ -1,23 +1,23 @@
-const express = require('express');
+const express = require("express");
 const {
-    getAllTasks,
-    addTask,
-    updateTask,
-    deleteTask,
-    toggleTaskCompletion
-} = require('../controllers/TaskController');
+  getAllTasks,
+  addTask,
+  updateTask,
+  deleteTask,
+  toggleTaskCompletion,
+} = require("../controllers/TaskController");
 
 const router = express.Router();
 
-router.get('/all', getAllTasks);          // Get all tasks
-router.post('/add', addTask);             // Add a new task
-router.patch('/update/:id', updateTask);  // Update task details
-router.delete('/delete/:id', deleteTask); // Delete task
-router.patch('/toggle/:id', toggleTaskCompletion); // Toggle task completion status
+router.get("/all", getAllTasks);
+router.post("/add", addTask);
+router.patch("/update/:id", updateTask);
+router.delete("/delete/:id", deleteTask);
+router.patch("/toggle/:id", toggleTaskCompletion);
 
 // Handle invalid routes
-router.all('*', (req, res) => {
-    res.status(404).json({ success: false, message: 'Invalid Route' });
+router.all("*", (req, res) => {
+  res.status(404).json({ success: false, message: "Invalid Route" });
 });
 
 module.exports = router;

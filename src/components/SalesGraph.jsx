@@ -42,7 +42,6 @@ const SalesGraph = () => {
     fetchRevenueData();
   }, []);
 
-
   return (
     <Card className="col-span-3 bg-white dark:bg-[#1B222D] shadow-lg rounded-xl p-6 w-full ">
       <CardHeader>
@@ -59,14 +58,21 @@ const SalesGraph = () => {
           <p className="text-gray-500 dark:text-gray-400">No data available</p>
         ) : (
           <ResponsiveContainer width="100%" height={400}>
-            <AreaChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 30 }}>
+            <AreaChart
+              data={revenueData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+            >
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#1E88E5" stopOpacity={0.9} />
                   <stop offset="100%" stopColor="#90CAF9" stopOpacity={0.2} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ddd" opacity={0.7} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#ddd"
+                opacity={0.7}
+              />
               <XAxis
                 dataKey="date"
                 tickFormatter={(str) => str.slice(5)}
@@ -80,14 +86,21 @@ const SalesGraph = () => {
                   offset: -25,
                   fontSize: 15,
                   fontWeight: "bold",
-                  fill: "#4CAF50"
+                  fill: "#4CAF50",
                 }}
-
               />
               <YAxis
                 stroke="#1976D2"
                 tick={{ fontSize: 13, fontWeight: "bold" }}
-                label={{ value: "Revenue", angle: -90, position: "insideLeft", offset: -14, fontSize: 15, fontWeight: "bold", fill: "#4CAF50" }}
+                label={{
+                  value: "Revenue",
+                  angle: -90,
+                  position: "insideLeft",
+                  offset: -14,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  fill: "#4CAF50",
+                }}
               />
               <Tooltip />
               <Legend
@@ -97,7 +110,7 @@ const SalesGraph = () => {
                 wrapperStyle={{
                   fontSize: "14px",
                   fontWeight: "bold",
-                  color: "#0D47A1",  // Dark Blue
+                  color: "#0D47A1", // Dark Blue
                   // marginRight: "20px",
                   textTransform: "capitalize",
                 }}

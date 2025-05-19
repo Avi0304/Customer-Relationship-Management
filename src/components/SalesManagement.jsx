@@ -40,11 +40,11 @@ const SalesManagement = () => {
     customer: "",
     amount: "",
     status: "Pending",
-    services: ""
+    services: "",
   });
-  const currentTheme = localStorage.getItem('theme') || 'light';
+  const currentTheme = localStorage.getItem("theme") || "light";
 
-  // ➤ Fetch Sales Data
+  // Fetch Sales Data
   const fetchSales = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/sales/all");
@@ -58,7 +58,7 @@ const SalesManagement = () => {
     fetchSales();
   }, []);
 
-  // ➤ Add Sale
+  // Add Sale
   const handleAddSale = () => {
     setNewSale({ customer: "", amount: "", status: "Pending", services: "" });
     setIsAdding(true);
@@ -100,7 +100,7 @@ const SalesManagement = () => {
     }
   };
 
-  // ➤ Delete Sale
+  // Delete Sale
   const handleDeleteSale = async (id) => {
     Swal.fire({
       title: "Are you sure?",
@@ -137,7 +137,7 @@ const SalesManagement = () => {
     });
   };
 
-  // ➤ Edit Sale
+  // Edit Sale
   const handleEditSale = (sale) => {
     setSelectedSale(sale);
     setIsEditing(true);
@@ -174,7 +174,7 @@ const SalesManagement = () => {
     }
   };
 
-  // ➤ Filter Sales
+  // Filter Sales
   const filteredSales = sales.filter(
     (sale) =>
       (filter === "All" || sale.status === filter) &&
@@ -240,12 +240,6 @@ const SalesManagement = () => {
                   theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
               }}
             >
-              {/* <TableCell
-                align="center"
-                sx={{ fontWeight: "bold", fontSize: "1rem" }}
-              >
-                ID
-              </TableCell> */}
               <TableCell
                 align="center"
                 sx={{ fontWeight: "bold", fontSize: "1rem" }}
@@ -287,12 +281,13 @@ const SalesManagement = () => {
                 <TableCell align="center">₹ {sale.amount}</TableCell>
                 <TableCell align="center">
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${sale.status === "Completed"
-                      ? "bg-green-500 text-white dark:bg-green-600"
-                      : sale.status === "Pending"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                      sale.status === "Completed"
+                        ? "bg-green-500 text-white dark:bg-green-600"
+                        : sale.status === "Pending"
                         ? "bg-yellow-500 text-white dark:bg-yellow-600"
                         : "bg-red-500 text-white dark:bg-red-600"
-                      }`}
+                    }`}
                   >
                     {sale.status}
                   </span>
@@ -339,7 +334,9 @@ const SalesManagement = () => {
             fullWidth
             margin="dense"
             value={newSale.services}
-            onChange={(e) => setNewSale({ ...newSale, services: e.target.value })}
+            onChange={(e) =>
+              setNewSale({ ...newSale, services: e.target.value })
+            }
           />
           <TextField
             label="Amount"
@@ -397,7 +394,7 @@ const SalesManagement = () => {
               setSelectedSale({ ...selectedSale, customer: e.target.value })
             }
           />
-           <TextField
+          <TextField
             label="Services"
             fullWidth
             margin="dense"

@@ -38,18 +38,11 @@ const HeroSection = () => {
                 Get Started
                 <LuArrowRight size={23} />
               </Link>
-
-              {/* <Link
-                                href="#demo"
-                                className="border border-gray-300 text-gray-700 text-lg font-medium px-6 py-3 rounded-lg shadow-md hover:bg-gray-200 transition"
-                            >
-                                Request Demo
-                            </Link> */}
             </div>
           </div>
 
           <img
-            src={mode === 'light' ? lighthero : Darkhero }
+            src={mode === "light" ? lighthero : Darkhero}
             alt="CRM Dashboard"
             className="mx-auto w-full max-w-[700px] h-auto rounded-xl object-contain mt-7"
           />

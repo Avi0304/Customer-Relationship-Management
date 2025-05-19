@@ -4,29 +4,29 @@ import { SignupValidationSchema } from "./validation/AuthValidation";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Button, ButtonGroup, Box } from '@mui/material';
-
+import { Button, ButtonGroup, Box } from "@mui/material";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('customer');
+  const [activeTab, setActiveTab] = useState("customer");
   const [adminKey, setAdminKey] = useState("");
-
 
   const handleSignup = async (values, { setSubmitting, setErrors }) => {
     try {
-
       const requestBody = {
         name: values.username,
         email: values.email,
         password: values.password,
       };
 
-      if (activeTab === 'admin') {
+      if (activeTab === "admin") {
         requestBody.adminKey = values.adminKey;
       }
 
-      const response = await axios.post("http://localhost:8080/api/user/register", requestBody);
+      const response = await axios.post(
+        "http://localhost:8080/api/user/register",
+        requestBody
+      );
 
       // Check if registration was successful
       if (response.status === 201 || response.status === 200) {
@@ -35,7 +35,7 @@ const SignUp = () => {
           title: "Registered Successfully!",
           text: "Redirecting to login...",
           icon: "success",
-          iconColor: "green", // Removed `currentTheme` for safety
+          iconColor: "green",
           background: "#fff",
           color: "#000",
           timer: 1500,
@@ -81,41 +81,42 @@ const SignUp = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center light:bg-gray-100 px-4 py-5 dark:bg-slate-950 overflow-auto">
       <div className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
-
         <Box display="flex" justifyContent="center">
           <ButtonGroup
             variant="outlined"
             aria-label="account type tabs"
             sx={{
-              borderRadius: '9999px',
-              padding: '0px',
+              borderRadius: "9999px",
+              padding: "0px",
             }}
           >
-            {['customer', 'admin'].map((tab) => (
+            {["customer", "admin"].map((tab) => (
               <Button
                 key={tab}
-                variant={activeTab === tab ? 'contained' : 'outlined'}
+                variant={activeTab === tab ? "contained" : "outlined"}
                 onClick={() => setActiveTab(tab)}
                 sx={{
-                  textTransform: 'capitalize',
-                  px: 2,   
-                  py: 0.5, 
-                  borderRadius: '9999px', 
-                  fontWeight: 500, 
-                  fontSize: '14px', 
-                  letterSpacing: '0.4px',
-                  backgroundColor: activeTab === tab ? 'linear-gradient(135deg, #6EE7B7, #3B82F6)' : 'transparent',
-                  color: activeTab === tab ? '#fff' : '#3B82F6',
-                  borderColor: activeTab === tab ? 'transparent' : '#3B82F6',
-                  '&:hover': {
-                    backgroundColor: activeTab === tab ? '#3B82F6' : '#E0F7FF',
-                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+                  textTransform: "capitalize",
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: "9999px",
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  letterSpacing: "0.4px",
+                  backgroundColor:
+                    activeTab === tab
+                      ? "linear-gradient(135deg, #6EE7B7, #3B82F6)"
+                      : "transparent",
+                  color: activeTab === tab ? "#fff" : "#3B82F6",
+                  borderColor: activeTab === tab ? "transparent" : "#3B82F6",
+                  "&:hover": {
+                    backgroundColor: activeTab === tab ? "#3B82F6" : "#E0F7FF",
+                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
                   },
-                  transition: 'all 0.3s ease',
+                  transition: "all 0.3s ease",
                 }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -124,13 +125,14 @@ const SignUp = () => {
           </ButtonGroup>
         </Box>
 
-
         {/* Title */}
         <h2 className="text-3xl font-bold text-gray-800 text-center dark:text-white mt-1">
-          {activeTab === 'admin' ? 'Create Admin Account' : 'Create an Account'}
+          {activeTab === "admin" ? "Create Admin Account" : "Create an Account"}
         </h2>
         <p className="text-md text-gray-500 text-center mb-5 dark:text-slate-400">
-          {activeTab === 'admin' ? 'Register as an administrator' : 'Sign up to get started'}
+          {activeTab === "admin"
+            ? "Register as an administrator"
+            : "Sign up to get started"}
         </p>
 
         {/* Formik Form */}
@@ -147,7 +149,6 @@ const SignUp = () => {
         >
           {({ isSubmitting }) => (
             <Form className="space-y-4">
-
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
@@ -159,7 +160,11 @@ const SignUp = () => {
                   className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Choose a username"
                 />
-                <ErrorMessage name="username" component="p" className="text-red-500 text-xs mt-1" />
+                <ErrorMessage
+                  name="username"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
               </div>
 
               {/* Email */}
@@ -173,7 +178,11 @@ const SignUp = () => {
                   className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Enter your email"
                 />
-                <ErrorMessage name="email" component="p" className="text-red-500 text-xs mt-1" />
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
               </div>
 
               {/* Password */}
@@ -187,7 +196,11 @@ const SignUp = () => {
                   className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Create a password"
                 />
-                <ErrorMessage name="password" component="p" className="text-red-500 text-xs mt-1" />
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
               </div>
 
               {/* Confirm Password */}
@@ -201,13 +214,19 @@ const SignUp = () => {
                   className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm dark:border-gray-600 dark:bg-slate-900 dark:text-white dark:focus:ring-gray-500 transition"
                   placeholder="Confirm your password"
                 />
-                <ErrorMessage name="confirmPassword" component="p" className="text-red-500 text-xs mt-1" />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
               </div>
 
-
-              {activeTab === 'admin' && (
+              {activeTab === "admin" && (
                 <div>
-                  <label htmlFor="adminKey" className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  <label
+                    htmlFor="adminKey"
+                    className="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                  >
                     Admin Registration Key
                   </label>
                   <Field
@@ -224,7 +243,6 @@ const SignUp = () => {
                 </div>
               )}
 
-
               {/* Submit Button */}
               <button
                 type="submit"
@@ -237,7 +255,10 @@ const SignUp = () => {
               {/* Login Link */}
               <p className="text-center text-sm text-gray-600 dark:text-slate-400">
                 Already have an account?{" "}
-                <Link to="/login" className="light:text-black font-semibold hover:underline dark:text-slate-300">
+                <Link
+                  to="/login"
+                  className="light:text-black font-semibold hover:underline dark:text-slate-300"
+                >
                   Login
                 </Link>
               </p>
@@ -246,7 +267,6 @@ const SignUp = () => {
         </Formik>
       </div>
     </div>
-
   );
 };
 

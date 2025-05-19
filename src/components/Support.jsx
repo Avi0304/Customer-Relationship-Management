@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import {
   Button,
@@ -21,15 +21,13 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { BiPlus, BiSupport, } from "react-icons/bi";
+import { BiPlus, BiSupport } from "react-icons/bi";
 import { FaEdit, FaEye } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Search } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-
-
 
 const Support = () => {
   const [requests, setRequests] = useState([]);
@@ -41,7 +39,6 @@ const Support = () => {
   const [sortOrder, setSortOrder] = useState("Newest");
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
-
 
   useEffect(() => {
     fetchRequests();
@@ -128,7 +125,10 @@ const Support = () => {
       setCurrentRequest(null);
       await fetchRequests();
     } catch (error) {
-      console.error('Error saving request:', error.response?.data || error.message);
+      console.error(
+        "Error saving request:",
+        error.response?.data || error.message
+      );
       Swal.fire("Success", "Failed to save request", "success");
       setOpenDialog(false);
       setCurrentRequest(null);
@@ -192,14 +192,6 @@ const Support = () => {
         </Typography>
 
         <Box display="flex" gap={2}>
-          {/* <TextField
-            variant="outlined"
-            size="small"
-            placeholder="🔍 Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          /> */}
-
           <TextField
             label="Search Support Requests"
             variant="outlined"
@@ -232,13 +224,12 @@ const Support = () => {
               setOpenDialog(true);
             }}
             sx={{
-              minWidth: 'unset',
-              width: 'auto',
-              whiteSpace: 'nowrap',
+              minWidth: "unset",
+              width: "auto",
+              whiteSpace: "nowrap",
               paddingX: 2,
-              height: '40px'
+              height: "40px",
             }}
-
           >
             New Request
           </Button>
@@ -320,7 +311,6 @@ const Support = () => {
                 {req.subject}
               </Typography>
 
-
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -351,8 +341,8 @@ const Support = () => {
                       req.status === "Open"
                         ? "success.main"
                         : req.status === "In Progress"
-                          ? "warning.main"
-                          : "text.disabled",
+                        ? "warning.main"
+                        : "text.disabled",
                     color: "white",
                     fontSize: "0.75rem",
                     fontWeight: "500",
@@ -391,7 +381,6 @@ const Support = () => {
                   >
                     <FaEye size={16} />
                   </IconButton>
-
                 </Box>
               </Box>
 

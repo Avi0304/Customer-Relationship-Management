@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useRef, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+} from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 
@@ -10,7 +16,6 @@ export const NotificationProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const shownNotificationIds = useRef(new Set());
 
-
   // Initialize pushEnabled state from localStorage
   const [isPushEnabled, setIsPushEnabled] = useState(() => {
     const saved = localStorage.getItem("pushEnabled");
@@ -20,19 +25,19 @@ export const NotificationProvider = ({ children }) => {
   const playNotificationSound = () => {
     const audio = new Audio("/sounds/notification.mp3");
     audio.volume = 1.0; // Max valid volume
-    audio.play().then(() => {
-      console.log("🔊 Notification sound played!");
-    }).catch((err) => {
-      console.error("🔇 Audio play error:", err);
-    });
+    audio
+      .play()
+      .then(() => {
+        console.log("🔊 Notification sound played!");
+      })
+      .catch((err) => {
+        console.error("🔇 Audio play error:", err);
+      });
   };
 
-
-
-  // ✅ Fetch unseen + initial notifications
+  // Fetch unseen + initial notifications
   const fetchNotifications = async () => {
     try {
-
       const isAdmin = localStorage.getItem("isAdmin") === "true";
       if (!isAdmin) return;
 
@@ -45,7 +50,7 @@ export const NotificationProvider = ({ children }) => {
 
       const newData = res.data;
 
-      // 🧠 Avoid duplicates
+      // Avoid duplicates
       setNotifications((prev) => {
         const existingIds = new Set(prev.map((n) => n._id));
         const fresh = newData.filter((n) => !existingIds.has(n._id));
@@ -53,22 +58,25 @@ export const NotificationProvider = ({ children }) => {
         if (fresh.length > 0) {
           console.log("📥 New notifications from DB fetch:", fresh);
 
-          playNotificationSound()
+          playNotificationSound();
 
-          // 🔔 Show push notification only if permission is granted and push is enabled
-          if (Notification.permission === "granted" && (localStorage.getItem("pushEnabled") === "true")) {
+          // Show push notification only if permission is granted and push is enabled
+          if (
+            Notification.permission === "granted" &&
+            localStorage.getItem("pushEnabled") === "true"
+          ) {
             fresh.forEach((notif) => {
               if (!shownNotificationIds.current.has(notif._id)) {
                 new Notification(notif.title, {
                   body: notif.message,
                 });
-                shownNotificationIds.current.add(notif._id); // ✅ Mark as shown
+                shownNotificationIds.current.add(notif._id);
               }
             });
           }
         }
 
-        return [...fresh, ...prev]; // newest on top
+        return [...fresh, ...prev];
       });
     } catch (error) {
       console.error("❌ Error fetching notifications:", error);
@@ -77,7 +85,7 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
-  // ✅ Setup socket connection
+  // Setup socket connection
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -89,13 +97,19 @@ export const NotificationProvider = ({ children }) => {
     setSocket(newSocket);
 
     newSocket.on("new_notification", (notification) => {
-      console.log("⚡ Real-time notification received via socket:", notification);
+      console.log(
+        "⚡ Real-time notification received via socket:",
+        notification
+      );
       setNotifications((prev) => [notification, ...prev]);
 
       playNotificationSound();
 
-      // 🔔 Show push notification only if permission is granted and push is enabled
-      if (Notification.permission === "granted" && (localStorage.getItem("pushEnabled") === "true")) {
+      // Show push notification only if permission is granted and push is enabled
+      if (
+        Notification.permission === "granted" &&
+        localStorage.getItem("pushEnabled") === "true"
+      ) {
         new Notification(notification.title, {
           body: notification.message,
         });
@@ -103,14 +117,14 @@ export const NotificationProvider = ({ children }) => {
     });
 
     return () => newSocket.disconnect();
-  }, []); // Empty dependency array to run only on mount
+  }, []);
 
-  // ✅ Fetch once on mount
+  // Fetch once on mount
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  // ✅ Recursive polling every 5 seconds
+  // Recursive polling every 5 seconds
   useEffect(() => {
     let timeout;
 
@@ -119,12 +133,12 @@ export const NotificationProvider = ({ children }) => {
       timeout = setTimeout(poll, 5000);
     };
 
-    poll(); // Start the loop
+    poll();
 
-    return () => clearTimeout(timeout); // Cleanup
-  }, []); // Dependency array is empty to only start the polling once
+    return () => clearTimeout(timeout);
+  }, []);
 
-  // ✅ Ask permission for browser notifications
+  // Ask permission for browser notifications
   useEffect(() => {
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
@@ -148,12 +162,15 @@ export const NotificationProvider = ({ children }) => {
       if (updatedPushEnabled !== isPushEnabled) {
         // Update the state only if there's a change
         setIsPushEnabled(updatedPushEnabled);
-        console.log("Updated isPushEnabled from localStorage:", updatedPushEnabled);
+        console.log(
+          "Updated isPushEnabled from localStorage:",
+          updatedPushEnabled
+        );
       }
-    }, 5000); // Check every 5 seconds
+    }, 5000);
 
-    return () => clearInterval(intervalId); // Cleanup on component unmount
-  }, [isPushEnabled]); // Ensure effect only triggers when `isPushEnabled` changes
+    return () => clearInterval(intervalId);
+  }, [isPushEnabled]);
 
   return (
     <NotificationContext.Provider

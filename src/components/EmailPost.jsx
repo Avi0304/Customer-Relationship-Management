@@ -39,10 +39,11 @@ const EmailPost = ({ togglePanel }) => {
         subject: formData.get("subject"),
         body: formData.get("body"),
       },
-      recipients: formData
-        .get("recipients")
-        ?.split(",")
-        .map((email) => email.trim()) || [],
+      recipients:
+        formData
+          .get("recipients")
+          ?.split(",")
+          .map((email) => email.trim()) || [],
       schedule: "immediately",
     };
 
@@ -199,8 +200,16 @@ const EmailPost = ({ togglePanel }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Button variant="outlined" color="secondary" onClick={togglePanel}>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={togglePanel}
+              >
                 Cancel
               </Button>
               <Button type="submit" variant="contained" color="primary">

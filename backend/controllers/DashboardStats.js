@@ -4,11 +4,8 @@ const Sale = require("../models/Sales");
 
 const DashboardStats = async (req, res) => {
   try {
-    // Get the start of the previous month
     const lastMonthStart = moment().subtract(1, "months").startOf("month");
     const lastMonthEnd = moment().subtract(1, "months").endOf("month");
-
-    // Get the start of the last hour
     const lastHour = moment().subtract(1, "hours").toDate();
 
     // Calculate current total revenue
@@ -33,18 +30,12 @@ const DashboardStats = async (req, res) => {
     const totalRevenue =
       totalRevenueResult.length > 0 ? totalRevenueResult[0].totalAmount : 0;
 
-    // Count active customers
     const activeCustomers = await Customer.countDocuments({
       status: { $in: ["Pending", "Completed"] },
     });
 
-    // Count total sales
     const totalSales = await Sale.countDocuments();
-
-    // Count active deals
     const activeDeals = await Sale.countDocuments({ status: "Pending" });
-
-    // Fetch previous month revenue
     const lastMonthRevenueResult = await Sale.aggregate([
       {
         $match: {
@@ -76,17 +67,14 @@ const DashboardStats = async (req, res) => {
         ? lastMonthRevenueResult[0].totalAmount
         : 0;
 
-    // Fetch previous month customers
     const lastMonthCustomers = await Customer.countDocuments({
       createdAt: { $gte: lastMonthStart.toDate(), $lte: lastMonthEnd.toDate() },
     });
 
-    // Fetch previous month sales
     const lastMonthSales = await Sale.countDocuments({
       createdAt: { $gte: lastMonthStart.toDate(), $lte: lastMonthEnd.toDate() },
     });
 
-    // Fetch active deals in the last hour
     const lastHourDeals = await Sale.countDocuments({
       createdAt: { $gte: lastHour },
     });
@@ -100,7 +88,10 @@ const DashboardStats = async (req, res) => {
       : 0;
 
     const customerChange = lastMonthCustomers
-      ? Math.min(((activeCustomers - lastMonthCustomers) / lastMonthCustomers) * 100, 100)
+      ? Math.min(
+          ((activeCustomers - lastMonthCustomers) / lastMonthCustomers) * 100,
+          100
+        )
       : 0;
 
     const salesChange = lastMonthSales

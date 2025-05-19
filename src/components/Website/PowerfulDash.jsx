@@ -29,7 +29,6 @@ import {
   Tab,
 } from "@mui/material";
 
-
 function PowerfulDash() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [tabValue, setTabValue] = useState(0);
@@ -173,7 +172,8 @@ function PowerfulDash() {
   const supportRequests = [
     {
       title: "Briefly describe the issue",
-      description: "Provide as much detail as possible about the issue. Include steps to reproduce,...",
+      description:
+        "Provide as much detail as possible about the issue. Include steps to reproduce,...",
       status: "Open",
       date: "4/11/2025, 1:10:25 PM",
     },
@@ -185,7 +185,8 @@ function PowerfulDash() {
     },
     {
       title: "Unable to deploy Next.js",
-      description: "I'm trying to deploy my Next.js application but I keep getting an error...",
+      description:
+        "I'm trying to deploy my Next.js application but I keep getting an error...",
       status: "Open",
       date: "4/10/2025, 12:23:41 PM",
     },
@@ -221,7 +222,8 @@ function PowerfulDash() {
     },
     {
       title: "Ticket Auto Close Issue",
-      description: "Tickets are closing automatically after 24 hours, needs review.",
+      description:
+        "Tickets are closing automatically after 24 hours, needs review.",
       status: "Open",
       date: "4/7/2025, 5:33:09 PM",
     },
@@ -256,14 +258,21 @@ function PowerfulDash() {
       {/* Tabs Navigation */}
       <div className="mx-auto max-w-4xl mt-12">
         <div className="grid grid-cols-5 bg-white dark:bg-gray-900/60 shadow-md rounded-lg overflow-hidden">
-          {["dashboard", "tasks", "leads", "appointments", "customer-support"].map((tab) => (
+          {[
+            "dashboard",
+            "tasks",
+            "leads",
+            "appointments",
+            "customer-support",
+          ].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-3 text-center font-medium transition-all duration-300 ${activeTab === tab
-                ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                }`}
+              className={`py-3 text-center font-medium transition-all duration-300 ${
+                activeTab === tab
+                  ? "bg-green-600 text-white shadow-md rounded-md" // Active Tab
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              }`}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -305,10 +314,16 @@ function PowerfulDash() {
                   className="p-4 bg-white dark:bg-[#1B222D] rounded-lg shadow-md"
                 >
                   <div className="flex justify-between items-start">
-                    <h3 className="text-sm font-medium dark:text-gray-100">{item.title}</h3>
-                    <div className="text-xl text-gray-500 dark:text-gray-300">{item.icon}</div>
+                    <h3 className="text-sm font-medium dark:text-gray-100">
+                      {item.title}
+                    </h3>
+                    <div className="text-xl text-gray-500 dark:text-gray-300">
+                      {item.icon}
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold mt-2 dark:text-gray-100">{item.value}</p>
+                  <p className="text-2xl font-bold mt-2 dark:text-gray-100">
+                    {item.value}
+                  </p>
                   <p className="text-xs text-green-500">
                     {item.change} from last month
                   </p>
@@ -323,7 +338,7 @@ function PowerfulDash() {
                 <h3 className="text-lg font-bold">Sales Overview</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
-                    src={mode === 'dark' ? SalegraphDark : SalegraphLight}
+                    src={mode === "dark" ? SalegraphDark : SalegraphLight}
                     alt="Sales Graph"
                     className="w-full h-full object-cover"
                   />
@@ -335,7 +350,7 @@ function PowerfulDash() {
                 <h3 className="text-lg font-bold">Customer Segments</h3>
                 <div className="w-full h-40 mt-3 rounded-lg flex items-center justify-center overflow-hidden">
                   <img
-                    src={mode === 'dark' ? CustomerDark : CustomerLight}
+                    src={mode === "dark" ? CustomerDark : CustomerLight}
                     alt="Customer Segments"
                     className="w-full h-full object-cover"
                   />
@@ -413,11 +428,8 @@ function PowerfulDash() {
         {/* Leads Tab */}
         {activeTab === "leads" && (
           <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-            {/* Top Bar */}
             <div className="flex justify-between items-center mb-4">
-              {/* Search and Filter */}
               <div className="flex gap-4">
-                {/* Material-UI Search Input */}
                 <TextField
                   variant="outlined"
                   placeholder="Search Leads"
@@ -496,10 +508,19 @@ function PowerfulDash() {
                         lead.status === statusFilter
                     )
                     .map((lead, index) => (
-                      <tr key={index} className="border-b  border-gray-300 dark:border-gray-700">
-                        <td className="p-3 text-center dark:text-gray-300">{lead.name}</td>
-                        <td className="p-3 text-center dark:text-gray-300">{lead.email}</td>
-                        <td className="p-3 text-center dark:text-gray-300">{lead.phone}</td>
+                      <tr
+                        key={index}
+                        className="border-b  border-gray-300 dark:border-gray-700"
+                      >
+                        <td className="p-3 text-center dark:text-gray-300">
+                          {lead.name}
+                        </td>
+                        <td className="p-3 text-center dark:text-gray-300">
+                          {lead.email}
+                        </td>
+                        <td className="p-3 text-center dark:text-gray-300">
+                          {lead.phone}
+                        </td>
                         <td className="p-3 text-center dark:text-gray-300">
                           <span
                             className={`px-3 py-1 text-white rounded-full text-sm ${getStatusBadge(
@@ -580,19 +601,35 @@ function PowerfulDash() {
                 </thead>
                 <tbody>
                   {filteredAppointments.map((appt, index) => (
-                    <tr key={index} className="border-b  border-gray-300 border-gray-700">
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.customer}</td>
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.contact}</td>
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.type}</td>
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.date}</td>
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.time}</td>
-                      <td className="py-3 px-4 dark:text-gray-300">{appt.duration}</td>
+                    <tr
+                      key={index}
+                      className="border-b  border-gray-300 border-gray-700"
+                    >
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.customer}
+                      </td>
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.contact}
+                      </td>
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.type}
+                      </td>
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.date}
+                      </td>
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.time}
+                      </td>
+                      <td className="py-3 px-4 dark:text-gray-300">
+                        {appt.duration}
+                      </td>
                       <td className="py-3 px-4">
                         <span
-                          className={`px-2 py-1 rounded-full text-white text-xs ${appt.status === "Confirmed"
-                            ? "bg-green-500"
-                            : "bg-yellow-500"
-                            }`}
+                          className={`px-2 py-1 rounded-full text-white text-xs ${
+                            appt.status === "Confirmed"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                          }`}
                         >
                           {appt.status}
                         </span>
@@ -662,7 +699,11 @@ function PowerfulDash() {
                 {["All", "Open", "In Progress", "Closed"].map((status) => (
                   <button
                     key={status}
-                    className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${statusFilter === status ? 'bg-blue-600 text-white' : 'bg-transparent text-blue-600'}`}
+                    className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
+                      statusFilter === status
+                        ? "bg-blue-600 text-white"
+                        : "bg-transparent text-blue-600"
+                    }`}
                     onClick={() => setStatusFilter(status)}
                   >
                     {status}
@@ -672,8 +713,8 @@ function PowerfulDash() {
 
               <select
                 className="border rounded-md p-2 text-sm font-medium dark:bg-gray-800"
-              // value={sortOrder}
-              // onChange={(e) => setSortOrder(e.target.value)}
+                // value={sortOrder}
+                // onChange={(e) => setSortOrder(e.target.value)}
               >
                 <option value="Newest">Newest First</option>
                 <option value="Oldest">Oldest First</option>
@@ -683,14 +724,27 @@ function PowerfulDash() {
             {/* Ticket Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {supportRequests.map((ticket, index) => (
-                <div key={index} className="bg-white dark:bg-[#1B222D] dark:border-gray-700 rounded-xl shadow-md p-6 border border-gray-200">
-                  <h2 className="text-md font-semibold text-gray-800 dark:text-gray-300   truncate">{ticket.title}</h2>
-                  <p className="text-sm text-gray-600 mt-2 line-clamp-2 dark:text-gray-400">{ticket.description}</p>
+                <div
+                  key={index}
+                  className="bg-white dark:bg-[#1B222D] dark:border-gray-700 rounded-xl shadow-md p-6 border border-gray-200"
+                >
+                  <h2 className="text-md font-semibold text-gray-800 dark:text-gray-300   truncate">
+                    {ticket.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-2 line-clamp-2 dark:text-gray-400">
+                    {ticket.description}
+                  </p>
 
                   <div className="mt-4 flex items-center justify-between">
                     {/* Status Badge */}
                     <span
-                      className={`text-xs font-medium px-3 py-1 rounded-full ${ticket.status === 'Open' ? 'bg-green-600 text-white' : ticket.status === 'In Progress' ? 'bg-orange-500 text-white' : 'bg-gray-400 text-white'}`}
+                      className={`text-xs font-medium px-3 py-1 rounded-full ${
+                        ticket.status === "Open"
+                          ? "bg-green-600 text-white"
+                          : ticket.status === "In Progress"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-400 text-white"
+                      }`}
                     >
                       {ticket.status}
                     </span>
@@ -710,13 +764,14 @@ function PowerfulDash() {
                   </div>
 
                   {/* Date */}
-                  <p className="text-xs text-gray-500 mt-2 dark:text-gray-400">{ticket.date}</p>
+                  <p className="text-xs text-gray-500 mt-2 dark:text-gray-400">
+                    {ticket.date}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         )}
-
       </div>
     </section>
   );

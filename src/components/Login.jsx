@@ -34,10 +34,13 @@ const Login = () => {
 
   const handleLogin = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post("http://localhost:8080/api/user/login", {
-        email: values.email,
-        password: values.password,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/user/login",
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
 
       if (response.data.message === "OTP sent to your email. Please verify.") {
         setIsEnable2FA(true);
@@ -61,9 +64,12 @@ const Login = () => {
         localStorage.removeItem("rememberedPassword");
       }
 
-      const userResponse = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const userResponse = await axios.get(
+        "http://localhost:8080/api/Profile/get-profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setUser(userResponse.data);
 
@@ -84,29 +90,15 @@ const Login = () => {
       console.log("expiresAt from backend:", response.data.expiresAt);
       console.log("Current time:", Date.now());
       console.log("timeLeft:", timeLeft);
-      
-
-      // if (timeLeft <= 0) {
-      //   logoutUser();
-      // } else {
-      //   setTimeout(() => {
-      //     logoutUser();
-      //   }, timeLeft);
-      // }
-
-      // setTimeout(() => {
-      //   navigate("/dashboard");
-      // }, 1500);
 
       const isUserAdmin = localStorage.getItem("isAdmin") === "true";
       setTimeout(() => {
-        if(isUserAdmin){
+        if (isUserAdmin) {
           navigate("/dashboard");
-        }else{
-          navigate("/customer-dashboard")
+        } else {
+          navigate("/customer-dashboard");
         }
       }, 1500);
-
     } catch (error) {
       console.error("Login Errors: ", error);
 
@@ -127,8 +119,8 @@ const Login = () => {
           title: "Oops!",
           text: "Something went wrong! Please try again.",
           icon: "error",
-          iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
-          background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+          iconColor: currentTheme === "dark" ? "#f87171" : "red",
+          background: currentTheme === "dark" ? "#1e293b" : "#fff",
           color: currentTheme === "dark" ? "#f8fafc" : "#000",
           confirmButtonText: "OK",
         });
@@ -138,26 +130,15 @@ const Login = () => {
     }
   };
 
-  // const logoutUser = () => {
-  //   localStorage.removeItem("token");
-  //   localStorage.removeItem("expiresAt");
-  //   setUser(null);
-  //   navigate("/login");
-
-  //   Swal.fire({
-  //     title: "Session Expired!",
-  //     text: "You have been logged out.",
-  //     icon: "warning",
-  //     confirmButtonText: "OK",
-  //   });
-  // };
-
   const handleOtpSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/user/verify-otp", {
-        email: email,
-        otp: otp,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/user/verify-otp",
+        {
+          email: email,
+          otp: otp,
+        }
+      );
 
       const token = response.data.token;
       const isAdmin = response.data.isAdmin;
@@ -165,9 +146,12 @@ const Login = () => {
       localStorage.setItem("isAdmin", isAdmin);
 
       // Fetch user profile after successful OTP verification
-      const userResponse = await axios.get("http://localhost:8080/api/Profile/get-profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const userResponse = await axios.get(
+        "http://localhost:8080/api/Profile/get-profile",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setUser(userResponse.data);
 
@@ -190,46 +174,46 @@ const Login = () => {
           navigate("/customer-dashboard");
         }
       }, 1500);
-
-      // setTimeout(() => {
-      //   navigate("/dashboard");
-      // }, 1500);
     } catch (error) {
       Swal.fire({
         title: "OTP Verification Failed!",
         text: "Please enter the correct OTP.",
         icon: "error",
-        iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
-        background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+        iconColor: currentTheme === "dark" ? "#f87171" : "red",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
         color: currentTheme === "dark" ? "#f8fafc" : "#000",
         confirmButtonText: "OK",
       });
     }
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 dark:bg-slate-950">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
-        {!isEnable2FA ? (<h2 className="text-3xl font-bold light:text-gray-800 text-center dark:text-white">
-          Welcome Back
-        </h2>) : (<>
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
-            <LuShield className="h-6 w-6 text-gray-700" />
-          </div>
-
-          <h2 className="tracking-tight text-2xl font-bold text-center mb-2 dark: text-white">
-            Verify Your Identity
+        {!isEnable2FA ? (
+          <h2 className="text-3xl font-bold light:text-gray-800 text-center dark:text-white">
+            Welcome Back
           </h2>
-        </>
+        ) : (
+          <>
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+              <LuShield className="h-6 w-6 text-gray-700" />
+            </div>
 
+            <h2 className="tracking-tight text-2xl font-bold text-center mb-2 dark: text-white">
+              Verify Your Identity
+            </h2>
+          </>
         )}
 
-        {!isEnable2FA ? (<p className="text-md text-gray-500 text-center mb-6 dark:text-slate-400">
-          Login to access your account
-        </p>) : (
+        {!isEnable2FA ? (
+          <p className="text-md text-gray-500 text-center mb-6 dark:text-slate-400">
+            Login to access your account
+          </p>
+        ) : (
           <p className="text-md text-muted-foreground mb-6 text-center dark:text-slate-400">
-            We've sent a 6-digit verification code to your email. Enter the code below to continue.
+            We've sent a 6-digit verification code to your email. Enter the code
+            below to continue.
           </p>
         )}
 
@@ -328,7 +312,9 @@ const Login = () => {
           </Formik>
         ) : (
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">Email</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">
+              Email
+            </label>
             <input
               type="email"
               className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg"
@@ -337,7 +323,8 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">Enter verification code
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-400">
+              Enter verification code
             </label>
             <input
               type="text"

@@ -10,7 +10,7 @@ const AdminRoute = ({ element }) => {
   }
 
   if (!isAdmin) {
-   return <NotFoundPage/>
+    return <NotFoundPage />;
   }
 
   return element;

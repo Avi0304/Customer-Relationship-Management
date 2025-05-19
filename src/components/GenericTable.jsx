@@ -20,7 +20,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import SaveIcon from "@mui/icons-material/Save";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const API_BASE_URLS = {
   emailCampaigns: "http://localhost:8080/api/campaigns",
@@ -36,7 +36,13 @@ const TABLE_HEADERS = {
   smsCampaigns: ["Title", "message", "Created At"],
   audienceTable: ["Location", "Age Range", "Gender", "Interests"],
   // smsAudienceTable: ["Location", "Age Range", "Gender", "Interests"],
-  emailPostTable: ["Caption", "Call-to-Action", "Budget", "Start Date", "End Date"],
+  emailPostTable: [
+    "Caption",
+    "Call-to-Action",
+    "Budget",
+    "Start Date",
+    "End Date",
+  ],
   // smsPostTable: ["Caption", "Call-to-Action", "Budget", "Start Date", "End Date"],
 };
 
@@ -80,8 +86,13 @@ const GenericTable = ({ tableType }) => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(`${API_BASE_URLS[tableType]}/${editingItem}`, formData);
-      setData((prev) => prev.map((item) => (item._id === editingItem ? response.data : item)));
+      const response = await axios.put(
+        `${API_BASE_URLS[tableType]}/${editingItem}`,
+        formData
+      );
+      setData((prev) =>
+        prev.map((item) => (item._id === editingItem ? response.data : item))
+      );
       setOpenDialog(false);
       toast.success("Item updated successfully!");
     } catch (error) {
@@ -105,7 +116,7 @@ const GenericTable = ({ tableType }) => {
   const handleFormSubmit = async (newItem) => {
     try {
       const response = await axios.post(API_BASE_URLS[tableType], newItem);
-      setData((prev) => [...prev, response.data]); // Add the new item to the state
+      setData((prev) => [...prev, response.data]);
       toast.success("Item added successfully!");
     } catch (error) {
       console.error(`Error adding new item to ${tableType}:`, error);
@@ -116,16 +127,34 @@ const GenericTable = ({ tableType }) => {
   return (
     <>
       <ToastContainer />
-      <TableContainer component={Paper} style={{ marginTop: 20, boxShadow: "0 3px 5px rgba(0,0,0,0.1)" }}>
+      <TableContainer
+        component={Paper}
+        style={{ marginTop: 20, boxShadow: "0 3px 5px rgba(0,0,0,0.1)" }}
+      >
         <Table>
           <TableHead style={{ backgroundColor: "#f5f5f5" }}>
             <TableRow>
               {TABLE_HEADERS[tableType].map((header) => (
-                <TableCell key={header} sx={{ backgroundColor: "#ddd", fontWeight: "bold", color: "#222"  }}>
+                <TableCell
+                  key={header}
+                  sx={{
+                    backgroundColor: "#ddd",
+                    fontWeight: "bold",
+                    color: "#222",
+                  }}
+                >
                   {header}
                 </TableCell>
               ))}
-              <TableCell style={{ backgroundColor: "#ddd", fontWeight: "bold", color: "#222" }}>Actions</TableCell>
+              <TableCell
+                style={{
+                  backgroundColor: "#ddd",
+                  fontWeight: "bold",
+                  color: "#222",
+                }}
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -138,7 +167,10 @@ const GenericTable = ({ tableType }) => {
                   <IconButton color="primary" onClick={() => handleEdit(item)}>
                     <FaEdit />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(item._id)}>
+                  <IconButton
+                    color="error"
+                    onClick={() => handleDelete(item._id)}
+                  >
                     <RiDeleteBin6Line />
                   </IconButton>
                 </TableCell>

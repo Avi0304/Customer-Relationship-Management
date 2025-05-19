@@ -1,20 +1,25 @@
 const mongoose = require("mongoose");
 const Customer = require("../models/Customer");
-const Lead = require("../models/Leads"); 
+const Lead = require("../models/Leads");
 const Sale = require("../models/Sales");
 
-const { createNotification } = require('../utils/notificationService');
+const { createNotification } = require("../utils/notificationService");
 
 // Helper function for lead status change notifications
-const maybeSendLeadStatusChangeNotification = async (leadId, previousStatus, newStatus) => {
+const maybeSendLeadStatusChangeNotification = async (
+  leadId,
+  previousStatus,
+  newStatus
+) => {
   if (previousStatus !== newStatus) {
     await createNotification({
-      title: 'Lead Status Updated',
+      title: "Lead Status Updated",
       message: `Lead status changed from "${previousStatus}" to "${newStatus}"`,
-      type: 'status'
+      type: "status",
     });
   }
 };
+
 // Get all customers
 const getAllCustomer = async (req, res) => {
   try {
@@ -69,13 +74,11 @@ const addCustomer = async (req, res) => {
     }
 
     let segmentation = "Low";
-    if(amount >= 20000){
-      segmentation = "Medium"
+    if (amount >= 20000) {
+      segmentation = "Medium";
+    } else if (amount >= 40000) {
+      segmentation = "High";
     }
-    else if(amount >= 40000){
-      segmentation = "High"
-    }
-    
 
     // Create and save new customer
     const newCustomer = new Customer({
@@ -86,18 +89,17 @@ const addCustomer = async (req, res) => {
       status: status || "pending",
       leadstatus: leadstatus || "new",
       amount,
-      services
+      services,
     });
 
     await newCustomer.save();
 
     await createNotification({
-      title: 'New Customer Added',
+      title: "New Customer Added",
       message: `Customer "${name}" has been successfully added.`,
-      type: 'customer',
-      // userId: newCustomer._id, 
+      type: "customer",
+      // userId: newCustomer._id,
     });
-
 
     res
       .status(201)
@@ -118,36 +120,33 @@ const updateCustomer = async (req, res) => {
       return res.status(400).json({ message: "Invalid customer ID" });
     }
 
-
     const updatedCustomer = await Customer.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    
+
     if (!updatedCustomer) {
       return res.status(404).json({ message: "Customer not found" });
     }
     if (updatedCustomer.status === "completed") {
-
       const services = updatedCustomer.services || "n/a";
 
       const newSale = new Sale({
-        customer: updatedCustomer.name,       
-        customerId: updatedCustomer._id,     
+        customer: updatedCustomer.name,
+        customerId: updatedCustomer._id,
         amount: updatedCustomer.amount,
         status: "Completed",
-        services: services
+        services: services,
       });
-    
+
       await newSale.save();
     }
 
     await createNotification({
-      title: 'Update Customer Added',
+      title: "Update Customer Added",
       message: `Customer "${updatedCustomer.name}" has been successfully added.`,
-      type: 'customer',
-      // userId: newCustomer._id, 
+      type: "customer",
+      // userId: newCustomer._id,
     });
-
 
     res.status(200).json({
       message: "Customer updated successfully",
@@ -238,7 +237,6 @@ const customerSegmentation = async (req, res) => {
   }
 };
 
-// Export functions
 module.exports = {
   getAllCustomer,
   getCustomerById,

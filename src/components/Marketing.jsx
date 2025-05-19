@@ -4,9 +4,7 @@ import { MdSms } from "react-icons/md";
 import EmailForm from "./EmailForm";
 import SMSForm from "./SMSForm";
 import EmailAudience from "./EmailAudience";
-// import SmsAudience from "./SmsAudience";
 import EmailPost from "./EmailPost";
-// import Smspost from "./Smspost";
 import {
   Button,
   Table,
@@ -41,31 +39,31 @@ import { Link } from "react-router-dom";
 const Marketing = () => {
   const [activeForm, setActiveForm] = useState(null);
   const [selectedPlatform, setSelectedPlatform] = useState("");
-  const [showTable, setShowTable] = useState("emailCampaigns"); // default to emailCampaigns
+  const [showTable, setShowTable] = useState("emailCampaigns");
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false); // state to open/close the edit modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState(null);
   const [audience, setAudience] = useState([]);
   const [open, setOpen] = useState(false);
   const [editingAudience, setEditingAudience] = useState(null);
 
-
   useEffect(() => {
     const fetchAudience = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("http://localhost:8080/api/audience/get-audience")
+        const response = await axios.get(
+          "http://localhost:8080/api/audience/get-audience"
+        );
         const audience = response.data;
         setAudience(audience);
       } catch (error) {
         console.error("Error in fetching audience data: ", error);
       }
-      setLoading(false)
-    }
+      setLoading(false);
+    };
 
-    fetchAudience()
-
+    fetchAudience();
   }, []);
 
   useEffect(() => {
@@ -146,7 +144,6 @@ const Marketing = () => {
           formType: "emailAudience",
           platform: "LinkedIn",
         },
-        // { icon: MdSms, title: "SMS Audience", bg: "bg-blue-100 dark:bg-blue-900", text: "text-blue-600 dark:text-blue-400", desc: "Manage SMS advertising", formType: "smsAudience", platform: "Facebook" },
       ],
     },
     {
@@ -160,7 +157,6 @@ const Marketing = () => {
           desc: "Boost your Email posts",
           formType: "emailpost",
         },
-        // { icon: MdSms, title: "SMS Posts", bg: "bg-pink-100 dark:bg-pink-900", text: "text-pink-600 dark:text-pink-400", desc: "Promote your SMS content", formType: "smspost" }
       ],
     },
   ];
@@ -174,7 +170,9 @@ const Marketing = () => {
       // Check if the deletion was successful (optional, based on API response)
       if (response.status === 200) {
         // Update the state to remove the deleted audience
-        setAudience((prevAudience) => prevAudience.filter((aud) => aud._id !== AudienceId));
+        setAudience((prevAudience) =>
+          prevAudience.filter((aud) => aud._id !== AudienceId)
+        );
       } else {
         console.error("Failed to delete audience");
       }
@@ -188,14 +186,14 @@ const Marketing = () => {
       await axios.delete(
         `http://localhost:8080/api/campaign/delete/${campaignId}`
       );
-      setTableData(tableData.filter((campaign) => campaign._id !== campaignId)); // Remove from table without re-fetching
+      setTableData(tableData.filter((campaign) => campaign._id !== campaignId));
     } catch (err) {
       console.error("Error deleting campaign:", err);
     }
   };
 
   const handleEditCampaign = (campaign) => {
-    console.log("Editing Campaign: ", campaign); // Add this line to verify the data
+    console.log("Editing Campaign: ", campaign);
     setEditingCampaign(campaign);
     setEditModalOpen(true);
   };
@@ -229,7 +227,6 @@ const Marketing = () => {
       console.error("❌ Failed to update audience:", error);
     }
   };
-
 
   const handleUpdateCampaign = async () => {
     try {
@@ -338,10 +335,11 @@ const Marketing = () => {
             <Button
               key={tab.key}
               onClick={() => setShowTable(tab.key)}
-              className={`transition-all duration-300 ${showTable === tab.key
-                ? "bg-blue-500 text-white shadow-lg"
-                : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
-                }`}
+              className={`transition-all duration-300 ${
+                showTable === tab.key
+                  ? "bg-blue-500 text-white shadow-lg"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-200 dark:hover:bg-blue-600"
+              }`}
             >
               {tab.label}
             </Button>
@@ -415,18 +413,19 @@ const Marketing = () => {
                   {audience.map((aud) => (
                     <TableRow key={aud._id}>
                       <TableCell align="center">{aud.audienceName}</TableCell>
-                      <TableCell align="center" sx={{ maxWidth: '200px' }}>{aud.audienceDescription}</TableCell>
+                      <TableCell align="center" sx={{ maxWidth: "200px" }}>
+                        {aud.audienceDescription}
+                      </TableCell>
                       <TableCell align="center">{aud.ageRange}</TableCell>
                       <TableCell align="center">{aud.location}</TableCell>
                       <TableCell align="center">{aud.gender}</TableCell>
                       <TableCell align="center">
-                        {Array.isArray(aud.interests) && aud.interests.length > 0 ? (
-                          aud.interests.map((interest, index) => (
-                            <div key={index}>{interest}</div>
-                          ))
-                        ) : (
-                          'No interests'
-                        )}
+                        {Array.isArray(aud.interests) &&
+                        aud.interests.length > 0
+                          ? aud.interests.map((interest, index) => (
+                              <div key={index}>{interest}</div>
+                            ))
+                          : "No interests"}
                       </TableCell>
 
                       <TableCell align="center">
@@ -722,8 +721,8 @@ const Marketing = () => {
             dividers
             sx={{
               p: 2,
-              maxHeight: '75vh',
-              overflowY: 'auto',
+              maxHeight: "75vh",
+              overflowY: "auto",
             }}
           >
             {editingAudience ? (
@@ -781,11 +780,13 @@ const Marketing = () => {
                       onChange={handleChange}
                       label="Location"
                     >
-                      {["India", "USA", "Canada", "UK", "Europe", "Asia"].map((loc) => (
-                        <MenuItem key={loc} value={loc}>
-                          {loc}
-                        </MenuItem>
-                      ))}
+                      {["India", "USA", "Canada", "UK", "Europe", "Asia"].map(
+                        (loc) => (
+                          <MenuItem key={loc} value={loc}>
+                            {loc}
+                          </MenuItem>
+                        )
+                      )}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -849,17 +850,23 @@ const Marketing = () => {
           </DialogContent>
 
           {/* Submit Buttons (inside the form now!) */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 2, gap: 2 }}>
+          <Box
+            sx={{ display: "flex", justifyContent: "flex-end", p: 2, gap: 2 }}
+          >
             <Button variant="outlined" color="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={loading}
+            >
               {loading ? <CircularProgress size={24} /> : "Save Changes"}
             </Button>
           </Box>
         </Box>
       </Dialog>
-
     </div>
   );
 };

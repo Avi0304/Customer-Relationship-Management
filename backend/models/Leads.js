@@ -20,10 +20,10 @@ const leadSchema = new mongoose.Schema(
     },
     amount: {
       type: Number,
-      required: function() {
-        return this.status === 'converted'; // Make amount required only when status is 'converted'
+      required: function () {
+        return this.status === "converted";
       },
-      default: 0, 
+      default: 0,
     },
   },
   { timestamps: true }
