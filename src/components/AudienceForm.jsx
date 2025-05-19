@@ -29,7 +29,13 @@ const AudienceForm = ({ togglePanel, selectedPlatform }) => {
           {/* Audience Name & Description */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <TextField label="Audience Name" fullWidth required />
-            <TextField label="Description" multiline rows={3} fullWidth required />
+            <TextField
+              label="Description"
+              multiline
+              rows={3}
+              fullWidth
+              required
+            />
           </div>
 
           {/* Targeting Section */}

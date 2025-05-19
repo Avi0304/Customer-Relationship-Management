@@ -15,7 +15,10 @@ import {
   Paper,
   Box,
   InputAdornment,
-  MenuItem, Select, FormControl, InputLabel
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { BiPlus } from "react-icons/bi";
 import { FaEdit, FaEye } from "react-icons/fa";
@@ -27,7 +30,6 @@ import axios from "axios";
 
 const CustomerDetails = () => {
   const [customers, setCustomers] = useState([]);
-
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
@@ -46,20 +48,22 @@ const CustomerDetails = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/Customer/all");
-      console.log("API Response:", response.data); // Debugging: Log the response
-      setCustomers(Array.isArray(response.data) ? response.data : []); // Ensure an array
+      const response = await axios.get(
+        "http://localhost:8080/api/Customer/all"
+      );
+      console.log("API Response:", response.data);
+      setCustomers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching customers: ", error);
-      setCustomers([]); // Prevent undefined errors
+      setCustomers([]);
     }
   };
 
-
-
   const handleOpen = (customer = null, isViewOnly = false) => {
     setSelectedCustomer(customer);
-    setFormData(customer || { customer: "", amount: "", status: "", service: "" });
+    setFormData(
+      customer || { customer: "", amount: "", status: "", service: "" }
+    );
     setViewOnly(isViewOnly);
     setOpen(true);
   };
@@ -71,8 +75,6 @@ const CustomerDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Check if the 'services' field is being updated
     if (name === "services") {
       setFormData({ ...formData, [name]: value });
     } else {
@@ -80,9 +82,13 @@ const CustomerDetails = () => {
     }
   };
 
-
   const handleSave = async () => {
-    if (!formData.name || !formData.email || !formData.phone || !formData.amount) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.amount
+    ) {
       Swal.fire("Oops!", "All fields are required.", "error");
       return;
     }
@@ -91,12 +97,14 @@ const CustomerDetails = () => {
       formData.amount = String(formData.amount).trim();
     }
 
-
     try {
       if (selectedCustomer) {
         // Update customer
         console.log("Submitting updated formData:", formData);
-        await axios.put(`http://localhost:8080/api/Customer/update/${selectedCustomer._id}`, formData);
+        await axios.put(
+          `http://localhost:8080/api/Customer/update/${selectedCustomer._id}`,
+          formData
+        );
         await fetchCustomer();
         Swal.fire({
           title: "Updated!",
@@ -116,15 +124,18 @@ const CustomerDetails = () => {
           email: formData.email,
           phone: formData.phone,
           // segmentation: formData.segmentation,
-          status: formData.status || "pending", // Default status if not provided
-          leadstatus: formData.leadstatus || "new", // Default lead status
+          status: formData.status || "pending",
+          leadstatus: formData.leadstatus || "new",
           amount: formData.amount,
         };
 
-        console.log("Sending Data:", newCustomerData); // Debugging
+        console.log("Sending Data:", newCustomerData);
 
         // Add new customer
-        await axios.post("http://localhost:8080/api/Customer/add", newCustomerData);
+        await axios.post(
+          "http://localhost:8080/api/Customer/add",
+          newCustomerData
+        );
         await fetchCustomer();
         Swal.fire({
           title: "Added!",
@@ -141,12 +152,13 @@ const CustomerDetails = () => {
 
       handleClose();
     } catch (error) {
-      console.error("Error in updating customer:", error.response ? error.response.data : error);
+      console.error(
+        "Error in updating customer:",
+        error.response ? error.response.data : error
+      );
       Swal.fire("Error", "Something went wrong. Please try again.", "error");
     }
   };
-
-
 
   const handleDelete = async (id) => {
     Swal.fire({
@@ -162,10 +174,12 @@ const CustomerDetails = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.delete(`http://localhost:8080/api/Customer/delete/${id}`);
+          const response = await axios.delete(
+            `http://localhost:8080/api/Customer/delete/${id}`
+          );
 
           if (response.status === 200) {
-            setCustomers(customers.filter((c) => c._id !== id)); // Ensure you're using `_id`
+            setCustomers(customers.filter((c) => c._id !== id));
             Swal.fire({
               title: "Deleted!",
               text: "The customer has been deleted successfully.",
@@ -193,11 +207,9 @@ const CustomerDetails = () => {
     });
   };
 
-
   const filteredCustomers = customers.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
-
 
   return (
     <Box>
@@ -239,7 +251,12 @@ const CustomerDetails = () => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: (theme) => theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0" }}>
+            <TableRow
+              sx={{
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "#2d2d2d" : "#e0e0e0",
+              }}
+            >
               <TableCell
                 sx={{ fontWeight: "bold", fontSize: "1rem", width: "25%" }}
                 align="center"
@@ -277,22 +294,34 @@ const CustomerDetails = () => {
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <span
-                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Completed"
-                      ? "bg-green-500 text-white dark:bg-green-600"
-                      : customer.status.charAt(0).toUpperCase() + customer.status.slice(1) === "Pending"
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                      customer.status.charAt(0).toUpperCase() +
+                        customer.status.slice(1) ===
+                      "Completed"
+                        ? "bg-green-500 text-white dark:bg-green-600"
+                        : customer.status.charAt(0).toUpperCase() +
+                            customer.status.slice(1) ===
+                          "Pending"
                         ? "bg-yellow-500 text-white dark:bg-yellow-600"
                         : "bg-red-500 text-white dark:bg-red-600"
-                      }`}
+                    }`}
                   >
-                    {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                    {customer.status.charAt(0).toUpperCase() +
+                      customer.status.slice(1)}
                   </span>
                 </TableCell>
                 <TableCell align="center" sx={{ width: "25%" }}>
                   <Button color="primary" onClick={() => handleOpen(customer)}>
                     <FaEdit size={20} />
                   </Button>
-                  <Button color="info" onClick={() => handleOpen(customer, true)}>
-                    <FaEye size={20} className="text-black dark:text-[#E5E7EB]" />
+                  <Button
+                    color="info"
+                    onClick={() => handleOpen(customer, true)}
+                  >
+                    <FaEye
+                      size={20}
+                      className="text-black dark:text-[#E5E7EB]"
+                    />
                   </Button>
                   <Button
                     color="error"
@@ -310,7 +339,11 @@ const CustomerDetails = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
           <h2 className="font-bold">
-            {viewOnly ? "View Details" : selectedCustomer ? "Edit Customer" : "Add Customer"}
+            {viewOnly
+              ? "View Details"
+              : selectedCustomer
+              ? "Edit Customer"
+              : "Add Customer"}
           </h2>
         </DialogTitle>
         <DialogContent>
@@ -346,15 +379,6 @@ const CustomerDetails = () => {
             required
             InputProps={{ readOnly: viewOnly }}
           />
-          {/* <TextField
-            fullWidth
-            margin="dense"
-            label="Segmentation"
-            name="segmentation"
-            value={formData.segmentation || ""}
-            onChange={handleChange}
-            InputProps={{ readOnly: viewOnly }}
-          /> */}
           <TextField
             fullWidth
             margin="dense"
@@ -368,23 +392,29 @@ const CustomerDetails = () => {
           />
           <FormControl fullWidth margin="dense" disabled={viewOnly}>
             <InputLabel>Status</InputLabel>
-            <Select name="status" value={formData.status || "Pending"} onChange={handleChange}>
+            <Select
+              name="status"
+              value={formData.status || "Pending"}
+              onChange={handleChange}
+            >
               <MenuItem value="completed">completed</MenuItem>
               <MenuItem value="pending">pending</MenuItem>
               <MenuItem value="cancelled">cancelled</MenuItem>
             </Select>
           </FormControl>
 
-            {(formData.segmentation === "Low" || formData.segmentation === "Medium" || formData.segmentation === "High") && (
-             <TextField
-            fullWidth
-            margin="dense"
-            label="Segmentation"
-            name="segmentation"
-            value={formData.segmentation || ""}
-            onChange={handleChange}
-            InputProps={{ readOnly: viewOnly }}
-          />
+          {(formData.segmentation === "Low" ||
+            formData.segmentation === "Medium" ||
+            formData.segmentation === "High") && (
+            <TextField
+              fullWidth
+              margin="dense"
+              label="Segmentation"
+              name="segmentation"
+              value={formData.segmentation || ""}
+              onChange={handleChange}
+              InputProps={{ readOnly: viewOnly }}
+            />
           )}
 
           {formData.status === "completed" && (
@@ -401,7 +431,10 @@ const CustomerDetails = () => {
           )}
         </DialogContent>
         <DialogActions sx={{ m: 1 }}>
-          <Button onClick={handleClose} sx={{ color: "gray", "&:hover": { color: "darkgray" } }}>
+          <Button
+            onClick={handleClose}
+            sx={{ color: "gray", "&:hover": { color: "darkgray" } }}
+          >
             {viewOnly ? "Close" : "Cancel"}
           </Button>
           {!viewOnly && (
@@ -410,9 +443,7 @@ const CustomerDetails = () => {
             </Button>
           )}
         </DialogActions>
-
       </Dialog>
-
     </Box>
   );
 };

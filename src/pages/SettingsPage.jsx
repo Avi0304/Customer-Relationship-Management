@@ -11,7 +11,10 @@ import {
   CircularProgress,
   useTheme,
   Typography,
-  Select, MenuItem, FormControl, InputLabel
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -23,7 +26,7 @@ import { LuFileJson2 } from "react-icons/lu";
 import { MdBackup, MdOutlineRestore, MdPolicy, MdDelete } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 
-const token = localStorage.getItem("token"); // Fetch token dynamically
+const token = localStorage.getItem("token");
 
 const SettingsPage = () => {
   const { tab: urlTab } = useParams();
@@ -42,7 +45,7 @@ const SettingsPage = () => {
 
   const { user, setUser } = useContext(UserContext);
 
-  const pushEnabled = localStorage.getItem("pushEnabled") === "true"
+  const pushEnabled = localStorage.getItem("pushEnabled") === "true";
   const [notifications, setNotifications] = useState({
     email: true,
     push: pushEnabled,
@@ -72,7 +75,7 @@ const SettingsPage = () => {
           }
         );
 
-        setUser(response.data); // ✅ Store user data
+        setUser(response.data); // Store user data
       } catch (err) {
         console.error("❌ Error fetching profile:", err.response?.data || err);
         setError(err.response?.data?.message || "Failed to fetch profile");
@@ -82,7 +85,7 @@ const SettingsPage = () => {
     };
 
     fetchProfile();
-  }, [refresh]); // ✅ Runs when `refresh` changes
+  }, [refresh]);
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
@@ -146,7 +149,7 @@ const SettingsPage = () => {
     }
   };
 
-  // === Password Change Logic ===
+  // Password Change Logic
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
@@ -181,8 +184,6 @@ const SettingsPage = () => {
           showConfirmButton: false,
           allowOutsideClick: false,
         });
-
-        // setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
       console.error(
@@ -201,7 +202,7 @@ const SettingsPage = () => {
     }
   };
 
-  // === Profile Save Logic ===
+  // Profile Save Logic
   const handleSaveProfile = async () => {
     setSaving(true);
 
@@ -276,7 +277,7 @@ const SettingsPage = () => {
     }
   };
 
-  // === Enable 2FA Logic ===
+  // Enable 2FA Logic
   const handleEnable2FA = async () => {
     try {
       const newStatus = !user.is2FAEnabled;
@@ -306,7 +307,7 @@ const SettingsPage = () => {
     }
   };
 
-  // === Notifications Save Logic ===
+  // Notifications Save Logic
   const handleSaveNotifications = async () => {
     try {
       await axios.put("/api/notifications/update", notifications);
@@ -316,15 +317,15 @@ const SettingsPage = () => {
     }
   };
 
-  // === Data Management Logic ===
-  // === Export Data ===
+  // Data Management Logic
+  // Export Data
   const handleExportData = async (format, model) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/data/export?format=${format}&model=${model}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-          responseType: "blob", // Ensure proper file handling
+          responseType: "blob",
         }
       );
 
@@ -346,7 +347,7 @@ const SettingsPage = () => {
     }
   };
 
-  // === Backup Data and Store it Locally ===
+  // Backup Data and Store it Locally
   const handleBackup = async (modelName) => {
     try {
       const token = localStorage.getItem("token");
@@ -356,8 +357,7 @@ const SettingsPage = () => {
         return;
       }
 
-
-      // ✅ Send the correct user settings data for backup
+      // Send the correct user settings data for backup
       const response = await axios.post(
         `http://localhost:8080/api/data/backup?model=${modelName}`,
         {},
@@ -371,11 +371,15 @@ const SettingsPage = () => {
       const blob = new Blob([jsonString], { type: "application/json" });
       const fileUrl = URL.createObjectURL(blob);
 
-      setBackupFile(blob); // ✅ Store the backup file in state
+      setBackupFile(blob);
 
-      Swal.fire("Success", `Backup for ${modelName} created successfully!`, "success");
+      Swal.fire(
+        "Success",
+        `Backup for ${modelName} created successfully!`,
+        "success"
+      );
 
-      // ✅ Automatically trigger file download
+      // Automatically trigger file download
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = `backup-${Date.now()}.json`;
@@ -392,10 +396,10 @@ const SettingsPage = () => {
     }
   };
 
-  // === Restore Data from Stored Backup File ===
+  // Restore Data from Stored Backup File
   const handleRestore = async (e, modelName) => {
     console.log("🔹 Restore function triggered!");
-  
+
     // Ensure the file is selected
     const file = e.target.files[0];
     if (!file) {
@@ -403,16 +407,20 @@ const SettingsPage = () => {
       Swal.fire("Error", "No backup file selected!", "error");
       return;
     }
-  
+
     console.log("📂 Selected File:", file);
-  
+
     // Ensure the file is a .json file
     if (!file.name.endsWith(".json")) {
       console.warn("⚠️ Invalid file format:", file.name);
-      Swal.fire("Error", "Invalid file format! Please upload a .json file.", "error");
+      Swal.fire(
+        "Error",
+        "Invalid file format! Please upload a .json file.",
+        "error"
+      );
       return;
     }
-  
+
     // Token check (authentication)
     const token = localStorage.getItem("token");
     if (!token) {
@@ -420,13 +428,13 @@ const SettingsPage = () => {
       Swal.fire("Error", "Unauthorized. Please log in again.", "error");
       return;
     }
-  
+
     // Prepare the form data for upload
     const formData = new FormData();
     formData.append("backupFile", file);
-  
+
     console.log("📤 Sending FormData:", formData);
-  
+
     // Send the request to restore the data
     try {
       // Add the model as a query parameter
@@ -451,14 +459,6 @@ const SettingsPage = () => {
       );
     }
   };
-  
-
-
-
-
-
-
-
 
   const handleViewPolicy = () => {
     Swal.fire({
@@ -473,7 +473,7 @@ const SettingsPage = () => {
     });
   };
 
-  // === Delete Account ===
+  // Delete Account
   const handleDeleteAccount = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -527,10 +527,10 @@ const SettingsPage = () => {
 
       setUser((prev) => ({
         ...prev,
-        photo: `http://localhost:8080${response.data.profilePhoto}`, // Ensure correct server path
+        photo: `http://localhost:8080${response.data.profilePhoto}`,
       }));
 
-      setRefresh((prev) => !prev); // Trigger re-fetch if needed
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error(
         "Error uploading profile photo:",
@@ -854,7 +854,10 @@ const SettingsPage = () => {
                                   // For push notifications, also update the localStorage
                                   if (key === "push") {
                                     const isPushEnabled = !prev[key];
-                                    localStorage.setItem("pushEnabled", isPushEnabled.toString()); // Save to localStorage
+                                    localStorage.setItem(
+                                      "pushEnabled",
+                                      isPushEnabled.toString()
+                                    ); // Save to localStorage
                                   }
                                   return updatedNotifications;
                                 });
@@ -908,7 +911,6 @@ const SettingsPage = () => {
                   </div>
                 )}
 
-
                 {/* Data Management Tab */}
                 {tab === "data" && (
                   <div className="bg-white shadow-xl rounded-lg p-6 dark:bg-[#1B222D]">
@@ -933,12 +935,16 @@ const SettingsPage = () => {
                             label="Select Data to Export"
                           >
                             {/* <MenuItem value="" disabled>Select Model</MenuItem> */}
-                            <MenuItem value="appointments">Appointments</MenuItem>
+                            <MenuItem value="appointments">
+                              Appointments
+                            </MenuItem>
                             <MenuItem value="tasks">Tasks</MenuItem>
                             <MenuItem value="leads">Leads</MenuItem>
                             <MenuItem value="customers">Customers</MenuItem>
                             <MenuItem value="sales">Sales</MenuItem>
-                            <MenuItem value="support">Customer Support</MenuItem>
+                            <MenuItem value="support">
+                              Customer Support
+                            </MenuItem>
                           </Select>
                         </FormControl>
 
@@ -946,14 +952,15 @@ const SettingsPage = () => {
                           <Button
                             variant="contained"
                             color="primary"
-
                             sx={{
                               backgroundColor: "#3B82F6",
                               color: "white",
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("csv", selectedModel)}
+                            onClick={() =>
+                              handleExportData("csv", selectedModel)
+                            }
                             startIcon={<FaFileCsv />}
                           >
                             Export as CSV
@@ -968,7 +975,9 @@ const SettingsPage = () => {
                               textTransform: "capitalize",
                               px: 3,
                             }}
-                            onClick={() => handleExportData("json", selectedModel)}
+                            onClick={() =>
+                              handleExportData("json", selectedModel)
+                            }
                             startIcon={<LuFileJson2 />}
                           >
                             Export as JSON
@@ -997,16 +1006,22 @@ const SettingsPage = () => {
                           <InputLabel>Select Data to Backup</InputLabel>
                           <Select
                             value={selectedBackUpModel}
-                            onChange={(e) => setSelectedBackUpModel(e.target.value)}
+                            onChange={(e) =>
+                              setSelectedBackUpModel(e.target.value)
+                            }
                             label="Select Data to Backup"
                           >
                             {/* <MenuItem value="" disabled>Select Model</MenuItem> */}
-                            <MenuItem value="appointments">Appointments</MenuItem>
+                            <MenuItem value="appointments">
+                              Appointments
+                            </MenuItem>
                             <MenuItem value="tasks">Tasks</MenuItem>
                             <MenuItem value="leads">Leads</MenuItem>
                             <MenuItem value="customers">Customers</MenuItem>
                             <MenuItem value="sales">Sales</MenuItem>
-                            <MenuItem value="support">Customer Support</MenuItem>
+                            <MenuItem value="support">
+                              Customer Support
+                            </MenuItem>
                           </Select>
                         </FormControl>
 
@@ -1052,9 +1067,10 @@ const SettingsPage = () => {
                               id="restore-upload"
                               accept=".json"
                               hidden
-                              onChange={(e) => handleRestore(e, selectedBackUpModel)} // Pass event and modelName to handleRestore
+                              onChange={(e) =>
+                                handleRestore(e, selectedBackUpModel)
+                              }
                             />
-
                           </label>
                         </div>
                       </div>

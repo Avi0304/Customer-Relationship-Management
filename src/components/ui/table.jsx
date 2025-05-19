@@ -10,13 +10,20 @@ export function Table({ children, className = "" }) {
 }
 
 export function TableHeader({ children, className = "" }) {
-  return <thead className={clsx("bg-gray-100 hover:bg-gray-100", className)}>{children}</thead>;
+  return (
+    <thead className={clsx("bg-gray-100 hover:bg-gray-100", className)}>
+      {children}
+    </thead>
+  );
 }
 
 export function TableRow({ children, className = "" }) {
   return (
     <tr
-      className={clsx("border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100", className)}
+      className={clsx(
+        "border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100",
+        className
+      )}
     >
       {children}
     </tr>

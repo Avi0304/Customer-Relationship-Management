@@ -11,7 +11,7 @@ const { initializeSocket } = require("./socket");
 
 dotenv.config();
 const app = express();
-const server = http.createServer(app); // ✅ Use this server for Socket.IO and listening
+const server = http.createServer(app);
 
 // Middlewares
 app.use(cors());
@@ -46,10 +46,10 @@ if (!process.env.PORT) {
 
 const PORT = process.env.PORT || 8080;
 
-// ✅ Initialize Socket.IO before listening
+// Initialize Socket.IO before listening
 initializeSocket(server);
 
-// ✅ Connect to MongoDB and Start Server
+// Connect to MongoDB and Start Server
 const startServer = async () => {
   try {
     console.log("🔁 Connecting to MongoDB...".yellow);

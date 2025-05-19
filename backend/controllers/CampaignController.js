@@ -8,61 +8,6 @@ const formatEmailFromPost = require("../utils/formatEmailFromPost");
 const User = require("../models/User");
 const { sendWhatsapp } = require("../services/messaging");
 
-// Create a new email campaign
-// const createCampaign = async (req, res) => {
-//     try {
-//       const {
-//         title,
-//         recipients,
-//         subject,
-//         body,
-//         message,
-//         schedule,
-//         campaignType,
-//         emailPost,
-//       } = req.body;
-
-//       // Auto-generate subject/body if emailPost is used
-//       if (campaignType === 'email' && emailPost) {
-//         if (!req.body.subject) {
-//           req.body.subject = emailPost.caption || 'New Campaign';
-//         }
-//         if (!req.body.body) {
-//           req.body.body = `
-//             <div>
-//               <h2>${emailPost.caption || ''}</h2>
-//               ${emailPost.mediaUrl ? `<img src="${emailPost.mediaUrl}" alt="Media" style="max-width: 100%;" />` : ''}
-//               ${emailPost.link ? `<p><a href="${emailPost.link}" target="_blank">${emailPost.callToAction || 'Visit Now'}</a></p>` : ''}
-//             </div>
-//           `;
-//         }
-//       }
-
-//       const campaign = new Campaign(req.body);
-//       await campaign.save();
-
-//       if (schedule === 'immediately') {
-//         if (campaignType === 'email') {
-//           if (emailPost) {
-//             await sendEmailWithPost(recipients, emailPost);
-//           } else {
-//             await sendEmail(recipients, req.body.subject, req.body.body);
-//           }
-//         } else if (campaignType === 'sms') {
-//           await sendSms(recipients, message);
-//         }
-
-//         campaign.status = 'Sent';
-//         await campaign.save();
-//       }
-
-//       res.status(201).json(campaign);
-//     } catch (error) {
-//       console.error("❌ Error creating campaign:", error);
-//       res.status(400).json({ message: error.message });
-//     }
-//   };
-
 const createCampaign = async (req, res) => {
   try {
     let {
@@ -113,7 +58,7 @@ const createCampaign = async (req, res) => {
           await sendEmail(recipients, subject, body);
         }
       } else if (campaignType === "sms") {
-        await sendSms(message, recipients); // ✅ FIXED ORDER
+        await sendSms(message, recipients);
       }
 
       campaign.status = "Sent";
@@ -186,7 +131,7 @@ const sendWhatsappCampaign = async (req, res) => {
       return res.status(400).json({ message: "Message content is required." });
     }
 
-    // 📞 Get users with phone numbers
+    // Get users with phone numbers
     const users = await User.find({}, "phone");
     const phoneNumbers = users.map((user) => user.phone).filter(Boolean);
 
@@ -194,7 +139,7 @@ const sendWhatsappCampaign = async (req, res) => {
       return res.status(400).json({ message: "No phone numbers found." });
     }
 
-    // 📲 Send WhatsApp messages
+    // Send WhatsApp messages
     await sendWhatsapp(message, phoneNumbers);
 
     res

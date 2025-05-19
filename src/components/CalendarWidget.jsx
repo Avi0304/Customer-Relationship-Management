@@ -13,8 +13,8 @@ const CalendarWidget = () => {
   // Group events by date
   const eventsByDate = events.reduce((acc, event) => {
     const eventDate = event.start.dateTime
-      ? new Date(event.start.dateTime).toLocaleDateString("en-CA") // Converts to "YYYY-MM-DD" in local time
-      : event.start.date; // All-day events use `date` directly
+      ? new Date(event.start.dateTime).toLocaleDateString("en-CA")
+      : event.start.date;
 
     console.log("Processing event:", event.summary, "on", eventDate);
 
@@ -22,8 +22,6 @@ const CalendarWidget = () => {
     acc[eventDate].push(event);
     return acc;
   }, {});
-
-
 
   const openPopup = (events) => {
     setPopupEvents(events);
@@ -39,13 +37,18 @@ const CalendarWidget = () => {
     if (view === "month") {
       const dateKey = date.toLocaleDateString("en-CA");
       const dayEvents = eventsByDate[dateKey];
-  
+
       if (dayEvents && dayEvents.length > 0) {
-        const hasHoliday = dayEvents.some(event => event.isHoliday);
-        const hasEvent = dayEvents.some(event => !event.isHoliday);
-  
-        let dotColor = hasHoliday && hasEvent ? "bg-yellow-500" : hasHoliday ? "bg-red-500" : "bg-green-500";
-  
+        const hasHoliday = dayEvents.some((event) => event.isHoliday);
+        const hasEvent = dayEvents.some((event) => !event.isHoliday);
+
+        let dotColor =
+          hasHoliday && hasEvent
+            ? "bg-yellow-500"
+            : hasHoliday
+            ? "bg-red-500"
+            : "bg-green-500";
+
         return (
           <div className="relative flex justify-center">
             <div
@@ -58,15 +61,13 @@ const CalendarWidget = () => {
     }
     return null;
   };
-  
-
-
-
 
   return (
     <Card className="col-span-3 bg-white shadow-lg rounded-lg p-6 w-full dark:bg-[#1B222D] min-h-[450px] relative">
       <CardHeader className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold leading-none tracking-tight">Calendar</h1>
+        <h1 className="text-2xl font-bold leading-none tracking-tight">
+          Calendar
+        </h1>
         <button
           onClick={isSignedIn ? signOut : signIn}
           className="bg-blue-500 text-white px-4 py-1.5 rounded-md hover:bg-blue-600 transition shadow-md"
@@ -94,17 +95,22 @@ const CalendarWidget = () => {
               {popupEvents.map((event, index) => {
                 const startTime = event.start.dateTime
                   ? new Date(event.start.dateTime).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: true,
-                  })
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
                   : "All Day";
 
                 return (
-                  <li key={index}
+                  <li
+                    key={index}
                     className={`flex flex-col p-3 rounded-md shadow 
-                           ${event.isHoliday ? "bg-red-100 dark:bg-red-800" : "bg-gray-100 dark:bg-gray-800"}`}>
-
+                           ${
+                             event.isHoliday
+                               ? "bg-red-100 dark:bg-red-800"
+                               : "bg-gray-100 dark:bg-gray-800"
+                           }`}
+                  >
                     <span className="text-md font-semibold text-black dark:text-white">
                       {event.isHoliday ? " Holiday: " : " Appointment: "}
                       {event.summary}
@@ -127,8 +133,6 @@ const CalendarWidget = () => {
           </div>
         </div>
       )}
-
-
     </Card>
   );
 };

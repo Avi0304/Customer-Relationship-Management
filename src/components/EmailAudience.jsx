@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import {
-  Button, TextField, Select, MenuItem, FormControl, InputLabel,
-  Box, Typography, Paper, Grid, Chip, Stack,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Chip,
+  Stack,
 } from "@mui/material";
 
 const EmailAudience = ({ togglePanel, selectedPlatform }) => {
@@ -18,12 +28,18 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
     caption: "",
     callToAction: "",
     budget: "",
-    email: "", // comma-separated
+    email: "",
   });
 
   const [error, setError] = useState(null);
 
-  const interestOptions = ["Technology", "Business", "Marketing", "Startups", "Innovation"];
+  const interestOptions = [
+    "Technology",
+    "Business",
+    "Marketing",
+    "Startups",
+    "Innovation",
+  ];
 
   const handleInterestToggle = (interest) => {
     setSelectedInterests((prev) =>
@@ -56,9 +72,13 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
     };
 
     try {
-      await axios.post("http://localhost:8080/api/audience/audience-add", audienceData, {
-        headers: { "Content-Type": "application/json" },
-      });
+      await axios.post(
+        "http://localhost:8080/api/audience/audience-add",
+        audienceData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       togglePanel();
     } catch (error) {
       setError(error.response?.data?.error || "Failed to create audience.");
@@ -82,7 +102,17 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
         p: 2,
       }}
     >
-      <Paper elevation={3} sx={{ width: "100%", maxWidth: 700, p: 4, borderRadius: 2,   maxHeight: "90vh",overflowY: "auto", }}>
+      <Paper
+        elevation={3}
+        sx={{
+          width: "100%",
+          maxWidth: 700,
+          p: 4,
+          borderRadius: 2,
+          maxHeight: "90vh",
+          overflowY: "auto",
+        }}
+      >
         <Typography variant="h4" align="center" gutterBottom>
           {selectedPlatform} Audience Targeting
         </Typography>
@@ -148,7 +178,15 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
                   onChange={handleChange}
                   label="Location"
                 >
-                  {["India", "USA", "Canada", "UK", "Europe", "Asia", "New York"].map((loc) => (
+                  {[
+                    "India",
+                    "USA",
+                    "Canada",
+                    "UK",
+                    "Europe",
+                    "Asia",
+                    "New York",
+                  ].map((loc) => (
                     <MenuItem key={loc} value={loc}>
                       {loc}
                     </MenuItem>
@@ -177,13 +215,21 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
               <Typography variant="h6" gutterBottom>
                 Select Interests
               </Typography>
-              <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 1 }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{ flexWrap: "wrap", gap: 1 }}
+              >
                 {interestOptions.map((interest) => (
                   <Chip
                     key={interest}
                     label={interest}
                     onClick={() => handleInterestToggle(interest)}
-                    color={selectedInterests.includes(interest) ? "primary" : "default"}
+                    color={
+                      selectedInterests.includes(interest)
+                        ? "primary"
+                        : "default"
+                    }
                   />
                 ))}
               </Stack>
@@ -265,8 +311,16 @@ const EmailAudience = ({ togglePanel, selectedPlatform }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-              <Button variant="outlined" color="secondary" onClick={togglePanel}>
+            <Grid
+              item
+              xs={12}
+              sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={togglePanel}
+              >
                 Cancel
               </Button>
               <Button type="submit" variant="contained" color="primary">

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SideBar from "./components/SideBar";
-import TaskManagement from "./components/TaskManagement"; 
+import TaskManagement from "./components/TaskManagement";
 import Dashboard from "./pages/DashBoard";
 
 function App() {

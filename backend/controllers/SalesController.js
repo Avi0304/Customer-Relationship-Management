@@ -1,12 +1,12 @@
 const Sale = require("../models/Sales");
-const { createNotification } = require('../utils/notificationService');
+const { createNotification } = require("../utils/notificationService");
 
 // Update notification helper function
 const notifySaleAdded = async (sale) => {
   await createNotification({
-    title: 'New Sale Added',
+    title: "New Sale Added",
     message: `New sale added: ${sale.customer} - $${sale.amount}`,
-    type: 'sale',
+    type: "sale",
     userId: sale.userId,
   });
 };
@@ -14,14 +14,14 @@ const notifySaleAdded = async (sale) => {
 // Update status change notification
 const notifySaleStatusUpdated = async (sale, previousStatus, newStatus) => {
   await createNotification({
-    title: 'Sale Status Updated',
+    title: "Sale Status Updated",
     message: `Sale status updated from ${previousStatus} to ${newStatus}`,
-    type: 'sale',
+    type: "sale",
     userId: sale.userId,
   });
 };
 
-// ➤ Get All Sales
+// Get All Sales
 const getAllSales = async (req, res) => {
   try {
     const sales = await Sale.find();
@@ -31,7 +31,7 @@ const getAllSales = async (req, res) => {
   }
 };
 
-// ➤ Add Sale
+// Add Sale
 const addSale = async (req, res) => {
   try {
     const { customer, amount, status, services } = req.body;
@@ -40,18 +40,20 @@ const addSale = async (req, res) => {
       customer,
       amount,
       status: status || "Pending",
-      services
+      services,
     });
 
     const savedSale = await newSale.save();
     await notifySaleAdded(savedSale);
-    res.status(201).json({ message: "Sale added successfully", sale: savedSale });
+    res
+      .status(201)
+      .json({ message: "Sale added successfully", sale: savedSale });
   } catch (error) {
     res.status(500).json({ message: "Error adding sale", error });
   }
 };
 
-// ➤ Update Sale
+// Update Sale
 const updateSale = async (req, res) => {
   try {
     const existingSale = await Sale.findById(req.params.id);
@@ -82,7 +84,7 @@ const updateSale = async (req, res) => {
   }
 };
 
-// ➤ Delete Sale
+// Delete Sale
 const deleteSale = async (req, res) => {
   try {
     const deletedSale = await Sale.findByIdAndDelete(req.params.id);
@@ -97,7 +99,7 @@ const deleteSale = async (req, res) => {
   }
 };
 
-// ➤ Sales Segmentation
+// Sales Segmentation
 const salesSegmentation = async (req, res) => {
   try {
     const totalSales = await Sale.countDocuments();

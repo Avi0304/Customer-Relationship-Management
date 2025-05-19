@@ -62,7 +62,10 @@ const SMSForm = ({ togglePanel }) => {
       console.log("SMS Campaign created successfully:", response.data);
       togglePanel();
     } catch (error) {
-      console.error("Error creating SMS campaign:", error.response?.data || error);
+      console.error(
+        "Error creating SMS campaign:",
+        error.response?.data || error
+      );
     }
   };
 
@@ -175,24 +178,7 @@ const SMSForm = ({ togglePanel }) => {
                   control={<Radio />}
                   label="Send Immediately"
                 />
-                {/* <FormControlLabel
-                  value="later"
-                  control={<Radio />}
-                  label="Schedule for Later"
-                /> */}
               </RadioGroup>
-              {/* {schedule === "later" && (
-                <TextField
-                  fullWidth
-                  type="datetime-local"
-                  name="scheduledTime"
-                  variant="outlined"
-                  value={scheduledTime}
-                  onChange={(e) => setScheduledTime(e.target.value)}
-                  required
-                  sx={{ mt: 2 }}
-                />
-              )} */}
             </Grid>
 
             {/* Action Buttons */}

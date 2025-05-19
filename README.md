@@ -160,9 +160,10 @@ The landing site includes:
 git clone https://github.com/your-username/crm-system.git
 cd crm-system
 ```
+
 ### 📦 2. Install Dependencies
 
-####  Backend
+#### Backend
 
 ```bash
 cd backend
@@ -188,31 +189,38 @@ npm install
      EMAIL_USER=your_email
      EMAIL_PASS=your_email_password
      ADMIN_EMAIL=your_Admin_email
-     ADMIN_REGISTRATION_KEY=Your_admin_key 
+     ADMIN_REGISTRATION_KEY=Your_admin_key
      TWILIO_SID=your_twilio_sid
      TWILIO_AUTH_TOKEN=your_twilio_auth_token
      TWILIO_PHONE_NUMBER=your_twilio_phone_number
      ```
 
-###  🔑 4. Google API Configuration
+### 🔑 4. Google API Configuration
+
 - To enable Google Calendar & Meet integration in the application:
 
 1. **Create the .env file in the directory:**
+
 ```bash
 .env
 ```
 
 2. **Add your Google API credentials:**
+
 ```bash
 VITE_GOOGLE_CLIENT_ID=your_google_client_id
 VITE_GOOGLE_API_KEY=your_google_api_key
 ```
+
 3. **Usage in Code**
+
 - Update the following files:
-    - AppointmentSchedule.jsx
-    - useGoogleCalendar.js
+
+  - AppointmentSchedule.jsx
+  - useGoogleCalendar.js
 
 - To access the credentials, use:
+
 ```bash
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
@@ -221,27 +229,26 @@ const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 ### 🚀 5. Run the Application
 
 1. **Backend**:
+
    ```bash
    cd backend
    npm run server
    ```
 
 2. **Frontend**:
+
    ```bash
    cd ..
    npm run client
    ```
 
 3. **Run Both the Backend and Frontend concurrently**
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 4. **Open Application**
    Open `http://localhost:5173` in your browser to view the application.
-
 
 ## 📬 Contact
 
 For any inquiries, reach out via the contact form on the landing website or email [avip56325@gmail.com](mailto:avip56325@gmail.com).
-
-

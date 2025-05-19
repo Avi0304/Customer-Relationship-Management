@@ -43,7 +43,7 @@ const Sidebar = () => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");
         localStorage.removeItem("isAdmin");
-  
+
         Swal.fire({
           title: "Logout Successful!",
           text: "Redirecting to login page",
@@ -55,14 +55,13 @@ const Sidebar = () => {
           showConfirmButton: false,
           allowOutsideClick: false,
         });
-  
+
         setTimeout(() => {
           navigate("/");
         }, 2000);
       }
     });
   };
-  
 
   // Check if the user is on the settings page
   const isSettingsPage = location.pathname.startsWith("/settings");
@@ -310,23 +309,6 @@ const Sidebar = () => {
             </Link>
           </>
         )}
-
-        {/* Logout Button */}
-        {/* <button
-          className="flex items-center p-2 rounded-lg hover:bg-red-500/20 w-full text-left mt-auto transition-all duration-200"
-          onClick={handleLogout}
-        >
-          <div className="flex items-center justify-center w-10">
-            <FiLogOut size={24} className="text-red-400" />
-          </div>
-          <span
-            className={`${
-              isOpen ? "block" : "hidden"
-            } font-medium text-red-400`}
-          >
-            Logout
-          </span>
-        </button> */}
       </nav>
 
       <div className="p-2 mt-auto">

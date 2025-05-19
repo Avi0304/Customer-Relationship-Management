@@ -16,7 +16,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) => {
+const EmailForm = ({
+  togglePanel,
+  onSubmit,
+  allUsers = [],
+  selectedCampaign,
+}) => {
   const [schedule, setSchedule] = useState("immediately");
   const [formData, setFormData] = useState({
     id: "",
@@ -63,7 +68,7 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-  
+
       const emailCampaign = {
         title: formData.title,
         recipients: formData.recipients.split(",").map((email) => email.trim()),
@@ -74,7 +79,7 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
         status: "Scheduled",
         campaignType: "email", // ✅ Required by backend
       };
-  
+
       try {
         const response = await fetch(
           formData.id
@@ -88,12 +93,17 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
             body: JSON.stringify(emailCampaign),
           }
         );
-  
-        if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
-  
+
+        if (!response.ok)
+          throw new Error(`HTTP Error! Status: ${response.status}`);
+
         const data = await response.json();
-        toast.success(formData.id ? "Email campaign updated successfully!" : "Email campaign created successfully!");
-  
+        toast.success(
+          formData.id
+            ? "Email campaign updated successfully!"
+            : "Email campaign created successfully!"
+        );
+
         if (togglePanel) togglePanel();
         if (onSubmit) onSubmit(data);
       } catch (error) {
@@ -103,7 +113,6 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
     },
     [formData, schedule, togglePanel, onSubmit]
   );
-  
 
   return (
     <>
@@ -135,12 +144,18 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
           }}
         >
           {/* Close Button */}
-          <IconButton onClick={togglePanel} sx={{ position: "absolute", top: 8, right: 8 }}>
+          <IconButton
+            onClick={togglePanel}
+            sx={{ position: "absolute", top: 8, right: 8 }}
+          >
             <CloseIcon />
           </IconButton>
 
           {/* Back Button */}
-          <IconButton onClick={togglePanel} sx={{ position: "absolute", top: 8, left: 8 }}>
+          <IconButton
+            onClick={togglePanel}
+            sx={{ position: "absolute", top: 8, left: 8 }}
+          >
             <ArrowBackIcon />
           </IconButton>
 
@@ -176,7 +191,12 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
                   />
                 </Grid>
                 <Grid item xs={12} sm={3}>
-                  <Button fullWidth variant="contained" onClick={handleSelectAllUsers} type="button">
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    onClick={handleSelectAllUsers}
+                    type="button"
+                  >
                     Select All
                   </Button>
                 </Grid>
@@ -210,31 +230,38 @@ const EmailForm = ({ togglePanel, onSubmit, allUsers = [], selectedCampaign }) =
 
               <Grid item xs={12}>
                 <Typography variant="h6">Schedule</Typography>
-                <RadioGroup row name="schedule" value={schedule} onChange={handleScheduleChange}>
-                  <FormControlLabel value="immediately" control={<Radio />} label="Send Immediately" />
+                <RadioGroup
+                  row
+                  name="schedule"
+                  value={schedule}
+                  onChange={handleScheduleChange}
+                >
+                  <FormControlLabel
+                    value="immediately"
+                    control={<Radio />}
+                    label="Send Immediately"
+                  />
                   {/* <FormControlLabel value="later" control={<Radio />} label="Schedule for Later" /> */}
                 </RadioGroup>
-                {/* {schedule === "later" && (
-                  <TextField
-                    fullWidth
-                    type="datetime-local"
-                    name="scheduledTime"
-                    variant="outlined"
-                    required
-                    sx={{ mt: 2 }}
-                    value={formData.scheduledTime}
-                    onChange={handleChange}
-                  />
-                )} */}
               </Grid>
 
               <Grid item xs={6}>
-                <Button fullWidth variant="outlined" onClick={togglePanel} type="button">
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  onClick={togglePanel}
+                  type="button"
+                >
                   Cancel
                 </Button>
               </Grid>
               <Grid item xs={6}>
-                <Button fullWidth variant="contained" color="primary" type="submit">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                >
                   {formData.id ? "Update" : "Submit"}
                 </Button>
               </Grid>

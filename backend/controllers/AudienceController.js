@@ -4,12 +4,12 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Create Audience and Send Emails
 exports.createAudience = async (req, res) => {
@@ -20,11 +20,13 @@ exports.createAudience = async (req, res) => {
 
     // Ensure email is an array
     if (!Array.isArray(email)) {
-      return res.status(400).json({ error: "email must be an array of email addresses." });
+      return res
+        .status(400)
+        .json({ error: "email must be an array of email addresses." });
     }
 
-    const validEmails = email.filter((emailAddress) =>
-      emailAddress && /\S+@\S+\.\S+/.test(emailAddress)
+    const validEmails = email.filter(
+      (emailAddress) => emailAddress && /\S+@\S+\.\S+/.test(emailAddress)
     );
 
     if (validEmails.length === 0) {
@@ -101,15 +103,20 @@ exports.createAudience = async (req, res) => {
           </html>
         `;
 
-        return transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: emailAddress,
-          subject: emailSubject,
-          text: emailBody,
-          html: emailHTML,
-        })
-        .then(info => console.log(`✅ Email sent to ${emailAddress}:`, info.response))
-        .catch(err => console.error(`❌ Failed to send email to ${emailAddress}:`, err));
+        return transporter
+          .sendMail({
+            from: process.env.EMAIL_USER,
+            to: emailAddress,
+            subject: emailSubject,
+            text: emailBody,
+            html: emailHTML,
+          })
+          .then((info) =>
+            console.log(`✅ Email sent to ${emailAddress}:`, info.response)
+          )
+          .catch((err) =>
+            console.error(`❌ Failed to send email to ${emailAddress}:`, err)
+          );
       })
     );
 
@@ -122,7 +129,6 @@ exports.createAudience = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-
 
 // Get All Audiences
 exports.getAudiences = async (req, res) => {
@@ -147,87 +153,78 @@ exports.getAudienceById = async (req, res) => {
 
 // Update Audience
 exports.updateAudience = async (req, res) => {
-    try {
-      const {
-        audienceName,
-        audienceDescription,
-        caption,
-        callToAction,
-        budget,
-        startDate,
-        endDate,
-        gender,
-        ageRange,
-        location,
-        interests,
-        emailSubject,
-        emailBody,
-        email
-      } = req.body;
-  
-      // ✅ Validate required fields
-      if (!audienceName || !emailSubject || !emailBody) {
-        return res.status(400).json({
-          error: "Audience name, email subject, and email body are required.",
-        });
-      }
-  
-      // ✅ Validate dates
-      if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
-        return res.status(400).json({
-          error: "End date must be after the start date.",
-        });
-      }
-  
-      // ✅ Prepare the update payload
-      const updateData = {
-        audienceName,
-        audienceDescription,
-        caption,
-        callToAction,
-        budget,
-        startDate,
-        endDate,
-        gender,
-        ageRange,
-        location,
-        interests,
-        emailSubject,
-        emailBody,
-        email,
-      };
-  
-      // ✅ Find and update the audience
-      const updated = await EmailAudience.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        {
-          new: true,
-          runValidators: true,
-          context: 'query', // ensures validators using `this` have context
-        }
-      );
-  
-      // ✅ Check if audience was not found
-      if (!updated) {
-        return res.status(404).json({ error: "Audience not found." });
-      }
-  
-      // ✅ Respond with updated audience
-      res.json({
-        message: "Audience updated successfully.",
-        audience: updated,
-      });
-  
-    } catch (err) {
-      console.error("Error updating audience:", err);
-      res.status(400).json({
-        error: err.message || "Something went wrong while updating the audience.",
+  try {
+    const {
+      audienceName,
+      audienceDescription,
+      caption,
+      callToAction,
+      budget,
+      startDate,
+      endDate,
+      gender,
+      ageRange,
+      location,
+      interests,
+      emailSubject,
+      emailBody,
+      email,
+    } = req.body;
+
+    if (!audienceName || !emailSubject || !emailBody) {
+      return res.status(400).json({
+        error: "Audience name, email subject, and email body are required.",
       });
     }
-  };
-  
-  
+
+    if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
+      return res.status(400).json({
+        error: "End date must be after the start date.",
+      });
+    }
+
+    const updateData = {
+      audienceName,
+      audienceDescription,
+      caption,
+      callToAction,
+      budget,
+      startDate,
+      endDate,
+      gender,
+      ageRange,
+      location,
+      interests,
+      emailSubject,
+      emailBody,
+      email,
+    };
+
+    const updated = await EmailAudience.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+        context: "query",
+      }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "Audience not found." });
+    }
+
+    res.json({
+      message: "Audience updated successfully.",
+      audience: updated,
+    });
+  } catch (err) {
+    console.error("Error updating audience:", err);
+    res.status(400).json({
+      error: err.message || "Something went wrong while updating the audience.",
+    });
+  }
+};
 
 // Delete Audience
 exports.deleteAudience = async (req, res) => {

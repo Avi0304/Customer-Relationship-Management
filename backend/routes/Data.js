@@ -6,7 +6,6 @@ const multer = require("multer");
 
 const upload = multer({ dest: "uploads/" });
 
-// Routes
 router.get("/export", verifyToken, DataController.exportData);
 router.post("/backup", verifyToken, DataController.createBackup);
 router.post(

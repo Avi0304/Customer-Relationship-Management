@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const emailCampaignSchema = new mongoose.Schema({
-  // Post details
   caption: {
     type: String,
     required: true,
@@ -22,23 +21,13 @@ const emailCampaignSchema = new mongoose.Schema({
   },
   startDate: {
     type: Date,
-    // required: true,
   },
   endDate: {
     type: Date,
-    // required: true,
-    // validate: {
-    //   validator: function (value) {
-    //     return value >= this.startDate;
-    //   },
-    //   message: "End date must be after the start date",
-    // },
   },
   mediaUrl: {
     type: String,
   },
-
-  // Audience details
   audienceName: {
     type: String,
     required: true,
@@ -77,7 +66,6 @@ const emailCampaignSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
-
   createdAt: {
     type: Date,
     default: Date.now,

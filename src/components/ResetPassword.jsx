@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-
 function ResetPassword() {
   const [email, setEmail] = useState("");
   const [token, setToken] = useState("");
@@ -20,40 +19,43 @@ function ResetPassword() {
     setIsSuccess(false);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/user/reset-password", {
-        email,
-        token,
-        newPassword,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/user/reset-password",
+        {
+          email,
+          token,
+          newPassword,
+        }
+      );
 
       if (response.status === 200) {
         setIsSuccess(true);
 
         Swal.fire({
-          title: 'Password Reset Successfully...',
-          text: 'Redirecting to the login page...',
-          icon: 'success',
+          title: "Password Reset Successfully...",
+          text: "Redirecting to the login page...",
+          icon: "success",
           iconColor: currentTheme === "dark" ? "#4ade80" : "green",
           background: currentTheme === "dark" ? "#1e293b" : "#fff",
           color: currentTheme === "dark" ? "#f8fafc" : "#000",
           timer: 1500,
           showConfirmButton: false,
           allowOutsideClick: false,
-        })
+        });
         setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Something went wrong.");
       Swal.fire({
-        title: 'Oops!',
-        text: 'Something went Wrong...',
-        icon: 'error',
+        title: "Oops!",
+        text: "Something went Wrong...",
+        icon: "error",
         iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
         background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
         color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 1500,
         confirmButtonText: "OK",
-      })
+      });
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +71,6 @@ function ResetPassword() {
         <p className="text-sm text-gray-600 text-left dark:text-slate-400">
           Enter the token sent to your email along with your new password.
         </p>
-
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {errorMessage && (
@@ -129,9 +130,11 @@ function ResetPassword() {
           </button>
         </form>
 
-
         <div className="text-center mt-4">
-          <Link to="/forget-password" className="text-sm font-medium text-black hover:underline dark:text-slate-300">
+          <Link
+            to="/forget-password"
+            className="text-sm font-medium text-black hover:underline dark:text-slate-300"
+          >
             Back to Send Token
           </Link>
         </div>

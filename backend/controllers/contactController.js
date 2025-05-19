@@ -3,26 +3,26 @@ const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 const sendContactMsg = async (req, res) => {
-    try {
-        const { name, email, subject, message } = req.body;
+  try {
+    const { name, email, subject, message } = req.body;
 
-        const newMessage = new Contact({ name, email, subject, message });
-        await newMessage.save();
+    const newMessage = new Contact({ name, email, subject, message });
+    await newMessage.save();
 
-        // Email content for user
-        const userMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: `📩 Your Message Received: ${subject}`,
-            html: `
+    // Email content for user
+    const userMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: `📩 Your Message Received: ${subject}`,
+      html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #f4f4f4; color: #333;">
                 <div style="background: #007bff; color: #fff; padding: 10px 15px; text-align: center; border-radius: 5px;">
                     <h2 style="margin: 0;">📩 Thank You for Contacting Us</h2>
@@ -43,14 +43,13 @@ const sendContactMsg = async (req, res) => {
                 </p>
             </div>
             `,
-        };
-        
+    };
 
-        const adminMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.ADMIN_EMAIL,
-            subject: `📥 New Contact Form Submission from ${name}`,
-            html: `
+    const adminMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: process.env.ADMIN_EMAIL,
+      subject: `📥 New Contact Form Submission from ${name}`,
+      html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border-radius: 10px; background: #ffffff; color: #333333; border: 1px solid #ddd;">
                 <div style="background:#0056b3; color: #ffffff; padding: 15px; text-align: center; border-radius: 5px;">
                     <h2 style="margin: 0;">📥 New Contact Form Submission</h2>
@@ -76,20 +75,17 @@ const sendContactMsg = async (req, res) => {
 
             </div>
             `,
-        };
-        
-        
+    };
 
-        // Send emails
-        await transporter.sendMail(userMailOptions);
-        await transporter.sendMail(adminMailOptions);
+    // Send emails
+    await transporter.sendMail(userMailOptions);
+    await transporter.sendMail(adminMailOptions);
 
-        res.status(200).json({ message: "Message sent successfully!" });
+    res.status(200).json({ message: "Message sent successfully!" });
+  } catch (error) {
+    console.error("Error sending message:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
-    } catch (error) {
-        console.error("Error sending message:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
-
-module.exports = {sendContactMsg}
+module.exports = { sendContactMsg };

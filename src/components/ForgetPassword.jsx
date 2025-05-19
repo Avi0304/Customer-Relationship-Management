@@ -44,8 +44,8 @@ export default function ForgotPasswordPage() {
         title: "Oops!",
         text: "Something went Wrong...",
         icon: "error",
-        iconColor: currentTheme === "dark" ? "#f87171" : "red", // Softer red in dark mode
-        background: currentTheme === "dark" ? "#1e293b" : "#fff", // Dark slate for dark mode
+        iconColor: currentTheme === "dark" ? "#f87171" : "red",
+        background: currentTheme === "dark" ? "#1e293b" : "#fff",
         color: currentTheme === "dark" ? "#f8fafc" : "#000",
         timer: 1500,
         confirmButtonText: "OK",
@@ -58,7 +58,6 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 px-4 py-12 dark:bg-slate-950">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 dark:bg-slate-900 dark:shadow-[0px_15px_40px_-5px_rgba(255,255,255,0.3),0px_-5px_15px_-5px_rgba(255,255,255,0.15)]">
-
         <h1 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">
           Forgot Password
         </h1>

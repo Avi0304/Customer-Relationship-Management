@@ -66,10 +66,10 @@ const ProfilePage = () => {
 
       setUser((prev) => ({
         ...prev,
-        photo: `http://localhost:8080${response.data.profilePhoto}`, // Ensure correct server path
+        photo: `http://localhost:8080${response.data.profilePhoto}`,
       }));
 
-      setRefresh((prev) => !prev); // Trigger re-fetch if needed
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error(
         "Error uploading profile photo:",
@@ -172,7 +172,7 @@ const ProfilePage = () => {
   );
 };
 
-// **Editable Profile Card Component**
+// Editable Profile Card Component
 const ProfileCard = ({
   title,
   user,
@@ -233,8 +233,8 @@ const ProfileCard = ({
               <FiCheck
                 className="text-green-500 hover:text-green-600 cursor-pointer"
                 onClick={() => {
-                  handleSave(); // Call your handleSave function
-                  setIsEditing(false); // Set editing state to false
+                  handleSave();
+                  setIsEditing(false);
                   Swal.fire({
                     title: "Updated !",
                     text: "Information changed Successfully!",
@@ -292,7 +292,7 @@ const ProfileCard = ({
   );
 };
 
-// **Editable Profile Field Component**
+// Editable Profile Field Component
 const ProfileField = ({ label, value, isEditing, onChange }) => {
   let formattedValue = value || "";
 
@@ -349,7 +349,7 @@ const ProfileField = ({ label, value, isEditing, onChange }) => {
         ) : (
           <p>
             {label.toLowerCase() === "d o b" && isValid(parseISO(value))
-              ? format(parseISO(value), "dd-MM-yyyy") // Correct format for display
+              ? format(parseISO(value), "dd-MM-yyyy")
               : Array.isArray(value)
               ? value.join(", ")
               : value || "N/A"}

@@ -1,14 +1,29 @@
-// TicketDetailPage.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
-import { RadioGroup, FormControlLabel, Radio, FormControl, FormLabel } from '@mui/material';
-import { LuClock, LuCalendar, LuCircleAlert, LuArrowLeft, LuLink, } from "react-icons/lu";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "../../components/ui/card";
+import {
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  FormLabel,
+} from "@mui/material";
+import {
+  LuClock,
+  LuCalendar,
+  LuCircleAlert,
+  LuArrowLeft,
+  LuLink,
+} from "react-icons/lu";
 import CustomerSupportChat from "./CustomerSupportChat";
 import { BiSupport } from "react-icons/bi";
-
 
 const Badge = ({ label, type }) => {
   const colors = {
@@ -22,7 +37,11 @@ const Badge = ({ label, type }) => {
   };
 
   return (
-    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colors[type?.toLowerCase()] || "bg-gray-100 text-gray-700"}`}>
+    <span
+      className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+        colors[type?.toLowerCase()] || "bg-gray-100 text-gray-700"
+      }`}
+    >
       {label}
     </span>
   );
@@ -34,12 +53,14 @@ const TicketDetailPage = () => {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentRequest, setCurrentRequest] = useState({ status: "Open" });
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const fetchTicketDetails = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:8080/api/support/${id}`);
+        const { data } = await axios.get(
+          `http://localhost:8080/api/support/${id}`
+        );
         setTicket(data);
         setCurrentRequest({ status: data.status });
         console.log(data);
@@ -55,7 +76,9 @@ const TicketDetailPage = () => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/support/resource/${id}`);
+        const res = await axios.get(
+          `http://localhost:8080/api/support/resource/${id}`
+        );
         setResources(res.data);
       } catch (error) {
         console.error("Failed to fetch related resources:", error);
@@ -68,9 +91,12 @@ const TicketDetailPage = () => {
   const handleStatusUpdate = async (newStatus = currentRequest.status) => {
     try {
       setLoading(true);
-      const res = await axios.put(`http://localhost:8080/api/support/${ticket._id}/status`, {
-        status: newStatus,
-      });
+      const res = await axios.put(
+        `http://localhost:8080/api/support/${ticket._id}/status`,
+        {
+          status: newStatus,
+        }
+      );
 
       setTicket((prev) => ({ ...prev, status: res.data.support.status }));
       setCurrentRequest({ status: res.data.support.status });
@@ -93,7 +119,9 @@ const TicketDetailPage = () => {
 
   const handleWithdraw = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/support/${ticket._id}/Withdrawstatus`);
+      await axios.put(
+        `http://localhost:8080/api/support/${ticket._id}/Withdrawstatus`
+      );
       Swal.fire("Withdrawn", "Your ticket has been withdrawn.", "success");
       setTicket((prev) => ({ ...prev, status: "Withdrawn" }));
     } catch (error) {
@@ -101,12 +129,17 @@ const TicketDetailPage = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-10">Loading ticket details...</div>;
-  if (!ticket) return <div className="text-center py-10 text-red-500">Ticket not found or failed to load.</div>;
+  if (loading)
+    return <div className="text-center py-10">Loading ticket details...</div>;
+  if (!ticket)
+    return (
+      <div className="text-center py-10 text-red-500">
+        Ticket not found or failed to load.
+      </div>
+    );
 
   return (
     <div className="container mx-auto px-4 py-6">
-
       <div className="w-[140px] mb-6">
         <Link
           to="/customer-dashboard"
@@ -127,17 +160,21 @@ const TicketDetailPage = () => {
                     ${isHovered ? "opacity-20" : "opacity-0"} 
                     transition-opacity duration-300`}
             ></div>
-            <div className="relative flex items-center justify-center w-8 h-8 rounded-full 
+            <div
+              className="relative flex items-center justify-center w-8 h-8 rounded-full 
                       bg-gradient-to-r from-blue-500 to-indigo-600 
                       shadow-md transform group-hover:-translate-x-1 
-                      transition-all duration-300">
+                      transition-all duration-300"
+            >
               <LuArrowLeft className="h-4 w-4 text-white" />
             </div>
           </div>
 
-          <span className="font-medium text-slate-700 group-hover:text-slate-900 
+          <span
+            className="font-medium text-slate-700 group-hover:text-slate-900 
                      dark:text-slate-200 dark:group-hover:text-white 
-                     transition-colors duration-300">
+                     transition-colors duration-300"
+          >
             Back
           </span>
 
@@ -160,7 +197,6 @@ const TicketDetailPage = () => {
         </Link>
       </div>
 
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Section */}
         <div className="lg:col-span-2 space-y-6">
@@ -182,21 +218,35 @@ const TicketDetailPage = () => {
             <CardContent>
               <div className="space-y-4 dark:text-gray-300 ">
                 <div>
-                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Description</h3>
+                  <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                    Description
+                  </h3>
                   <p className="mt-1 font-semibold">{ticket.description}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Created</h3>
-                    <p className="mt-1 font-semibold">{new Date(ticket.createdAt).toLocaleString()}</p>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                      Created
+                    </h3>
+                    <p className="mt-1 font-semibold">
+                      {new Date(ticket.createdAt).toLocaleString()}
+                    </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Last Updated</h3>
-                    <p className="mt-1 font-semibold">{new Date(ticket.updatedAt).toLocaleString()}</p>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                      Last Updated
+                    </h3>
+                    <p className="mt-1 font-semibold">
+                      {new Date(ticket.updatedAt).toLocaleString()}
+                    </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">Submitted By</h3>
-                    <p className="mt-1 font-semibold">{ticket.userName || "N/A"}</p>
+                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                      Submitted By
+                    </h3>
+                    <p className="mt-1 font-semibold">
+                      {ticket.userName || "N/A"}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -207,7 +257,9 @@ const TicketDetailPage = () => {
           <Card className="min-h-[249px] bg-white dark:bg-[#1B222D] shadow-md dark:shadow-lg rounded-xl p-4 space-y-3 flex flex-col hover:shadow-lg dark:hover:shadow-xl">
             <CardHeader>
               <CardTitle className="text-gray-900 dark:text-white">
-                {ticket.status === "Withdrawn" ? "Ticket Already Withdrawn" : "Withdraw Ticket"}
+                {ticket.status === "Withdrawn"
+                  ? "Ticket Already Withdrawn"
+                  : "Withdraw Ticket"}
               </CardTitle>
             </CardHeader>
 
@@ -216,7 +268,8 @@ const TicketDetailPage = () => {
                 {ticket.status === "Withdrawn" ? (
                   <>
                     <p className="text-sm">
-                      This ticket has already been withdrawn. If your issue persists, you can reopen it.
+                      This ticket has already been withdrawn. If your issue
+                      persists, you can reopen it.
                     </p>
                     <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 text-yellow-700 dark:text-yellow-200 text-sm rounded-md p-3">
                       🔄 Reopening will allow you to receive support again.
@@ -231,10 +284,12 @@ const TicketDetailPage = () => {
                 ) : (
                   <>
                     <p className="text-sm">
-                      If your issue is resolved or no longer relevant, you can withdraw this ticket.
+                      If your issue is resolved or no longer relevant, you can
+                      withdraw this ticket.
                     </p>
                     <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-200 text-sm rounded-md p-3">
-                      ⚠️ Withdrawing a ticket means no further support will be provided unless reopened.
+                      ⚠️ Withdrawing a ticket means no further support will be
+                      provided unless reopened.
                     </div>
                     <button
                       onClick={handleWithdraw}
@@ -276,7 +331,9 @@ const TicketDetailPage = () => {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-sm capitalize">No related resources added by support agent.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm capitalize">
+                  No related resources added by support agent.
+                </p>
               )}
             </CardContent>
           </Card>
@@ -293,24 +350,36 @@ const TicketDetailPage = () => {
                     <div className="flex items-center gap-3 p-2 rounded-md bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
                       <LuCalendar className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
                       <div>
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Monday - Friday</p>
-                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">9am - 8pm</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          Monday - Friday
+                        </p>
+                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">
+                          9am - 8pm
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 p-2 rounded-md bg-indigo-50 dark:bg-indigo-900 border border-indigo-100 dark:border-indigo-800">
                       <LuCalendar className="h-4 w-4 text-indigo-600 dark:text-indigo-300" />
                       <div>
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Saturday</p>
-                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">10am - 6pm</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          Saturday
+                        </p>
+                        <p className="text-sm text-indigo-600 dark:text-indigo-300 font-semibold">
+                          10am - 6pm
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 p-2 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
                       <LuCalendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                       <div>
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Sunday</p>
-                        <p className="text-sm text-red-500 dark:text-red-400 font-semibold">Closed</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          Sunday
+                        </p>
+                        <p className="text-sm text-red-500 dark:text-red-400 font-semibold">
+                          Closed
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -337,11 +406,11 @@ const TicketDetailPage = () => {
         </div>
 
         <div className="w-full mt-1 col-span-1 lg:col-span-3">
-          <CustomerSupportChat ticketId={ticket._id} customerId={ticket.userId} />
+          <CustomerSupportChat
+            ticketId={ticket._id}
+            customerId={ticket.userId}
+          />
         </div>
-
-        {/* Full Width Support Hours Card */}
-
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ exports.verifyToken = (req, res, next) => {
       return res.status(401).json({ message: "Invalid Token Structure" });
     }
 
-    req.user = verified; // Attach user data to request
+    req.user = verified;
     next();
   } catch (error) {
     console.log("❌ Token Verification Failed:", error.message);

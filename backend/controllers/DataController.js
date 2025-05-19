@@ -9,47 +9,6 @@ const Leads = require("../models/Leads");
 const Support = require("../models/Support");
 const Sales = require("../models/Sales");
 
-// Export Data
-// exports.exportData = async (req, res) => {
-//   try {
-//     console.log("🚀 Export API called!");
-
-//     const { format } = req.query;
-//     console.log("🔹 Requested format:", format);
-
-//     const userId = req.user.userId; // Ensure correct field
-//     console.log("🔹 Fetching data for user:", userId);
-
-//     const data = await DataBackup.find({ userId });
-//     console.log("🔹 Data retrieved from DB:", data);
-
-//     if (!data.length) {
-//       console.log("⚠️ No data found for this user.");
-//       return res.status(404).json({ message: "No data found." });
-//     }
-
-//     let response;
-//     if (format === "json") {
-//       response = JSON.stringify(data, null, 2);
-//       res.setHeader("Content-Type", "application/json");
-//     } else if (format === "csv") {
-//       const csvData = data
-//         .map((d) => Object.values(d.toObject()).join(","))
-//         .join("\n");
-//       response = csvData;
-//       res.setHeader("Content-Type", "text/csv");
-//     } else {
-//       return res.status(400).json({ message: "Invalid format." });
-//     }
-
-//     res.setHeader("Content-Disposition", `attachment; filename=data.${format}`);
-//     res.send(response);
-//   } catch (error) {
-//     console.error("🔥 Error exporting data:", error);
-//     res.status(500).json({ message: "Error exporting data", error });
-//   }
-// };
-
 exports.exportData = async (req, res) => {
   try {
     console.log("🚀 Export API called!");
@@ -66,28 +25,22 @@ exports.exportData = async (req, res) => {
     if (model === "appointments") {
       data = await Appointment.find();
       console.log("🔹 Data retrieved from Appointment DB:", data);
-    } 
-    else if (model === "tasks") {
-      data = await Task.find(); 
+    } else if (model === "tasks") {
+      data = await Task.find();
       console.log("🔹 Data retrieved from Task DB:", data);
-    } 
-    else if (model === "sales") {
-      data = await Sales.find(); 
+    } else if (model === "sales") {
+      data = await Sales.find();
       console.log("🔹 Data retrieved from Sales DB:", data);
-    } 
-    else if (model === "customers") {
-      data = await Customer.find(); 
+    } else if (model === "customers") {
+      data = await Customer.find();
       console.log("🔹 Data retrieved from Customer DB:", data);
-    } 
-    else if (model === "support") {
-      data = await Support.find(); 
+    } else if (model === "support") {
+      data = await Support.find();
       console.log("🔹 Data retrieved from Support DB:", data);
-    } 
-    else if (model === "leads") {
-      data = await Leads.find(); 
+    } else if (model === "leads") {
+      data = await Leads.find();
       console.log("🔹 Data retrieved from Lead DB:", data);
-    } 
-    else {
+    } else {
       return res.status(400).json({ message: "Invalid model." });
     }
 
@@ -96,7 +49,6 @@ exports.exportData = async (req, res) => {
       return res.status(404).json({ message: "No data found." });
     }
 
-   
     let response;
     if (format === "json") {
       response = JSON.stringify(data, null, 2);
@@ -112,9 +64,11 @@ exports.exportData = async (req, res) => {
     }
 
     // Set the content disposition for file download
-    res.setHeader("Content-Disposition", `attachment; filename=${model}.${format}`);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${model}.${format}`
+    );
     res.send(response);
-
   } catch (error) {
     console.error("🔥 Error exporting data:", error);
     res.status(500).json({ message: "Error exporting data", error });
@@ -282,13 +236,19 @@ exports.restoreBackup = async (req, res) => {
       backupData: fileData,
     });
 
-    res.status(200).json({ message: `${model.charAt(0).toUpperCase() + model.slice(1)} data restored successfully.`, restoredData });
+    res
+      .status(200)
+      .json({
+        message: `${
+          model.charAt(0).toUpperCase() + model.slice(1)
+        } data restored successfully.`,
+        restoredData,
+      });
   } catch (error) {
     console.error("🔥 Error restoring data:", error);
     res.status(500).json({ message: "Error restoring data", error });
   }
 };
-
 
 // Delete Account & Data
 exports.deleteAccount = async (req, res) => {

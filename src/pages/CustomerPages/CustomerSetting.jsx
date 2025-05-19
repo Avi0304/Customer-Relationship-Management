@@ -22,7 +22,7 @@ import { FiEdit } from "react-icons/fi";
 import CustomerTopNav from "../../components/Customer/CustomerTopNav";
 import CustomerSidebar from "../../components/Customer/CustomerSidebar";
 
-const token = localStorage.getItem("token"); // Fetch token dynamically
+const token = localStorage.getItem("token");
 
 const CustomerSetting = () => {
   const { tab: urlTab } = useParams();
@@ -68,7 +68,7 @@ const CustomerSetting = () => {
           }
         );
 
-        setUser(response.data); // ✅ Store user data
+        setUser(response.data);
       } catch (err) {
         console.error("❌ Error fetching profile:", err.response?.data || err);
         setError(err.response?.data?.message || "Failed to fetch profile");
@@ -78,7 +78,7 @@ const CustomerSetting = () => {
     };
 
     fetchProfile();
-  }, [refresh]); // ✅ Runs when `refresh` changes
+  }, [refresh]);
 
   useEffect(() => {
     if (urlTab) setTab(urlTab);
@@ -142,7 +142,7 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Password Change Logic ===
+  // Password Change Logic
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
@@ -177,8 +177,6 @@ const CustomerSetting = () => {
           showConfirmButton: false,
           allowOutsideClick: false,
         });
-
-        // setTimeout(() => navigate("/login"), 2000);
       }
     } catch (error) {
       console.error(
@@ -197,7 +195,7 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Profile Save Logic ===
+  // Profile Save Logic
   const handleSaveProfile = async () => {
     setSaving(true);
 
@@ -272,7 +270,7 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Enable 2FA Logic ===
+  // Enable 2FA Logic
   const handleEnable2FA = async () => {
     try {
       const newStatus = !user.is2FAEnabled;
@@ -302,7 +300,7 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Notifications Save Logic ===
+  // Notifications Save Logic
   const handleSaveNotifications = async () => {
     try {
       await axios.put("/api/notifications/update", notifications);
@@ -312,15 +310,15 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Data Management Logic ===
-  // === Export Data ===
+  // Data Management Logic
+  // Export Data
   const handleExportData = async (format, modal) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/data/export?format=${format}&model=${modal}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-          responseType: "blob", // Ensure proper file handling
+          responseType: "blob",
         }
       );
 
@@ -342,7 +340,7 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Backup Data and Store it Locally ===
+  // Backup Data and Store it Locally
   const handleBackup = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -352,10 +350,10 @@ const CustomerSetting = () => {
         return;
       }
 
-      // ✅ Send the correct user settings data for backup
+      // Send the correct user settings data for backup
       const response = await axios.post(
         "http://localhost:8080/api/data/backup?model=support",
-        { },
+        {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -366,11 +364,11 @@ const CustomerSetting = () => {
       const blob = new Blob([jsonString], { type: "application/json" });
       const fileUrl = URL.createObjectURL(blob);
 
-      setBackupFile(blob); // ✅ Store the backup file in state
+      setBackupFile(blob); // Store the backup file in state
 
       Swal.fire("Success", "Backup created successfully!", "success");
 
-      // ✅ Automatically trigger file download
+      // Automatically trigger file download
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = `backup-${Date.now()}.json`;
@@ -387,10 +385,10 @@ const CustomerSetting = () => {
     }
   };
 
-  // === Restore Data from Stored Backup File ===
+  // Restore Data from Stored Backup File
   const handleRestore = async (e, modelName) => {
     console.log("🔹 Restore function triggered!");
-  
+
     // Ensure the file is selected
     const file = e.target.files[0];
     if (!file) {
@@ -398,16 +396,20 @@ const CustomerSetting = () => {
       Swal.fire("Error", "No backup file selected!", "error");
       return;
     }
-  
+
     console.log("📂 Selected File:", file);
-  
+
     // Ensure the file is a .json file
     if (!file.name.endsWith(".json")) {
       console.warn("⚠️ Invalid file format:", file.name);
-      Swal.fire("Error", "Invalid file format! Please upload a .json file.", "error");
+      Swal.fire(
+        "Error",
+        "Invalid file format! Please upload a .json file.",
+        "error"
+      );
       return;
     }
-  
+
     // Token check (authentication)
     const token = localStorage.getItem("token");
     if (!token) {
@@ -415,18 +417,18 @@ const CustomerSetting = () => {
       Swal.fire("Error", "Unauthorized. Please log in again.", "error");
       return;
     }
-  
+
     // Prepare the form data for upload
     const formData = new FormData();
     formData.append("backupFile", file);
-  
+
     console.log("📤 Sending FormData:", formData);
-  
+
     // Send the request to restore the data
     try {
       // Add the model as a query parameter
       const response = await axios.post(
-        `http://localhost:8080/api/data/restore?model=${modelName}`, // Add model as query param
+        `http://localhost:8080/api/data/restore?model=${modelName}`,
         formData,
         {
           headers: {
@@ -460,7 +462,7 @@ const CustomerSetting = () => {
     });
   };
 
-  // === Delete Account ===
+  // Delete Account
   const handleDeleteAccount = async () => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -514,10 +516,10 @@ const CustomerSetting = () => {
 
       setUser((prev) => ({
         ...prev,
-        photo: `http://localhost:8080${response.data.profilePhoto}`, // Ensure correct server path
+        photo: `http://localhost:8080${response.data.profilePhoto}`,
       }));
 
-      setRefresh((prev) => !prev); // Trigger re-fetch if needed
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.error(
         "Error uploading profile photo:",
@@ -985,7 +987,7 @@ const CustomerSetting = () => {
                               id="restore-upload"
                               accept=".json"
                               hidden
-                              onChange={() => handleRestore("support")} 
+                              onChange={() => handleRestore("support")}
                             />
                           </label>
                         </div>

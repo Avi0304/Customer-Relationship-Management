@@ -42,11 +42,10 @@ const FeatureSection = () => {
 
         {/* Features Grid */}
         <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
-
           {/* Left Side (Image) */}
           <div className="h-full w-full">
             <img
-              src={mode === 'light' ? Dashborad : DarkDash}
+              src={mode === "light" ? Dashborad : DarkDash}
               alt="Dashboard Feature"
               className="w-full h-full object-cover rounded-lg shadow-md"
             />
@@ -90,7 +89,6 @@ const FeatureSection = () => {
 
         {/* Second Features Row */}
         <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
-
           {/* Left Side (Text) */}
           <div className="flex flex-col justify-center space-y-6">
             {[
@@ -129,7 +127,7 @@ const FeatureSection = () => {
           {/* Right Side (Image) */}
           <div className="h-full w-full">
             <img
-              src={mode === 'light' ? Marketing : DarkMark}
+              src={mode === "light" ? Marketing : DarkMark}
               alt="Marketing Feature"
               className="w-full h-full object-cover rounded-lg shadow-md"
             />
@@ -138,15 +136,14 @@ const FeatureSection = () => {
 
         {/* Third Features Row */}
         <div className="mt-12 grid max-w-7xl 2xl:max-w-none mx-auto gap-12 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
-
           {/* Left Side (Image) */}
-         <div className="h-full w-full">
-         <img
-            src={mode === 'light' ? Appointment : DarkAppointment}
-            alt="Calendar Feature"
-            className="w-full h-full object-cover rounded-lg shadow-md"
-          />
-         </div>
+          <div className="h-full w-full">
+            <img
+              src={mode === "light" ? Appointment : DarkAppointment}
+              alt="Calendar Feature"
+              className="w-full h-full object-cover rounded-lg shadow-md"
+            />
+          </div>
 
           {/* Right Side (Text) */}
           <div className="flex flex-col justify-center space-y-6">

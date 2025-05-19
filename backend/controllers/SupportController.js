@@ -1,11 +1,11 @@
 const Support = require("../models/Support");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
-const { createNotification } = require('../utils/notificationService')
+const { createNotification } = require("../utils/notificationService");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 const sendEmail = async (to, subject, html) => {
   const transporter = nodemailer.createTransport({
@@ -28,23 +28,26 @@ const sendEmail = async (to, subject, html) => {
 
 const notifySupportAdded = async (support) => {
   await createNotification({
-    title: 'New Support Added',
+    title: "New Support Added",
     message: `New Support added: ${support.customer} - $${support.amount}`,
-    type: 'support',
+    type: "support",
     userId: support.userId,
   });
 };
 
 // Update status change notification
-const notifySupportStatusUpdated = async (support, previousStatus, newStatus) => {
+const notifySupportStatusUpdated = async (
+  support,
+  previousStatus,
+  newStatus
+) => {
   await createNotification({
-    title: 'Support Status Updated',
+    title: "Support Status Updated",
     message: `Support status updated from ${previousStatus} to ${newStatus}`,
-    type: 'support',
+    type: "support",
     userId: support.userId,
   });
 };
-
 
 // Get all support requests with search, filter & pagination
 exports.getAllSupportRequests = async (req, res) => {
@@ -114,9 +117,9 @@ exports.createSupportRequest = async (req, res) => {
     await newRequest.save();
 
     await createNotification({
-      title: 'New Support Request',
+      title: "New Support Request",
       message: `${user.name} created a new support request: ${subject}`,
-      type: 'support',
+      type: "support",
       userId,
     });
 
@@ -159,8 +162,6 @@ exports.createSupportRequest = async (req, res) => {
       </body>
     </html>
     `;
-    
-  
 
     const adminEmailSubject = `New Support Request from ${user.name}`;
     const adminEmailBody = `
@@ -206,10 +207,9 @@ exports.createSupportRequest = async (req, res) => {
       </body>
     </html>
     `;
-    
 
     // Separate try-catch for sending email
-    try {   
+    try {
       await sendEmail(user.email, userEmailSubject, userEmailBody);
       await sendEmail(ADMIN_EMAIL, adminEmailSubject, adminEmailBody);
     } catch (emailErr) {
@@ -222,9 +222,6 @@ exports.createSupportRequest = async (req, res) => {
     return res.status(500).json({ message: "Failed to create request", error });
   }
 };
-
-
-
 
 // Update support request
 exports.updateSupportRequest = async (req, res) => {
@@ -241,7 +238,8 @@ exports.updateSupportRequest = async (req, res) => {
 
   try {
     const existing = await Support.findById(id);
-    if (!existing) return res.status(404).json({ message: "Request not found" });
+    if (!existing)
+      return res.status(404).json({ message: "Request not found" });
 
     const previousStatus = existing.status;
     const priorityStatus = existing.priority;
@@ -252,18 +250,18 @@ exports.updateSupportRequest = async (req, res) => {
     // 🔔 Notify if status changed
     if (previousStatus !== status) {
       await createNotification({
-        title: 'Support Status Updated',
+        title: "Support Status Updated",
         message: `Status changed from ${previousStatus} to ${status}`,
-        type: 'support',
+        type: "support",
         userId: existing.userId,
       });
     }
 
     if (priorityStatus !== priority) {
       await createNotification({
-        title: 'Support Priority Updated',
+        title: "Support Priority Updated",
         message: `Priority changed from ${priorityStatus} to ${priority}`,
-        type: 'support',
+        type: "support",
         userId: existing.userId,
       });
     }
@@ -274,8 +272,7 @@ exports.updateSupportRequest = async (req, res) => {
   }
 };
 
-
-exports.updateSupportpriority  = async (req, res) => {
+exports.updateSupportpriority = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
@@ -289,13 +286,16 @@ exports.updateSupportpriority  = async (req, res) => {
 
   try {
     const existing = await Support.findById(id);
-    if (!existing) return res.status(404).json({ message: "Request not found" });
+    if (!existing)
+      return res.status(404).json({ message: "Request not found" });
 
     const previousStatus = existing.priority;
 
     // Only update if changed
     if (previousStatus === priority) {
-      return res.status(200).json({ message: "priority already set", support: existing });
+      return res
+        .status(200)
+        .json({ message: "priority already set", support: existing });
     }
 
     existing.priority = priority;
@@ -330,13 +330,16 @@ exports.updateSupportStatus = async (req, res) => {
 
   try {
     const existing = await Support.findById(id);
-    if (!existing) return res.status(404).json({ message: "Request not found" });
+    if (!existing)
+      return res.status(404).json({ message: "Request not found" });
 
     const previousStatus = existing.status;
 
     // Only update if changed
     if (previousStatus === status) {
-      return res.status(200).json({ message: "Status already set", support: existing });
+      return res
+        .status(200)
+        .json({ message: "Status already set", support: existing });
     }
 
     existing.status = status;
@@ -357,7 +360,6 @@ exports.updateSupportStatus = async (req, res) => {
   }
 };
 
-
 // Delete support request
 exports.deleteSupportRequest = async (req, res) => {
   const { id } = req.params;
@@ -376,7 +378,7 @@ exports.deleteSupportRequest = async (req, res) => {
   }
 };
 
-exports.withdrawSupportRequest = async(req, res) => {
+exports.withdrawSupportRequest = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -393,12 +395,14 @@ exports.withdrawSupportRequest = async(req, res) => {
     supportRequest.status = "Withdrawn";
     await supportRequest.save();
 
-    res.json({ message: "Ticket withdrawn successfully", support: supportRequest });
+    res.json({
+      message: "Ticket withdrawn successfully",
+      support: supportRequest,
+    });
   } catch (error) {
     res.status(500).json({ message: "Failed to withdraw request", error });
   }
-}
-
+};
 
 exports.addRelatedResource = async (req, res) => {
   try {
@@ -419,7 +423,7 @@ exports.addRelatedResource = async (req, res) => {
   }
 };
 
-// 📄 Get all related resources
+// Get all related resources
 exports.getRelatedResources = async (req, res) => {
   try {
     const { id } = req.params;
@@ -441,7 +445,10 @@ exports.updateRelatedResource = async (req, res) => {
     const { ticketId, resourceId } = req.params;
 
     // Validate both IDs
-    if (!mongoose.Types.ObjectId.isValid(ticketId) || !mongoose.Types.ObjectId.isValid(resourceId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(ticketId) ||
+      !mongoose.Types.ObjectId.isValid(resourceId)
+    ) {
       return res.status(400).json({ message: "Invalid ticket or resource ID" });
     }
 
@@ -471,7 +478,7 @@ exports.updateRelatedResource = async (req, res) => {
   }
 };
 
-// ❌ Delete a related resource
+// Delete a related resource
 exports.deleteRelatedResource = async (req, res) => {
   try {
     const { id, resourceId } = req.params;
@@ -500,4 +507,3 @@ exports.deleteRelatedResource = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
