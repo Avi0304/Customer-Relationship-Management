@@ -35,7 +35,7 @@ const DashboardStats = async (req, res) => {
 
     // Count active customers
     const activeCustomers = await Customer.countDocuments({
-      status: { $in: ["Pending", "Completed"] },
+      status: { $in: ["pending", "completed"] },
     });
 
     // Count total sales

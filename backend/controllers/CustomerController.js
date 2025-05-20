@@ -143,7 +143,7 @@ const updateCustomer = async (req, res) => {
 
     await createNotification({
       title: 'Update Customer Added',
-      message: `Customer "${updatedCustomer.name}" has been successfully added.`,
+      message: `Customer "${updatedCustomer.name}" has been successfully update.`,
       type: 'customer',
       // userId: newCustomer._id, 
     });
