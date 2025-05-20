@@ -31,7 +31,7 @@ const DashboardStats = async (req, res) => {
       totalRevenueResult.length > 0 ? totalRevenueResult[0].totalAmount : 0;
 
     const activeCustomers = await Customer.countDocuments({
-      status: { $in: ["Pending", "Completed"] },
+      status: { $in: ["pending", "completed"] },
     });
 
     const totalSales = await Sale.countDocuments();
